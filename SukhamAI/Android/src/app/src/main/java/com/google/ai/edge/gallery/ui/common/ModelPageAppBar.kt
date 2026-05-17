@@ -16,6 +16,7 @@
 
 package com.google.ai.edge.gallery.ui.common
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -45,10 +47,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.google.ai.edge.gallery.R
 import com.google.ai.edge.gallery.data.BuiltInTaskId
@@ -93,6 +98,10 @@ fun ModelPageAppBar(
     modelInitializationStatus?.status == ModelInitializationStatusType.INITIALIZING
   val isModelInitialized =
     modelInitializationStatus?.status == ModelInitializationStatusType.INITIALIZED
+  val isSukhamApp = context.packageName == "com.sukham.ai"
+  val useSukhamChatTitle =
+    isSukhamApp &&
+      (task.id == BuiltInTaskId.LLM_CHAT || task.id == BuiltInTaskId.LLM_ASK_IMAGE)
 
   CenterAlignedTopAppBar(
     title = {
@@ -100,21 +109,42 @@ fun ModelPageAppBar(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp),
       ) {
-        // Task type.
-        Row(
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-          val tintColor =
-            if (useThemeColor) MaterialTheme.colorScheme.onSurface
-            else getTaskIconColor(task = task)
-          Icon(
-            task.icon ?: ImageVector.vectorResource(task.iconVectorResourceId!!),
-            tint = tintColor,
-            modifier = Modifier.size(24.dp),
-            contentDescription = null,
-          )
-          Text(task.label, style = MaterialTheme.typography.titleMedium, color = tintColor)
+        if (useSukhamChatTitle) {
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+          ) {
+            Image(
+              painter = painterResource(R.drawable.lotus_logo),
+              contentDescription = null,
+              modifier = Modifier.size(28.dp),
+            )
+            Text(
+              text = "Chat with SUKHAM AI",
+              style =
+                MaterialTheme.typography.titleMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = Color(0xFF1A1A1A),
+                ),
+            )
+          }
+        } else {
+          // Task type.
+          Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+          ) {
+            val tintColor =
+              if (useThemeColor) MaterialTheme.colorScheme.onSurface
+              else getTaskIconColor(task = task)
+            Icon(
+              task.icon ?: ImageVector.vectorResource(task.iconVectorResourceId!!),
+              tint = tintColor,
+              modifier = Modifier.size(24.dp),
+              contentDescription = null,
+            )
+            Text(task.label, style = MaterialTheme.typography.titleMedium, color = tintColor)
+          }
         }
 
         // Model chips pager.

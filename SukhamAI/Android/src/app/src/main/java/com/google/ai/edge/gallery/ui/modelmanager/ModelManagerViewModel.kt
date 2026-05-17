@@ -104,10 +104,10 @@ private const val TEST_MODEL_ALLOW_LIST = """
       "taskTypes": ["llm_chat", "llm_prompt_lab", "llm_ask_image"]
     },
     {
-      "name": "Gemma-3n-E4B-it-int4",
+      "name": "Gemma-4-Multimodal",
       "modelId": "google/gemma-3n-E4B-it-litert-preview",
       "modelFile": "gemma-3n-E4B-it-int4.task",
-      "description": "Preview version of Gemma 3n E4B ready for deployment on Android using the MediaPipe LLM Inference API. The current checkpoint only supports text and vision input, with 4096 context length.",
+      "description": "Gemma 4 Multimodal model for image and text on-device inference.",
       "sizeInBytes": 4405655031,
       "estimatedPeakMemoryInBytes": 6979321856,
       "version": "20250520",
@@ -117,7 +117,7 @@ private const val TEST_MODEL_ALLOW_LIST = """
         "topP": 0.95,
         "temperature": 1.0,
         "maxTokens": 4096,
-        "accelerators": "cpu,gpu"
+        "accelerators": "gpu"
       },
       "taskTypes": ["llm_chat", "llm_prompt_lab", "llm_ask_image"]
     },
@@ -289,6 +289,27 @@ constructor(
     return uiState.value.tasks.find { it.id == id }
   }
 
+  /**
+   * Picks the best on-device model for a task when launching chat from Sukham home shortcuts.
+   * Prefers Gemma 4 multimodal models, then other image-capable models for vision tasks.
+   */
+  fun resolveModelForTask(task: Task): Model? {
+    val preferredNames =
+      listOf(
+        "Gemma-4-E4B-it",
+        "Gemma-4-E2B-it",
+        "Gemma-3n-E4B-it-int4",
+        "Gemma-3n-E2B-it-int4",
+      )
+    for (name in preferredNames) {
+      task.models.find { it.name == name }?.let { return it }
+    }
+    if (task.id == BuiltInTaskId.LLM_ASK_IMAGE) {
+      return task.models.find { it.llmSupportImage } ?: task.models.firstOrNull()
+    }
+    return task.models.firstOrNull()
+  }
+
   fun getTasksByIds(ids: Set<String>): List<Task> {
     return uiState.value.tasks.filter { ids.contains(it.id) }
   }
@@ -335,6 +356,9 @@ constructor(
 
   fun processTasks() {
     val curTasks = getActiveCustomTasks().map { it.task }
+    for ((index, task) in curTasks.withIndex()) {
+      task.index = index
+    }
     for (task in curTasks) {
       for (model in task.models) {
         model.preProcess()
@@ -970,11 +994,7 @@ constructor(
         // Load model allowlist json.
         var modelAllowlist: ModelAllowlist? = null
 
-        // Try to read the test allowlist first.
-        Log.d(TAG, "Loading test model allowlist.")
-        modelAllowlist = readModelAllowlistFromDisk(fileName = MODEL_ALLOWLIST_TEST_FILENAME)
-
-        // Local test only.
+        // Priority 1: Local test string (Fastest and Guaranteed)
         if (TEST_MODEL_ALLOW_LIST.isNotEmpty()) {
           Log.d(TAG, "Loading local model allowlist for testing.")
           val gson = Gson()
@@ -985,6 +1005,13 @@ constructor(
           }
         }
 
+        // Priority 2: Disk cache
+        if (modelAllowlist == null) {
+          Log.d(TAG, "Loading test model allowlist.")
+          modelAllowlist = readModelAllowlistFromDisk(fileName = MODEL_ALLOWLIST_TEST_FILENAME)
+        }
+
+        // Priority 3: Internet
         if (modelAllowlist == null) {
           // Load from github.
           var version = BuildConfig.VERSION_NAME.replace(".", "_")
@@ -1168,9 +1195,10 @@ constructor(
   }
 
   private fun createEmptyUiState(): ModelManagerUiState {
+    val tasks = getActiveCustomTasks().map { it.task }
     return ModelManagerUiState(
-      tasks = listOf(),
-      tasksByCategory = mapOf(),
+      tasks = tasks,
+      tasksByCategory = tasks.groupBy { it.category.id },
       modelDownloadStatus = mapOf(),
       modelInitializationStatus = mapOf(),
     )

@@ -149,6 +149,21 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private const val TAG = "AGHomeScreen"
+
+/** Sukham brand colors aligned with the UI mockup. */
+private object SukhamColors {
+  val TitleBlack = Color(0xFF1A1A1A)
+  val BodyGray = Color(0xFF616161)
+  val ScreenBg = Color(0xFFF5F4EF)
+  val Purple = Color(0xFF7E57C2)
+  val PurpleDark = Color(0xFF673AB7)
+  val LavenderCard = Color(0xFFF3E8FF)
+  val Teal = Color(0xFF26A69A)
+  val Peach = Color(0xFFFFAB91)
+  val LightBlue = Color(0xFF81D4FA)
+  val LavenderBtn = Color(0xFFE1BEE7)
+  val LiveGreen = Color(0xFF43A047)
+}
 private const val TASK_COUNT_ANIMATION_DURATION = 250
 private const val ANIMATION_INIT_DELAY = 0L
 private const val TOP_APP_BAR_ANIMATION_DURATION = 600
@@ -189,13 +204,14 @@ fun HomeScreen(
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
 
-  val onAutoNavigate = { task: Task ->
-      val model = task.models.firstOrNull { it.name == "Gemma-3n-E4B-it-int4" } ?: task.models.firstOrNull()
-      if (model != null) {
-          navigateToModelScreen(task, model)
-      } else {
-          navigateToTaskScreen(task)
-      }
+  fun openChat(task: Task?) {
+    if (task == null || uiState.loadingModelAllowlist) return
+    val targetModel = modelManagerViewModel.resolveModelForTask(task)
+    if (targetModel != null) {
+      navigateToModelScreen(task, targetModel)
+    } else {
+      navigateToTaskScreen(task)
+    }
   }
 
   // Show home screen content when TOS has been accepted.
@@ -257,17 +273,14 @@ fun HomeScreen(
         gesturesEnabled = drawerState.isOpen,
       ) {
         Scaffold(
-          containerColor = Color.White,
+          containerColor = SukhamColors.ScreenBg,
           topBar = {
             SukhamHeader(onMenuClick = { scope.launch { drawerState.open() } })
           },
           bottomBar = { 
-              val imageChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_ASK_IMAGE)
               SukhamBottomNav(
                   onCentralClick = { 
-                      if (imageChatTask != null) {
-                          onAutoNavigate(imageChatTask)
-                      }
+                      openChat(modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT))
                   }
               ) 
           }
@@ -288,59 +301,59 @@ fun HomeScreen(
                 style = MaterialTheme.typography.headlineLarge.copy(
                   fontWeight = FontWeight.Bold,
                   letterSpacing = 4.sp,
-                  color = Color(0xFF2C3E50)
+                  color = SukhamColors.TitleBlack,
                 ),
                 textAlign = TextAlign.Center
               )
               Text(
                 text = "Your AI Partner in Holistic Wellbeing",
-                style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                style = MaterialTheme.typography.bodyMedium.copy(color = SukhamColors.BodyGray),
                 textAlign = TextAlign.Center
               )
             }
 
-            // Chat with AI Card
+            val chatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT)
             val imageChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_ASK_IMAGE)
-            val textChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT)
-            
-            if (imageChatTask != null) {
-                SukhamMainChatCard(onClick = { onAutoNavigate(imageChatTask) })
+
+            if (chatTask != null) {
+                SukhamMainChatCard(onClick = { openChat(chatTask) })
             }
 
             // Grid Section
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                // Live Exercise
                 SukhamGridCard(
                     title = "Live Exercise",
                     subtitle = "Join expert-led sessions in real time.",
                     imageRes = R.drawable.live_exercise,
                     modifier = Modifier.weight(1f),
                     badge = "LIVE",
-                    badgeColor = Color(0xFF4CAF50),
+                    badgeColor = SukhamColors.LiveGreen,
                     actionText = "Join Live",
-                    onClick = { if (imageChatTask != null) onAutoNavigate(imageChatTask) }
+                    actionColor = SukhamColors.Teal,
+                    onClick = { openChat(chatTask) }
                 )
-                // Yoga Tips
                 SukhamGridCard(
                     title = "Yoga Tips",
                     subtitle = "Daily guidance for body, mind & soul.",
                     imageRes = R.drawable.yoga_tips,
                     modifier = Modifier.weight(1f),
                     icon = Icons.Outlined.Eco,
+                    iconTint = Color(0xFF8D6E63),
                     actionText = "View Tips",
-                    onClick = { if (textChatTask != null) onAutoNavigate(textChatTask) }
+                    actionColor = SukhamColors.Peach,
+                    onClick = { openChat(chatTask) }
                 )
             }
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                // Wearables Data Analysis
                 SukhamGridCard(
                     title = "Wearables Data Analysis",
                     subtitle = "Understand your body. Improve every day.",
                     imageRes = R.drawable.wearables_analysis,
                     modifier = Modifier.weight(1f),
                     actionText = "View Insights",
-                    onClick = { if (imageChatTask != null) onAutoNavigate(imageChatTask) }
+                    actionColor = SukhamColors.LightBlue,
+                    onClick = { openChat(imageChatTask) }
                 )
                 // Personal Files Analysis
                 SukhamGridCard(
@@ -349,7 +362,8 @@ fun HomeScreen(
                     imageRes = R.drawable.personal_files,
                     modifier = Modifier.weight(1f),
                     actionText = "Upload & Analyze",
-                    onClick = {}
+                    actionColor = SukhamColors.LavenderBtn,
+                    onClick = { openChat(imageChatTask) }
                 )
             }
 
@@ -408,7 +422,7 @@ fun SukhamMainChatCard(onClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth().height(160.dp).clickable(onClick = onClick),
         shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF8F0FF))
+        colors = CardDefaults.cardColors(containerColor = SukhamColors.LavenderCard)
     ) {
         Row(
             modifier = Modifier.fillMaxSize().padding(20.dp),
@@ -416,26 +430,42 @@ fun SukhamMainChatCard(onClick: () -> Unit) {
         ) {
             Box(
                 modifier = Modifier.size(80.dp).background(
-                    brush = Brush.radialGradient(listOf(Color(0xFFD1C4E9), Color(0xFF9575CD))),
+                    brush = Brush.radialGradient(listOf(Color(0xFFD1C4E9), SukhamColors.Purple)),
                     shape = CircleShape
                 ),
                 contentAlignment = Alignment.Center
             ) {
-                 Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, tint = Color.White, modifier = Modifier.size(40.dp))
+                Image(
+                    painter = painterResource(R.drawable.lotus_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                )
             }
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
-                Text("Chat with AI", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))
-                Text("Your personal wellness guide. Ask anything, anytime.", style = MaterialTheme.typography.bodyMedium)
+                Text(
+                    "Chat with SUKHAM AI",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = SukhamColors.TitleBlack,
+                    ),
+                )
+                Text(
+                    "Your personal wellness guide. Ask anything, anytime.",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = SukhamColors.BodyGray),
+                )
             }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 IconButton(
                     onClick = onClick,
-                    modifier = Modifier.size(56.dp).background(Color(0xFF673AB7), CircleShape)
+                    modifier = Modifier.size(56.dp).background(SukhamColors.PurpleDark, CircleShape)
                 ) {
                     Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, tint = Color.White)
                 }
-                Text("Start Chat", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    "Start Chat",
+                    style = MaterialTheme.typography.labelSmall.copy(color = SukhamColors.TitleBlack),
+                )
             }
         }
     }
@@ -450,7 +480,9 @@ fun SukhamGridCard(
     badge: String? = null,
     badgeColor: Color = Color.Transparent,
     icon: ImageVector? = null,
+    iconTint: Color = Color(0xFF8D6E63),
     actionText: String,
+    actionColor: Color = Color(0xFFEEEEEE),
     onClick: () -> Unit
 ) {
     Card(
@@ -473,22 +505,38 @@ fun SukhamGridCard(
                         )
                     }
                 } else if (icon != null) {
-                    Icon(icon, contentDescription = null, tint = Color(0xFF8D6E63), modifier = Modifier.padding(bottom = 8.dp))
+                    Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.padding(bottom = 8.dp))
                 }
 
-                Text(title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
-                Text(subtitle, style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray), maxLines = 2)
+                Text(
+                    title,
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = SukhamColors.TitleBlack,
+                    ),
+                )
+                Text(
+                    subtitle,
+                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
+                    maxLines = 2,
+                )
                 
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 Button(
                     onClick = onClick,
                     shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEEEEEE)),
+                    colors = ButtonDefaults.buttonColors(containerColor = actionColor),
                     contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
                     modifier = Modifier.height(32.dp)
                 ) {
-                    Text(actionText, style = MaterialTheme.typography.labelSmall.copy(color = Color.Black))
+                    Text(
+                        actionText,
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            color = SukhamColors.TitleBlack,
+                            fontWeight = FontWeight.SemiBold,
+                        ),
+                    )
                 }
             }
             Image(
@@ -515,8 +563,17 @@ fun SukhamFooterCard(onClick: () -> Unit) {
                 contentScale = ContentScale.Crop
             )
             Column(modifier = Modifier.padding(16.dp).align(Alignment.BottomStart)) {
-                Text("Share My Progress", style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold, color = Color.Black))
-                Text("Celebrate milestones. Inspire others. Stay motivated together.", style = MaterialTheme.typography.bodySmall.copy(color = Color.DarkGray))
+                Text(
+                    "Share My Progress",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = SukhamColors.TitleBlack,
+                    ),
+                )
+                Text(
+                    "Celebrate milestones. Inspire others. Stay motivated together.",
+                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
+                )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
                     onClick = onClick,
@@ -549,7 +606,7 @@ fun SukhamBottomNav(onCentralClick: () -> Unit = {}) {
             SukhamNavItem(icon = Icons.Outlined.Insights, label = "Insights")
             IconButton(
                 onClick = onCentralClick,
-                modifier = Modifier.size(56.dp).offset(y = (-10).dp).background(Color(0xFFF8F0FF), CircleShape)
+                modifier = Modifier.size(56.dp).offset(y = (-10).dp).background(SukhamColors.LavenderCard, CircleShape)
             ) {
                 Image(painter = painterResource(R.drawable.lotus_logo), contentDescription = null, modifier = Modifier.size(32.dp))
             }
@@ -562,8 +619,8 @@ fun SukhamBottomNav(onCentralClick: () -> Unit = {}) {
 @Composable
 fun SukhamNavItem(icon: ImageVector, label: String, selected: Boolean = false) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Icon(icon, contentDescription = label, tint = if (selected) Color(0xFF673AB7) else Color.LightGray)
-        Text(label, style = MaterialTheme.typography.labelSmall.copy(color = if (selected) Color(0xFF673AB7) else Color.LightGray))
+        Icon(icon, contentDescription = label, tint = if (selected) SukhamColors.PurpleDark else Color.LightGray)
+        Text(label, style = MaterialTheme.typography.labelSmall.copy(color = if (selected) SukhamColors.PurpleDark else Color.LightGray))
     }
 }
 
