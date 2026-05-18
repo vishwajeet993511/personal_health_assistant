@@ -182,6 +182,32 @@ data class WearableSnapshot(
       else -> Verdict.BAD
     }
 
+  /**
+   * Daily-progress summary used by the Share Progress flow. Steps/calories-burnt aren't in the
+   * raw CSV, so we estimate them from weight + intake. Replace with live sensor values when a
+   * step counter is integrated.
+   */
+  val dailyProgress: DailyProgress
+    get() {
+      // Mifflin-St Jeor BMR ≈ 10·kg + 6.25·cm − 5·age (gender-neutral mid value), times an
+      // activity factor of 1.35 for "lightly active" — gives a sane calories-burnt estimate.
+      val bmr = 10 * weightKg + 6.25 * heightCm - 5 * age
+      val caloriesBurnt = (bmr * 1.35).roundToInt()
+      // Rough step estimate: ~25 % of calories-burnt scaled to steps. Yields ~4–6 k for the
+      // sample row, which reads as a realistic "low-active day".
+      val steps = (caloriesBurnt * 2.5).roundToInt()
+      return DailyProgress(
+        steps = steps,
+        caloriesBurnt = caloriesBurnt,
+        caloriesEaten = caloriesIntake,
+        sleepHours = sleepDuration,
+        sleepWakeups = wakeups,
+        waterLiters = waterLiters,
+        heartRateBpm = heartRate,
+        healthScore = healthScore,
+      )
+    }
+
   /** Local hardcoded insights — kept so the screen renders even before Gemma is ready. */
   val localInsights: List<Insight>
     get() =
@@ -345,6 +371,18 @@ enum class Verdict(val label: String, val color: Color) {
 }
 
 data class Insight(val severity: Verdict, val title: String, val body: String)
+
+/** Daily progress snapshot for the Share Progress flow. */
+data class DailyProgress(
+  val steps: Int,
+  val caloriesBurnt: Int,
+  val caloriesEaten: Int,
+  val sleepHours: Double,
+  val sleepWakeups: Int,
+  val waterLiters: Double,
+  val heartRateBpm: Int,
+  val healthScore: Double,
+)
 
 // =====================================================================================
 // Top-level screen
