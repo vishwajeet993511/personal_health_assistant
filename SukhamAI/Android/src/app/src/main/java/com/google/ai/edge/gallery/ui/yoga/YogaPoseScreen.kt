@@ -110,13 +110,14 @@ private const val LANDMARK_INPUT_MAX_EDGE = 1024
 private const val MAX_RESPONSE_CHARS = 700
 private const val MAX_RESPONSE_MS = 90_000L
 
-// Compact prompt — same intent as before but ~75% fewer tokens. Asks for a short answer so
-// the model emits an EOS earlier rather than generating until the context window fills.
+// Compact prompt — coaching first, so even if the user only reads the first line they get the
+// actionable cue. Still 3 short bullets to keep generation under ~60 words so the model emits
+// an EOS quickly instead of filling the context window.
 private const val YOGA_PROMPT =
-  "Skeleton overlay shows a yoga pose. Reply in under 60 words as 3 bullets:\n" +
-    "- Pose: <Sanskrit / English>\n" +
-    "- Form: <score>/10, biggest fault\n" +
-    "- Fix: one specific cue"
+  "Skeleton overlay shows a yoga pose. Reply in under 60 words as 3 bullets, in this order:\n" +
+    "- Coaching: one specific cue to improve form right now\n" +
+    "- Pose: <Sanskrit / English name>\n" +
+    "- Form: <score>/10"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -261,7 +262,8 @@ fun YogaPoseScreen(
         }
       }
 
-      // Image preview area.
+      // Image preview area. The AI yoga recommendation is overlaid on top of the photo so
+      // the user sees the cue right next to the skeleton it's referring to.
       Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
@@ -286,6 +288,35 @@ fun YogaPoseScreen(
                 contentDescription = "Annotated yoga pose",
                 modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
               )
+              if (aiResponse.isNotBlank()) {
+                Column(
+                  modifier =
+                    Modifier.fillMaxWidth()
+                      .align(Alignment.TopCenter)
+                      .padding(12.dp)
+                      .clip(RoundedCornerShape(16.dp))
+                      .background(Color.Black.copy(alpha = 0.55f))
+                      .padding(horizontal = 14.dp, vertical = 10.dp),
+                ) {
+                  Text(
+                    "SUKHAM's analysis",
+                    style =
+                      MaterialTheme.typography.labelSmall.copy(
+                        color = Color(0xFFE1BEE7),
+                        fontWeight = FontWeight.SemiBold,
+                      ),
+                  )
+                  Spacer(Modifier.size(4.dp))
+                  Text(
+                    aiResponse,
+                    style =
+                      MaterialTheme.typography.bodySmall.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Medium,
+                      ),
+                  )
+                }
+              }
             }
             else -> {
               Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -415,26 +446,6 @@ fun YogaPoseScreen(
           }
         }
 
-        if (aiResponse.isNotBlank()) {
-          Card(
-            shape = RoundedCornerShape(20.dp),
-            colors =
-              CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-              ),
-            modifier = Modifier.fillMaxWidth(),
-          ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-              Text(
-                "SUKHAM's analysis",
-                style =
-                  MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-              )
-              Spacer(Modifier.size(6.dp))
-              Text(aiResponse, style = MaterialTheme.typography.bodyMedium)
-            }
-          }
-        }
       }
     }
   }

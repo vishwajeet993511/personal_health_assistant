@@ -144,8 +144,10 @@ import com.google.ai.edge.gallery.ui.common.rememberDelayedAnimationProgress
 import com.google.ai.edge.gallery.ui.common.tos.AppTosDialog
 import com.google.ai.edge.gallery.ui.common.tos.TosViewModel
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
+import com.google.ai.edge.gallery.ui.share.shareDailyProgressToWhatsApp
 import com.google.ai.edge.gallery.ui.theme.customColors
 import com.google.ai.edge.gallery.ui.theme.homePageTitleStyle
+import com.google.ai.edge.gallery.ui.wearables.loadLatestWearableSnapshot
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -196,6 +198,9 @@ fun HomeScreen(
   navigateToModelScreen: (Task, Model) -> Unit,
   onModelsClicked: () -> Unit,
   onYogaClicked: () -> Unit = {},
+  onWearablesClicked: () -> Unit = {},
+  onInsightsClicked: () -> Unit = {},
+  onProgramsClicked: () -> Unit = {},
   enableAnimation: Boolean,
   modifier: Modifier = Modifier,
   gm4: Boolean = false,
@@ -206,11 +211,9 @@ fun HomeScreen(
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
 
-  // Text-only chat (gallery's "AI Chat" equivalent) — peaks at ~3 GB working set with Gemma-3n-E2B.
-  val textChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT)
-  // Image chat (gallery's "Ask Image" equivalent) — same 2B Gemma but with the vision tower
-  // enabled. resolveModelForTask refuses to escalate to the 4B variant so we stay within the
-  // S20+ memory envelope while still supporting image inputs.
+  // SUKHAM AI now standardises on the multimodal "Ask Image" chat — same 2B Gemma but with
+  // the vision tower enabled. resolveModelForTask refuses to escalate to the 4B variant so we
+  // stay within the S20+ memory envelope while still supporting image inputs.
   val imageChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_ASK_IMAGE)
 
   fun openChatForTask(task: Task?) {
@@ -227,9 +230,7 @@ fun HomeScreen(
     }
   }
 
-  // Existing call sites (bottom nav, wellness tiles) keep routing to the lighter text chat.
-  fun openAskImageChat() = openChatForTask(textChatTask)
-  // New entry point: launches the multimodal "Ask Image" chat.
+  // The header card, bottom-nav central button, and wellness tiles all open the image chat.
   fun openImageChat() = openChatForTask(imageChatTask)
   // Scan Documents: resolve at click time so we don't capture a null task before allowlist loads.
   fun openScanDocsChat() {
@@ -241,6 +242,23 @@ fun HomeScreen(
     } else {
       // Fallback: image chat still supports photo/PDF upload if Scan Docs isn't registered yet.
       openImageChat()
+    }
+  }
+
+  // Loads today's snapshot from assets and fires the WhatsApp share intent.
+  fun onShareDailyProgress() {
+    scope.launch {
+      val snapshot = loadLatestWearableSnapshot(context)
+      if (snapshot == null) {
+        android.widget.Toast.makeText(
+            context,
+            "No wearable records found yet.",
+            android.widget.Toast.LENGTH_SHORT,
+          )
+          .show()
+        return@launch
+      }
+      shareDailyProgressToWhatsApp(context, snapshot)
     }
   }
 
@@ -307,8 +325,12 @@ fun HomeScreen(
           topBar = {
             SukhamHeader(onMenuClick = { scope.launch { drawerState.open() } })
           },
-          bottomBar = { 
-              SukhamBottomNav(onCentralClick = { openAskImageChat() }) 
+          bottomBar = {
+            SukhamBottomNav(
+              onCentralClick = { openImageChat() },
+              onInsightsClick = onInsightsClicked,
+              onProgramsClick = onProgramsClicked,
+            )
           }
         ) { innerPadding ->
           Column(
@@ -338,11 +360,8 @@ fun HomeScreen(
               )
             }
 
-            if (textChatTask != null) {
-                SukhamMainChatCard(onClick = { openAskImageChat() })
-            }
             if (imageChatTask != null) {
-                SukhamAskImageCard(onClick = { openImageChat() })
+                SukhamMainChatCard(onClick = { openImageChat() })
             }
 
             // Grid Section
@@ -356,7 +375,7 @@ fun HomeScreen(
                     badgeColor = SukhamColors.LiveGreen,
                     actionText = "Join Live",
                     actionColor = SukhamColors.Teal,
-                    onClick = { openAskImageChat() }
+                    onClick = { openImageChat() }
                 )
                 SukhamGridCard(
                     title = "Yoga Tips",
@@ -379,7 +398,7 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f),
                     actionText = "View Insights",
                     actionColor = SukhamColors.LightBlue,
-                    onClick = { openAskImageChat() }
+                    onClick = { onWearablesClicked() }
                 )
                 // Personal Files Analysis
                 SukhamGridCard(
@@ -394,7 +413,7 @@ fun HomeScreen(
             }
 
             // Share My Progress Footer
-            SukhamFooterCard(onClick = {})
+            SukhamFooterCard(onClick = { onShareDailyProgress() })
 
             Spacer(modifier = Modifier.height(20.dp))
           }
@@ -477,7 +496,7 @@ fun SukhamMainChatCard(onClick: () -> Unit) {
                     ),
                 )
                 Text(
-                    "Your personal wellness guide. Ask anything, anytime.",
+                    "Ask anything. Share a photo, report or scan for on-device analysis.",
                     style = MaterialTheme.typography.bodyMedium.copy(color = SukhamColors.BodyGray),
                 )
             }
@@ -492,55 +511,6 @@ fun SukhamMainChatCard(onClick: () -> Unit) {
                     "Start Chat",
                     style = MaterialTheme.typography.labelSmall.copy(color = SukhamColors.TitleBlack),
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun SukhamAskImageCard(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().height(120.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(containerColor = SukhamColors.Peach)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier.size(64.dp).background(
-                    brush = Brush.radialGradient(listOf(Color(0xFFFFE0B2), SukhamColors.PurpleDark)),
-                    shape = CircleShape
-                ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Mms,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(32.dp),
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "Ask SUKHAM about an Image",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = SukhamColors.TitleBlack,
-                    ),
-                )
-                Text(
-                    "Upload a photo, report or scan and get on-device AI analysis.",
-                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
-                )
-            }
-            IconButton(
-                onClick = onClick,
-                modifier = Modifier.size(44.dp).background(SukhamColors.PurpleDark, CircleShape)
-            ) {
-                Icon(Icons.Outlined.Mms, contentDescription = null, tint = Color.White)
             }
         }
     }
@@ -665,7 +635,12 @@ fun SukhamFooterCard(onClick: () -> Unit) {
 }
 
 @Composable
-fun SukhamBottomNav(onCentralClick: () -> Unit = {}) {
+fun SukhamBottomNav(
+    onCentralClick: () -> Unit = {},
+    onInsightsClick: () -> Unit = {},
+    onProgramsClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+) {
     Surface(
         modifier = Modifier.fillMaxWidth().height(80.dp),
         shadowElevation = 8.dp,
@@ -678,22 +653,32 @@ fun SukhamBottomNav(onCentralClick: () -> Unit = {}) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             SukhamNavItem(icon = Icons.Outlined.Home, label = "Home", selected = true)
-            SukhamNavItem(icon = Icons.Outlined.Insights, label = "Insights")
+            SukhamNavItem(icon = Icons.Outlined.Insights, label = "Insights", onClick = onInsightsClick)
             IconButton(
                 onClick = onCentralClick,
                 modifier = Modifier.size(56.dp).offset(y = (-10).dp).background(SukhamColors.LavenderCard, CircleShape)
             ) {
                 Image(painter = painterResource(R.drawable.lotus_logo), contentDescription = null, modifier = Modifier.size(32.dp))
             }
-            SukhamNavItem(icon = Icons.Outlined.PlayCircleOutline, label = "Programs")
-            SukhamNavItem(icon = Icons.Outlined.Person, label = "Profile")
+            SukhamNavItem(icon = Icons.Outlined.PlayCircleOutline, label = "Programs", onClick = onProgramsClick)
+            SukhamNavItem(icon = Icons.Outlined.Person, label = "Profile", onClick = onProfileClick)
         }
     }
 }
 
 @Composable
-fun SukhamNavItem(icon: ImageVector, label: String, selected: Boolean = false) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+fun SukhamNavItem(
+    icon: ImageVector,
+    label: String,
+    selected: Boolean = false,
+    onClick: (() -> Unit)? = null,
+) {
+    val baseModifier =
+        if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
+    Column(
+        modifier = baseModifier.padding(horizontal = 8.dp, vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Icon(icon, contentDescription = label, tint = if (selected) SukhamColors.PurpleDark else Color.LightGray)
         Text(label, style = MaterialTheme.typography.labelSmall.copy(color = if (selected) SukhamColors.PurpleDark else Color.LightGray))
     }

@@ -83,10 +83,13 @@ import com.google.ai.edge.gallery.ui.common.ModelPageAppBar
 import com.google.ai.edge.gallery.ui.common.chat.ModelDownloadStatusInfoPanel
 import com.google.ai.edge.gallery.ui.home.HomeScreen
 import com.google.ai.edge.gallery.ui.home.PromoScreenGm4
+import com.google.ai.edge.gallery.ui.insights.InsightsScreen
 import com.google.ai.edge.gallery.ui.modelmanager.GlobalModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelInitializationStatusType
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
+import com.google.ai.edge.gallery.ui.programs.ProgramsScreen
+import com.google.ai.edge.gallery.ui.wearables.WearablesAnalysisScreen
 import com.google.ai.edge.gallery.ui.yoga.YogaPoseScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -99,6 +102,9 @@ private const val ROUTE_MODEL = "route_model"
 private const val ROUTE_BENCHMARK = "benchmark"
 private const val ROUTE_MODEL_MANAGER = "model_manager"
 private const val ROUTE_YOGA = "yoga_coach"
+private const val ROUTE_WEARABLES = "wearables_insights"
+private const val ROUTE_INSIGHTS = "insights"
+private const val ROUTE_PROGRAMS = "programs"
 private const val ENTER_ANIMATION_DURATION_MS = 500
 private val ENTER_ANIMATION_EASING = EaseOutExpo
 private const val ENTER_ANIMATION_DELAY_MS = 100
@@ -211,6 +217,9 @@ fun GalleryNavHost(
         },
         onModelsClicked = { navController.navigate(ROUTE_MODEL_MANAGER) },
         onYogaClicked = { navController.navigate(ROUTE_YOGA) },
+        onWearablesClicked = { navController.navigate(ROUTE_WEARABLES) },
+        onInsightsClicked = { navController.navigate(ROUTE_INSIGHTS) },
+        onProgramsClicked = { navController.navigate(ROUTE_PROGRAMS) },
         gm4 = false,
       )
     }
@@ -225,6 +234,52 @@ fun GalleryNavHost(
         modelManagerViewModel = modelManagerViewModel,
         onNavigateUp = { navController.navigateUp() },
       )
+    }
+
+    // Wearables analysis screen.
+    composable(
+      route = ROUTE_WEARABLES,
+      enterTransition = { slideEnter() },
+      exitTransition = { slideExit() },
+    ) {
+      WearablesAnalysisScreen(
+        modelManagerViewModel = modelManagerViewModel,
+        onNavigateUp = { navController.navigateUp() },
+      )
+    }
+
+    // Insights aggregation screen (bottom-nav · Insights).
+    composable(
+      route = ROUTE_INSIGHTS,
+      enterTransition = { slideEnter() },
+      exitTransition = { slideExit() },
+    ) {
+      InsightsScreen(
+        onNavigateUp = { navController.navigateUp() },
+        onOpenWearablesAnalysis = { navController.navigate(ROUTE_WEARABLES) },
+        onOpenImageChat = {
+          val imageTask =
+            modelManagerViewModel.getTaskById(com.google.ai.edge.gallery.data.BuiltInTaskId.LLM_ASK_IMAGE)
+          val model = imageTask?.let { modelManagerViewModel.resolveModelForTask(it) }
+          if (imageTask != null && model != null) {
+            modelManagerViewModel.selectModel(model)
+            if (!modelManagerViewModel.isModelDownloaded(model)) {
+              modelManagerViewModel.downloadModel(imageTask, model)
+            }
+            navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
+          }
+        },
+        onOpenYogaCoach = { navController.navigate(ROUTE_YOGA) },
+      )
+    }
+
+    // Programs screen (bottom-nav · Programs).
+    composable(
+      route = ROUTE_PROGRAMS,
+      enterTransition = { slideEnter() },
+      exitTransition = { slideExit() },
+    ) {
+      ProgramsScreen(onNavigateUp = { navController.navigateUp() })
     }
 
     // Model list.
