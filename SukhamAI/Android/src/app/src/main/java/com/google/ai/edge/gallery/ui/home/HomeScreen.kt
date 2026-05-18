@@ -232,6 +232,18 @@ fun HomeScreen(
 
   // The header card, bottom-nav central button, and wellness tiles all open the image chat.
   fun openImageChat() = openChatForTask(imageChatTask)
+  // Scan Documents: resolve at click time so we don't capture a null task before allowlist loads.
+  fun openScanDocsChat() {
+    val task =
+      modelManagerViewModel.getTaskById(BuiltInTaskId.SCAN_DOCS)
+        ?: modelManagerViewModel.getCustomTaskByTaskId(BuiltInTaskId.SCAN_DOCS)?.task
+    if (task != null) {
+      openChatForTask(task)
+    } else {
+      // Fallback: image chat still supports photo/PDF upload if Scan Docs isn't registered yet.
+      openImageChat()
+    }
+  }
 
   // Loads today's snapshot from assets and fires the WhatsApp share intent.
   fun onShareDailyProgress() {
@@ -396,7 +408,7 @@ fun HomeScreen(
                     modifier = Modifier.weight(1f),
                     actionText = "Upload & Analyze",
                     actionColor = SukhamColors.LavenderBtn,
-                    onClick = { openImageChat() }
+                    onClick = { openScanDocsChat() }
                 )
             }
 

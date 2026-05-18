@@ -22,4 +22,7 @@
     <cache-path
         name="yoga_pictures"
         path="yoga/" />
+    <cache-path
+        name="scandocs_pictures"
+        path="scandocs/" />
 </paths>

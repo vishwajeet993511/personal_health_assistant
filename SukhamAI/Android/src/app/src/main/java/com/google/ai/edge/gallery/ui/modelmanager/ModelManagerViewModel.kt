@@ -227,9 +227,11 @@ constructor(
     val preferred2B =
       listOf(
         "Gemma-3n-E2B-it-int4",
+        "Gemma-3n-E2B-it",
         "Gemma-2B-Multimodal",
         "Gemma-4-E2B-it",
         "Gemma3-1B-IT q4",
+        "Gemma3-1B-IT",
       )
     for (name in preferred2B) {
       task.models.find { it.name == name }?.let { return it }
@@ -246,7 +248,8 @@ constructor(
 
     val safeModels = task.models.filterNot { isTooLarge(it) }
     val pool = if (safeModels.isNotEmpty()) safeModels else task.models
-    if (task.id == BuiltInTaskId.LLM_ASK_IMAGE) {
+    if (task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS) {
+      task.models.find { it.llmSupportImage }?.let { return it }
       return pool.find { it.llmSupportImage } ?: pool.firstOrNull()
     }
     return pool.minByOrNull { if (it.sizeInBytes > 0) it.sizeInBytes else Long.MAX_VALUE }
@@ -1045,6 +1048,18 @@ constructor(
           }
         }
 
+        // Scan Docs needs vision models; if modelNames drift from the allowlist, attach any
+        // image-capable model so the home-screen shortcut can still open the task.
+        curTasks.find { it.id == BuiltInTaskId.SCAN_DOCS }?.let { scanDocsTask ->
+          if (scanDocsTask.models.isEmpty()) {
+            for (model in nameToModel.values) {
+              if (model.llmSupportImage) {
+                scanDocsTask.models.add(model)
+              }
+            }
+          }
+        }
+
         // Process all tasks.
         processTasks()
 
@@ -1133,8 +1148,11 @@ constructor(
   }
 
   private fun createEmptyUiState(): ModelManagerUiState {
+    // Register custom tasks immediately so home shortcuts can resolve tasks before the
+    // allowlist finishes loading (createUiState used to be the first time tasks appeared).
+    val tasks = getActiveCustomTasks().map { it.task }.toList()
     return ModelManagerUiState(
-      tasks = listOf(),
+      tasks = tasks,
       tasksByCategory = mapOf(),
       modelDownloadStatus = mapOf(),
       modelInitializationStatus = mapOf(),

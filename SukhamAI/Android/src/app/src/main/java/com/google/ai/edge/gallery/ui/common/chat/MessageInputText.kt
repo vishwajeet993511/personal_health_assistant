@@ -21,7 +21,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Matrix
+import android.graphics.pdf.PdfRenderer
+import android.os.ParcelFileDescriptor
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -68,6 +71,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.rounded.AudioFile
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material.icons.rounded.FlipCameraAndroid
@@ -174,6 +178,7 @@ fun MessageInputText(
   showAudioPicker: Boolean = false,
   showStopButtonWhenInProgress: Boolean = false,
   onImageLimitExceeded: () -> Unit = {},
+  autoSendPromptOnImagePick: String? = null,
 ) {
   val context = LocalContext.current
   val lifecycleOwner = LocalLifecycleOwner.current
@@ -188,11 +193,14 @@ fun MessageInputText(
   var pickedImages by remember { mutableStateOf<List<Bitmap>>(listOf()) }
   var pickedAudioClips by remember { mutableStateOf<List<AudioClip>>(listOf()) }
   var hasFrontCamera by remember { mutableStateOf(false) }
+  var pendingAutoAnalyze by remember { mutableStateOf(false) }
   val sensorObserver = remember { SensorObserver(context) }
+  val maxImagesPerMessage =
+    if (autoSendPromptOnImagePick != null) MAX_SCAN_DOCS_IMAGE_COUNT else MAX_IMAGE_COUNT
 
   val updatePickedImages: (List<Bitmap>) -> Unit = { bitmaps ->
     val isAiCore = modelManagerUiState.selectedModel.runtimeType == RuntimeType.AICORE
-    var limit = MAX_IMAGE_COUNT
+    var limit = maxImagesPerMessage
     if (isAiCore) {
       limit = MAX_IMAGE_COUNT_AI_CORE
     }
@@ -210,6 +218,9 @@ fun MessageInputText(
         }
         (pickedImages + bitmaps).take(maxAllowedForThisMessage)
       }
+    if (autoSendPromptOnImagePick != null && bitmaps.isNotEmpty()) {
+      pendingAutoAnalyze = true
+    }
   }
 
   val updatePickedAudioClips: (List<AudioClip>) -> Unit = { audioDataList ->
@@ -231,6 +242,33 @@ fun MessageInputText(
   LaunchedEffect(pickedImages) { onPickedImagesChanged(pickedImages) }
 
   LaunchedEffect(pickedAudioClips) { onPickedAudioClipsChanged(pickedAudioClips) }
+
+  // Scan Docs: auto-run analysis when a document image/PDF page is attached.
+  LaunchedEffect(
+    pendingAutoAnalyze,
+    pickedImages,
+    modelInitializing,
+    inProgress,
+    isResettingSession,
+    modelPreparing,
+  ) {
+    val prompt = autoSendPromptOnImagePick
+    if (!pendingAutoAnalyze || prompt == null || pickedImages.isEmpty()) return@LaunchedEffect
+    if (modelInitializing || inProgress || isResettingSession || modelPreparing) {
+      return@LaunchedEffect
+    }
+    pendingAutoAnalyze = false
+    onSendMessage(
+      createMessagesToSend(
+        pickedImages = pickedImages,
+        audioClips = pickedAudioClips,
+        text = prompt,
+        maxImages = maxImagesPerMessage,
+      )
+    )
+    pickedImages = listOf()
+    pickedAudioClips = listOf()
+  }
 
   // Permission request when taking picture.
   val takePicturePermissionLauncher =
@@ -296,6 +334,27 @@ fun MessageInputText(
         }
       } else {
         Log.d(TAG, "Wav picking cancelled.")
+      }
+    }
+
+  val pickPdf =
+    rememberLauncherForActivityResult(
+      contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+      if (result.resultCode == android.app.Activity.RESULT_OK) {
+        result.data?.data?.let { uri ->
+          Log.d(TAG, "Picked PDF: $uri")
+          scope.launch(Dispatchers.IO) {
+            val bitmaps = renderPdfToBitmaps(context, uri)
+            if (bitmaps.isNotEmpty()) {
+              updatePickedImages(bitmaps)
+            } else {
+              Log.e(TAG, "Failed to render PDF page to bitmap")
+            }
+          }
+        }
+      } else {
+        Log.d(TAG, "PDF picking cancelled.")
       }
     }
 
@@ -508,6 +567,34 @@ fun MessageInputText(
                             showAddContentMenu = false
                           },
                         )
+
+                        // Pick a PDF document.
+                        DropdownMenuItem(
+                          text = {
+                            Row(
+                              verticalAlignment = Alignment.CenterVertically,
+                              horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            ) {
+                              Icon(Icons.Outlined.Description, contentDescription = null)
+                              Text("Pick document (PDF)")
+                            }
+                          },
+                          enabled = enableAddImageMenuItems,
+                          onClick = {
+                            if (isImageLimitExceededForAiCore) {
+                              onImageLimitExceeded()
+                              showAddContentMenu = false
+                              return@DropdownMenuItem
+                            }
+                            val intent =
+                              Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                                addCategory(Intent.CATEGORY_OPENABLE)
+                                type = "application/pdf"
+                              }
+                            pickPdf.launch(intent)
+                            showAddContentMenu = false
+                          },
+                        )
                       }
 
                       // Audio related menu items.
@@ -634,7 +721,9 @@ fun MessageInputText(
                     enabled =
                       !inProgress &&
                         !isResettingSession &&
-                        (curMessage.isNotEmpty() || pickedAudioClips.isNotEmpty()),
+                        (curMessage.isNotEmpty() ||
+                          pickedImages.isNotEmpty() ||
+                          pickedAudioClips.isNotEmpty()),
                     onClick = {
                       var message = curMessage.trim()
                       onSendMessage(
@@ -642,6 +731,7 @@ fun MessageInputText(
                           pickedImages = pickedImages,
                           audioClips = pickedAudioClips,
                           text = message,
+                          maxImages = maxImagesPerMessage,
                         )
                       )
                       pickedImages = listOf()
@@ -700,6 +790,7 @@ fun MessageInputText(
             pickedImages = pickedImages,
             audioClips = pickedAudioClips,
             text = item,
+            maxImages = maxImagesPerMessage,
           )
         )
         pickedImages = listOf()
@@ -1009,6 +1100,7 @@ private fun createMessagesToSend(
   pickedImages: List<Bitmap>,
   audioClips: List<AudioClip>,
   text: String,
+  maxImages: Int = MAX_IMAGE_COUNT,
 ): List<ChatMessage> {
   val messages: MutableList<ChatMessage> = mutableListOf()
 
@@ -1016,8 +1108,8 @@ private fun createMessagesToSend(
   if (pickedImages.isNotEmpty()) {
     // Cap the number of image messages.
     var curPickedImages = pickedImages.toList()
-    if (curPickedImages.size > MAX_IMAGE_COUNT) {
-      curPickedImages = curPickedImages.subList(fromIndex = 0, toIndex = MAX_IMAGE_COUNT)
+    if (curPickedImages.size > maxImages) {
+      curPickedImages = curPickedImages.subList(fromIndex = 0, toIndex = maxImages)
     }
     messages.add(
       ChatMessageImage(
@@ -1106,4 +1198,40 @@ private class SensorObserver(context: Context) : DefaultLifecycleObserver, Senso
   }
 
   override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
+}
+
+/** Max PDF pages rendered for Scan Documents (matches product copy in strings.xml). */
+private const val MAX_PDF_PAGES_TO_RENDER = 10
+
+/** Image cap when auto-analyzing health documents (higher than default chat limit). */
+private const val MAX_SCAN_DOCS_IMAGE_COUNT = 20
+
+/**
+ * Renders up to [MAX_PDF_PAGES_TO_RENDER] pages of a PDF into bitmaps for vision analysis.
+ */
+private fun renderPdfToBitmaps(context: Context, uri: Uri): List<Bitmap> {
+  val bitmaps = mutableListOf<Bitmap>()
+  try {
+    context.contentResolver.openFileDescriptor(uri, "r")?.use { pfd: ParcelFileDescriptor ->
+      PdfRenderer(pfd).use { renderer ->
+        if (renderer.pageCount == 0) return bitmaps
+        val pageCount = minOf(renderer.pageCount, MAX_PDF_PAGES_TO_RENDER)
+        for (pageIndex in 0 until pageCount) {
+          renderer.openPage(pageIndex).use { page ->
+            val scale = 2
+            val width = page.width * scale
+            val height = page.height * scale
+            val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            canvas.drawColor(android.graphics.Color.WHITE)
+            page.render(bitmap, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+            bitmaps.add(bitmap)
+          }
+        }
+      }
+    }
+  } catch (e: Exception) {
+    Log.e(TAG, "renderPdfToBitmaps failed: ${e.message}", e)
+  }
+  return bitmaps
 }

@@ -73,6 +73,7 @@ fun LlmChatScreen(
   sendMessageTrigger: SendMessageTrigger? = null,
   showImagePicker: Boolean = false,
   showAudioPicker: Boolean = false,
+  autoSendPromptOnImagePick: String? = null,
   getActiveSkills: () -> List<String> = { emptyList() },
 ) {
   ChatViewWrapper(
@@ -93,6 +94,7 @@ fun LlmChatScreen(
     sendMessageTrigger = sendMessageTrigger,
     showImagePicker = showImagePicker,
     showAudioPicker = showAudioPicker,
+    autoSendPromptOnImagePick = autoSendPromptOnImagePick,
     getActiveSkills = getActiveSkills,
   )
 }
@@ -191,6 +193,7 @@ fun ChatViewWrapper(
   sendMessageTrigger: SendMessageTrigger? = null,
   showImagePicker: Boolean = false,
   showAudioPicker: Boolean = false,
+  autoSendPromptOnImagePick: String? = null,
   getActiveSkills: () -> List<String> = { emptyList() },
 ) {
   val context = LocalContext.current
@@ -219,7 +222,11 @@ fun ChatViewWrapper(
           audioMessages.add(message)
         }
       }
-      if ((text.isNotEmpty() && chatMessageText != null) || audioMessages.isNotEmpty()) {
+      if (
+        (text.isNotEmpty() && chatMessageText != null) ||
+          audioMessages.isNotEmpty() ||
+          images.isNotEmpty()
+      ) {
         if (text.isNotEmpty()) {
           modelManagerViewModel.addTextInputHistory(text)
         }
@@ -306,5 +313,6 @@ fun ChatViewWrapper(
     onSystemPromptChanged = onSystemPromptChanged,
     sendMessageTrigger = sendMessageTrigger,
     showAudioPicker = showAudioPicker,
+    autoSendPromptOnImagePick = autoSendPromptOnImagePick,
   )
 }
