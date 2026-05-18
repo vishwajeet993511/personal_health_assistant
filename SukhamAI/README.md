@@ -18,6 +18,8 @@ Sukham AI is your intelligent, on-device health companion. Experience high-perfo
 
 * **Personal Files Analysis**: Securely upload your health reports and records to get AI-driven analysis and insights—all processed locally on your device.
 
+* ** Food and Daily Exercises** Recommendation
+
 * **Share My Progress**: Celebrate milestones and inspire others. Let your loved ones be part of your fitness journey by sharing your progress securely.
 
 * **100% On-Device Privacy**: Your health is personal. All model inferences happen directly on your device. No internet is required, ensuring total privacy for your sensitive data.
