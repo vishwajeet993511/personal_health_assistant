@@ -62,6 +62,7 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Insights
 import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.material.icons.outlined.Menu
+import androidx.compose.material.icons.outlined.Mms
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayCircleOutline
@@ -204,27 +205,31 @@ fun HomeScreen(
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
 
-  // Route Sukham chat shortcuts to the text-only LLM_CHAT task. Image chat (LLM_ASK_IMAGE)
-  // also loads a vision tower, pushing peak RSS to ~6 GB which the OS LMK kills mid-init on
-  // most 8/12 GB devices. Text chat is what gallery's "AI Chat" tile uses and what is known to
-  // run reliably on this hardware.
-  val askImageTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT)
+  // Text-only chat (gallery's "AI Chat" equivalent) — peaks at ~3 GB working set with Gemma-3n-E2B.
+  val textChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_CHAT)
+  // Image chat (gallery's "Ask Image" equivalent) — same 2B Gemma but with the vision tower
+  // enabled. resolveModelForTask refuses to escalate to the 4B variant so we stay within the
+  // S20+ memory envelope while still supporting image inputs.
+  val imageChatTask = modelManagerViewModel.getTaskById(BuiltInTaskId.LLM_ASK_IMAGE)
 
-  // Open the LLM chat: kick off the model download if it is not present yet, then navigate to
-  // the model screen so the user sees the download progress / chat UI.
-  fun openAskImageChat() {
-    val task = askImageTask ?: return
-    val model = modelManagerViewModel.resolveModelForTask(task)
+  fun openChatForTask(task: Task?) {
+    val resolvedTask = task ?: return
+    val model = modelManagerViewModel.resolveModelForTask(resolvedTask)
     if (model != null) {
       modelManagerViewModel.selectModel(model)
       if (!modelManagerViewModel.isModelDownloaded(model)) {
-          modelManagerViewModel.downloadModel(task, model)
+        modelManagerViewModel.downloadModel(resolvedTask, model)
       }
-      navigateToModelScreen(task, model)
+      navigateToModelScreen(resolvedTask, model)
     } else {
-      navigateToTaskScreen(task)
+      navigateToTaskScreen(resolvedTask)
     }
   }
+
+  // Existing call sites (bottom nav, wellness tiles) keep routing to the lighter text chat.
+  fun openAskImageChat() = openChatForTask(textChatTask)
+  // New entry point: launches the multimodal "Ask Image" chat.
+  fun openImageChat() = openChatForTask(imageChatTask)
 
   // Show home screen content when TOS has been accepted.
   if (!showTosDialog) {
@@ -320,8 +325,11 @@ fun HomeScreen(
               )
             }
 
-            if (askImageTask != null) {
+            if (textChatTask != null) {
                 SukhamMainChatCard(onClick = { openAskImageChat() })
+            }
+            if (imageChatTask != null) {
+                SukhamAskImageCard(onClick = { openImageChat() })
             }
 
             // Grid Section
@@ -471,6 +479,55 @@ fun SukhamMainChatCard(onClick: () -> Unit) {
                     "Start Chat",
                     style = MaterialTheme.typography.labelSmall.copy(color = SukhamColors.TitleBlack),
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun SukhamAskImageCard(onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth().height(120.dp).clickable(onClick = onClick),
+        shape = RoundedCornerShape(28.dp),
+        colors = CardDefaults.cardColors(containerColor = SukhamColors.Peach)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize().padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier.size(64.dp).background(
+                    brush = Brush.radialGradient(listOf(Color(0xFFFFE0B2), SukhamColors.PurpleDark)),
+                    shape = CircleShape
+                ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Mms,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(32.dp),
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Ask SUKHAM about an Image",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = SukhamColors.TitleBlack,
+                    ),
+                )
+                Text(
+                    "Upload a photo, report or scan and get on-device AI analysis.",
+                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
+                )
+            }
+            IconButton(
+                onClick = onClick,
+                modifier = Modifier.size(44.dp).background(SukhamColors.PurpleDark, CircleShape)
+            ) {
+                Icon(Icons.Outlined.Mms, contentDescription = null, tint = Color.White)
             }
         }
     }
