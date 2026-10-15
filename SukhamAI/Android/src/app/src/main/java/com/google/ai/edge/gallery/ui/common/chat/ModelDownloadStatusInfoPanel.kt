@@ -82,18 +82,17 @@ fun ModelDownloadStatusInfoPanel(
       }
     }
 
-    // Download button and progress.
-    DownloadAndTryButton(
-      task = task,
-      model = model,
-      enabled = true,
-      downloadStatus = curStatus?.status,
-      downloadProgress = calculateDownloadProgress(downloadStatus = curStatus),
-      modelManagerViewModel = modelManagerViewModel,
-      modifier = Modifier.padding(horizontal = 32.dp).padding(top = 4.dp, bottom = 16.dp),
-      onClicked = {},
-      canShowTryIt = false,
-    )
+    // No download button here: the model is downloaded from Profile only, so a feature screen
+    // can never start a second copy. While a Profile download runs, the animation above shows it.
+    if (!downloading) {
+      Text(
+        "The AI model isn't downloaded yet.\nDownload it once from your Profile and every " +
+          "feature will use it.",
+        style = MaterialTheme.typography.bodyLarge,
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 32.dp, vertical = 16.dp),
+      )
+    }
 
     // Info text.
     Column(verticalArrangement = Arrangement.Top, modifier = Modifier.weight(1f)) {

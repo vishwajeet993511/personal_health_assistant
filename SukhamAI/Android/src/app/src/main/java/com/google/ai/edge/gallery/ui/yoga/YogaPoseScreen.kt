@@ -295,7 +295,7 @@ fun YogaPoseScreen(
     if (task == null || model == null) {
       Toast.makeText(
           context,
-          "Multimodal model not available. Please download Gemma-4-E2B-it from the Models tab.",
+          "AI model not available. Download it once from your Profile.",
           Toast.LENGTH_LONG,
         )
         .show()
@@ -304,7 +304,7 @@ fun YogaPoseScreen(
     if (!modelDownloaded) {
       Toast.makeText(
           context,
-          "Download the multimodal model (e.g. Gemma-4-E2B-it) from the Models tab or Ask Image first.",
+          "Download the AI model from your Profile first.",
           Toast.LENGTH_LONG,
         )
         .show()

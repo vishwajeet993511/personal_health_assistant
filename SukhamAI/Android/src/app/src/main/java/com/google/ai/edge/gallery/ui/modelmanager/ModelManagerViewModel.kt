@@ -241,55 +241,22 @@ constructor(
         isModelDownloaded(m)
     }
 
-    // 1. If any model in task.models is already downloaded and meets requirements, prioritize it!
-    val downloadedInTask = task.models.filter { isDownloaded(it) }
-    if (requiresImage) {
-      val downloadedVisionInTask = downloadedInTask.filter { it.llmSupportImage }
-      if (downloadedVisionInTask.isNotEmpty()) {
-        if (downloadedVisionInTask.any { it.name == uiState.value.selectedModel.name }) {
-          return uiState.value.selectedModel
-        }
-        val safe = downloadedVisionInTask.filterNot { isTooLarge(it) }
-        return if (safe.isNotEmpty()) safe.first() else downloadedVisionInTask.first()
-      }
-    } else {
-      if (downloadedInTask.isNotEmpty()) {
-        if (downloadedInTask.any { it.name == uiState.value.selectedModel.name }) {
-          return uiState.value.selectedModel
-        }
-        val safe = downloadedInTask.filterNot { isTooLarge(it) }
-        return if (safe.isNotEmpty()) safe.first() else downloadedInTask.first()
-      }
-    }
-
-    // 2. If no model in task.models is downloaded, check if ANY downloaded model exists across all known models
-    // that satisfies this task's requirements. If so, link it to task.models and return it!
+    // 1. One model for the whole app. Whatever is already on disk — the one picked in Profile
+    // first — serves every feature, so opening a feature can never pull in a second download.
+    // It is linked into the task's model list so the task screen can find it by name.
     val allKnownModels = (getAllModels() + _allowlistModels).distinctBy { it.name }
-    val allDownloaded = allKnownModels.filter { isDownloaded(it) }
-    if (requiresImage) {
-      val downloadedVision = allDownloaded.filter { it.llmSupportImage }
-      if (downloadedVision.isNotEmpty()) {
-        val safe = downloadedVision.filterNot { isTooLarge(it) }
-        val chosen = if (safe.isNotEmpty()) safe.first() else downloadedVision.first()
-        if (!task.models.any { it.name == chosen.name }) {
-          task.models.add(0, chosen)
-        }
-        return chosen
+    val usable =
+      allKnownModels.filter { isDownloaded(it) && (it.isLlm || it.llmSupportImage) }
+        .filter { !requiresImage || it.llmSupportImage }
+    if (usable.isNotEmpty()) {
+      val chosen =
+        usable.firstOrNull { it.name == uiState.value.selectedModel.name }
+          ?: usable.firstOrNull { !isTooLarge(it) }
+          ?: usable.first()
+      if (!task.models.any { it.name == chosen.name }) {
+        task.models.add(0, chosen)
       }
-    } else if (task.id == BuiltInTaskId.LLM_CHAT ||
-      task.id == BuiltInTaskId.LLM_PROMPT_LAB ||
-      task.id == BuiltInTaskId.HEALTH_ASSISTANT ||
-      task.id == BuiltInTaskId.LLM_AGENT_CHAT
-    ) {
-      val downloadedLlm = allDownloaded.filter { it.isLlm }
-      if (downloadedLlm.isNotEmpty()) {
-        val safe = downloadedLlm.filterNot { isTooLarge(it) }
-        val chosen = if (safe.isNotEmpty()) safe.first() else downloadedLlm.first()
-        if (!task.models.any { it.name == chosen.name }) {
-          task.models.add(0, chosen)
-        }
-        return chosen
-      }
+      return chosen
     }
 
     // 3. Fallback when nothing is downloaded yet: pick the best candidate to recommend.
@@ -432,9 +399,17 @@ constructor(
       return
     }
 
-    // Delete the model files first.
-    deleteModel(model = model)
+    // Never re-download a model that is already on disk. Every screen used to call this on the
+    // way in, and it used to start by deleting the model folder, so opening a feature could throw
+    // away a finished multi-GB download and fetch it again.
+    if (isModelDownloaded(model)) {
+      Log.d(TAG, "'${model.name}' is already on disk; skipping download.")
+      setDownloadStatus(curModel = model, status = ModelDownloadStatus(status = ModelDownloadStatusType.SUCCEEDED))
+      return
+    }
 
+    // Any partial .gallerytmp file is deliberately kept: the worker resumes from it with an HTTP
+    // Range request instead of starting the download over.
     // Start to send download request.
     downloadRepository.downloadModel(
       task = task,
@@ -1490,8 +1465,16 @@ constructor(
     var receivedBytes = 0L
     var totalBytes = 0L
 
+    // Fully downloaded. Checked before "partial": a finished model with a stale .gallerytmp beside
+    // it (left by an interrupted second download) used to read as partial, and startup then
+    // resumed downloading the whole model again.
+    if (isModelDownloaded(model = model)) {
+      status = ModelDownloadStatusType.SUCCEEDED
+      deleteStaleTmpFile(model)
+      Log.d(TAG, "${model.name} has been downloaded.")
+    }
     // Partially downloaded.
-    if (isModelPartiallyDownloaded(model = model)) {
+    else if (isModelPartiallyDownloaded(model = model)) {
       status = ModelDownloadStatusType.PARTIALLY_DOWNLOADED
       val tmpFilePath =
         model.getPath(context = context, fileName = "${model.downloadFileName}.$TMP_FILE_EXT")
@@ -1499,11 +1482,6 @@ constructor(
       receivedBytes = tmpFile.length()
       totalBytes = model.totalBytes
       Log.d(TAG, "${model.name} is partially downloaded. $receivedBytes/$totalBytes")
-    }
-    // Fully downloaded.
-    else if (isModelDownloaded(model = model)) {
-      status = ModelDownloadStatusType.SUCCEEDED
-      Log.d(TAG, "${model.name} has been downloaded.")
     }
     // Not downloaded.
     else {
@@ -1515,6 +1493,18 @@ constructor(
       receivedBytes = receivedBytes,
       totalBytes = totalBytes,
     )
+  }
+
+  /** Removes a leftover partial download sitting next to an already complete model file. */
+  private fun deleteStaleTmpFile(model: Model) {
+    if (model.localModelFilePathOverride.isNotEmpty()) return
+    val tmpFile =
+      File(model.getPath(context = context, fileName = "${model.downloadFileName}.$TMP_FILE_EXT"))
+    // Belt and braces: only ever delete a file that is itself a partial download.
+    if (tmpFile.exists() && tmpFile.name.endsWith(".$TMP_FILE_EXT")) {
+      Log.d(TAG, "Deleting stale partial download ${tmpFile.name} (${tmpFile.length()} bytes)")
+      tmpFile.delete()
+    }
   }
 
   private fun isFileInExternalFilesDir(fileName: String): Boolean {
@@ -1633,24 +1623,10 @@ constructor(
 
     if (downloadedFileExists || unzippedDirectoryExists) return true
 
-    // Also check if any model file exists inside the model's directory in externalFilesDir
-    if (externalFilesDir != null && model.normalizedName.isNotEmpty()) {
-      val modelDir = File(externalFilesDir, model.normalizedName)
-      if (modelDir.exists() && modelDir.isDirectory) {
-        val matchingFile = modelDir.walkTopDown().firstOrNull { file ->
-          file.isFile && file.length() > 0 &&
-            (file.name == fileName ||
-              file.name.endsWith(".litertlm") ||
-              file.name.endsWith(".task") ||
-              file.name.endsWith(".bin"))
-        }
-        if (matchingFile != null) {
-          return true
-        }
-      }
-    }
-
-    return false
+    // The weights may sit under an older version folder (the allowlist moved the commit hash in an
+    // app update); they are still the model, so do not report it missing and re-download it.
+    return model.localModelFilePathOverride.isEmpty() &&
+      model.findDownloadedModelFile(context, fileName) != null
   }
 }
 

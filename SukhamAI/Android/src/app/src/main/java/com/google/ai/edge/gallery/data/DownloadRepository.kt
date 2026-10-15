@@ -137,7 +137,9 @@ class DefaultDownloadRepository(
     val workerId = downloadWorkRequest.id
 
     // Start!
-    workManager.enqueueUniqueWork(model.name, ExistingWorkPolicy.REPLACE, downloadWorkRequest)
+    // KEEP, not REPLACE: a second tap while a download is running must join it, not cancel it
+    // and start another worker over the same file.
+    workManager.enqueueUniqueWork(model.name, ExistingWorkPolicy.KEEP, downloadWorkRequest)
 
     // Observe progress.
     observerWorkerProgress(

@@ -19,6 +19,7 @@ package com.google.ai.edge.gallery.ui.home
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.widget.Toast
 import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -214,7 +215,6 @@ fun HomeScreen(
   tosViewModel: TosViewModel,
   navigateToTaskScreen: (Task) -> Unit,
   navigateToModelScreen: (Task, Model) -> Unit,
-  onModelsClicked: () -> Unit,
   onLiveExerciseClicked: () -> Unit = {},
   onVideoAnalysisClicked: () -> Unit = {},
   onYogaClicked: () -> Unit = {},
@@ -227,7 +227,6 @@ fun HomeScreen(
   gm4: Boolean = false,
 ) {
   val uiState by modelManagerViewModel.uiState.collectAsState()
-  var showSettingsDialog by remember { mutableStateOf(false) }
   var showTosDialog by remember { mutableStateOf(!tosViewModel.getIsTosAccepted()) }
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
@@ -249,15 +248,16 @@ fun HomeScreen(
   fun openChatForTask(task: Task?) {
     val resolvedTask = task ?: return
     val model = modelManagerViewModel.resolveModelForTask(resolvedTask)
-    if (model != null) {
-      modelManagerViewModel.selectModel(model)
-      if (!modelManagerViewModel.isModelDownloaded(model)) {
-        modelManagerViewModel.downloadModel(resolvedTask, model)
-      }
-      navigateToModelScreen(resolvedTask, model)
-    } else {
-      navigateToTaskScreen(resolvedTask)
+    // Downloading lives in Profile only. With nothing on disk yet, send the user there rather
+    // than silently starting a multi-GB download from a feature shortcut.
+    if (model == null || !modelManagerViewModel.isModelDownloaded(model)) {
+      Toast.makeText(context, "Download the AI model from your Profile first.", Toast.LENGTH_LONG)
+        .show()
+      onProfileClicked()
+      return
     }
+    modelManagerViewModel.selectModel(model)
+    navigateToModelScreen(resolvedTask, model)
   }
 
   // The header card, bottom-nav central button, and wellness tiles all open the image chat.
@@ -294,69 +294,14 @@ fun HomeScreen(
 
   // Show home screen content when TOS has been accepted.
   if (!showTosDialog) {
-      val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
-      BackHandler(drawerState.isOpen) { scope.launch { drawerState.close() } }
-
-      ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-          ModalDrawerSheet {
-            Column(modifier = Modifier.padding(16.dp)) {
-              Row(modifier = Modifier.fillMaxWidth()) {
-                SquareDrawerItem(
-                  label = stringResource(R.string.drawer_settings_label),
-                  description = stringResource(R.string.drawer_settings_description),
-                  icon = Icons.Rounded.Settings,
-                  onClick = {
-                    showSettingsDialog = true
-                    scope.launch { drawerState.close() }
-                  },
-                  modifier = Modifier.weight(1f),
-                  iconBrush =
-                    linearGradient(
-                      colors =
-                        listOf(
-                          MaterialTheme.customColors.taskBgGradientColors[2][0],
-                          MaterialTheme.customColors.taskBgGradientColors[2][1],
-                        )
-                    ),
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                SquareDrawerItem(
-                  label = stringResource(R.string.drawer_models_label),
-                  description = stringResource(R.string.drawer_models_description),
-                  icon = Icons.AutoMirrored.Rounded.ListAlt,
-                  onClick = {
-                    scope.launch { drawerState.close() }
-                    scope.launch {
-                      delay(50)
-                      onModelsClicked()
-                    }
-                  },
-                  modifier = Modifier.weight(1f),
-                  iconBrush =
-                    linearGradient(
-                      colors =
-                        listOf(
-                          MaterialTheme.customColors.taskBgGradientColors[1][0],
-                          MaterialTheme.customColors.taskBgGradientColors[1][1],
-                        )
-                    ),
-                )
-              }
-            }
-          }
-        },
-        gesturesEnabled = drawerState.isOpen,
-      ) {
+        // The Settings / Models drawer is gone on purpose: the AI model is managed from Profile
+        // only, so there is exactly one place that can download it.
         Scaffold(
           containerColor = SukhamColors.ScreenBg,
           topBar = {
             SukhamHeader(
               name = profileName,
               onAvatarClick = onProfileClicked,
-              onMenuClick = { scope.launch { drawerState.open() } },
             )
           },
           bottomBar = {
@@ -441,7 +386,6 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(40.dp))
           }
         }
-    }
   }
 
   // Show TOS dialog for users to accept.
@@ -453,22 +397,14 @@ fun HomeScreen(
       }
     )
   }
-
-  // Settings dialog.
-  if (showSettingsDialog) {
-    SettingsDialog(
-      curThemeOverride = modelManagerViewModel.readThemeOverride(),
-      modelManagerViewModel = modelManagerViewModel,
-      onDismissed = { showSettingsDialog = false },
-    )
-  }
 }
 
 @Composable
 fun SukhamHeader(
   name: String = "Alex",
   streakDays: Int = 6,
-  onMenuClick: () -> Unit = {},
+  /** Null hides the menu button; the home screen no longer has a drawer to open. */
+  onMenuClick: (() -> Unit)? = null,
   onAvatarClick: () -> Unit = {},
   onNotificationClick: () -> Unit = {},
 ) {
@@ -497,21 +433,26 @@ fun SukhamHeader(
       verticalAlignment = Alignment.CenterVertically
     ) {
       // Menu drawer button in frosted pill
-      Box(
-        modifier = Modifier
-          .size(40.dp)
-          .clip(CircleShape)
-          .background(SukhamColors.ChipBg)
-          .border(1.dp, SukhamColors.CardBorder, CircleShape)
-          .clickable(onClick = onMenuClick),
-        contentAlignment = Alignment.Center
-      ) {
-        Icon(
-          imageVector = Icons.Outlined.Menu,
-          contentDescription = "Menu",
-          tint = SukhamColors.TitleBlack,
-          modifier = Modifier.size(20.dp)
-        )
+      if (onMenuClick != null) {
+        Box(
+          modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(SukhamColors.ChipBg)
+            .border(1.dp, SukhamColors.CardBorder, CircleShape)
+            .clickable(onClick = onMenuClick),
+          contentAlignment = Alignment.Center
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Menu,
+            contentDescription = "Menu",
+            tint = SukhamColors.TitleBlack,
+            modifier = Modifier.size(20.dp)
+          )
+        }
+      } else {
+        // Keeps SpaceBetween pinning the streak/avatar group to the right edge.
+        Spacer(modifier = Modifier.width(1.dp))
       }
 
       // Right: Streak pill + Notification + Profile avatar with glowing border

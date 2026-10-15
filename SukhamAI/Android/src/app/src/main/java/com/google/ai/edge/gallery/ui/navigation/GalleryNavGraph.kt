@@ -207,13 +207,14 @@ fun GalleryNavHost(
     val imageTask =
       modelManagerViewModel.getTaskById(com.google.ai.edge.gallery.data.BuiltInTaskId.LLM_ASK_IMAGE)
     val model = imageTask?.let { modelManagerViewModel.resolveModelForTask(it) }
-    if (imageTask != null && model != null) {
-      modelManagerViewModel.selectModel(model)
-      if (!modelManagerViewModel.isModelDownloaded(model)) {
-        modelManagerViewModel.downloadModel(imageTask, model)
-      }
-      navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
+    if (imageTask == null) return
+    // Downloading lives in Profile only; never start one from a feature shortcut.
+    if (model == null || !modelManagerViewModel.isModelDownloaded(model)) {
+      navigateToTab(ROUTE_PROFILE)
+      return
     }
+    modelManagerViewModel.selectModel(model)
+    navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
   }
 
   NavHost(
@@ -242,7 +243,6 @@ fun GalleryNavHost(
           modelManagerViewModel.selectModel(model)
           navController.navigate("$ROUTE_MODEL/${task.id}/${model.name}")
         },
-        onModelsClicked = { navController.navigate(ROUTE_MODEL_MANAGER) },
         onLiveExerciseClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
         onVideoAnalysisClicked = { navController.navigate("$ROUTE_YOGA?mode=video") },
         onYogaClicked = { navController.navigate(ROUTE_YOGA) },
@@ -543,7 +543,8 @@ fun GalleryNavHost(
         Log.e(TAG, "Malformed deep link URI received: $data")
       }
     } else if (data.toString() == "com.google.ai.edge.gallery://global_model_manager") {
-      navController.navigate(ROUTE_MODEL_MANAGER)
+      // The model is managed from Profile now; the download notification lands there.
+      navController.navigate(ROUTE_PROFILE)
     }
   }
 }

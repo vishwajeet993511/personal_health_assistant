@@ -375,20 +375,41 @@ data class Model(
     if (File(defaultPath).exists()) {
       return defaultPath
     }
-    val extDir = context.getExternalFilesDir(null)
-    if (extDir != null && normalizedName.isNotEmpty()) {
-      val modelDir = File(extDir, normalizedName)
-      if (modelDir.exists() && modelDir.isDirectory) {
-        val found = modelDir.walkTopDown().firstOrNull { f ->
-          f.isFile && f.length() > 0 &&
-            (f.name == fileName || f.extension == "litertlm" || f.extension == "task" || f.extension == "bin")
-        }
-        if (found != null) {
-          return found.absolutePath
-        }
-      }
+    // The search is only for the weights themselves. Asked for any other name (the .gallerytmp
+    // partial, an extra data file) it must answer with that exact path, or a caller that deletes
+    // "the tmp file" would be handed the finished model instead.
+    if (fileName == downloadFileName) {
+      findDownloadedModelFile(context, fileName)?.let { return it.absolutePath }
     }
     return defaultPath
+  }
+
+  /**
+   * Finds this model's weights anywhere under its folder, whatever version subfolder they sit in.
+   *
+   * The allowlist can move a model to a new commit hash between app releases, which changes the
+   * expected `{name}/{version}/` path. Without this lookup the app would decide a model it
+   * already has is missing and download several GB again after every update.
+   *
+   * Runtime caches live beside the weights and must never be mistaken for them: LiteRT writes
+   * `x.litertlm_<n>.bin` and `x.litertlm_mldrift_program_cache.bin`, and an unfinished download
+   * is `x.litertlm.gallerytmp`.
+   */
+  fun findDownloadedModelFile(context: Context, fileName: String = downloadFileName): File? {
+    val extDir = context.getExternalFilesDir(null) ?: return null
+    if (normalizedName.isEmpty()) return null
+    val modelDir = File(extDir, normalizedName)
+    if (!modelDir.isDirectory) return null
+    val candidates =
+      modelDir.walkTopDown().filter { f ->
+        f.isFile &&
+          f.length() > 0 &&
+          !f.name.endsWith(".$TMP_FILE_EXT") &&
+          !f.name.contains("cache") &&
+          !f.name.contains(".litertlm_")
+      }
+    return candidates.firstOrNull { it.name == fileName }
+      ?: candidates.firstOrNull { it.extension == "litertlm" || it.extension == "task" }
   }
 
   fun getIntConfigValue(key: ConfigKey, defaultValue: Int = 0): Int {
