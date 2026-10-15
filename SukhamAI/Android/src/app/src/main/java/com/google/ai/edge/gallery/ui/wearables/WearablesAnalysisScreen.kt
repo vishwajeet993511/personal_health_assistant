@@ -90,6 +90,7 @@ import kotlin.math.pow
 import kotlin.math.roundToInt
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import com.google.ai.edge.gallery.ui.theme.SukhamColors
 
 private const val TAG = "WearablesAnalysisScreen"
 private const val WEARABLES_ASSET = "wearables_records.csv"
@@ -346,19 +347,19 @@ suspend fun loadLatestWearableSnapshot(context: Context): WearableSnapshot? =
 // =====================================================================================
 
 private object WearableColors {
-  val ScreenBg = Color(0xFFF5F4EF)
-  val CardSurface = Color.White
-  val Title = Color(0xFF1A1A1A)
-  val Body = Color(0xFF5C5C66)
-  val Soft = Color(0xFFEDE7F6)
-  val Purple = Color(0xFF7E57C2)
+  val ScreenBg: Color @Composable get() = SukhamColors.ScreenBg
+  val CardSurface: Color @Composable get() = SukhamColors.CardBg
+  val Title: Color @Composable get() = SukhamColors.TitleBlack
+  val Body: Color @Composable get() = SukhamColors.BodyGray
+  val Soft: Color @Composable get() = SukhamColors.LavenderSoft
+  val Purple: Color @Composable get() = SukhamColors.LavenderPrimary
   val PurpleDark = Color(0xFF5E35B1)
-  val Teal = Color(0xFF26A69A)
+  val Teal: Color @Composable get() = SukhamColors.SagePrimary
   val Peach = Color(0xFFFFAB91)
   val Sun = Color(0xFFFFB300)
   val Mint = Color(0xFF80CBC4)
   val Sky = Color(0xFF81D4FA)
-  val Track = Color(0xFFE0DCEA)
+  val Track: Color @Composable get() = SukhamColors.ChipBg
   val Good = Color(0xFF43A047)
   val Warn = Color(0xFFFB8C00)
   val Bad = Color(0xFFE53935)
@@ -506,6 +507,7 @@ private fun HeroProfileCard(snap: WearableSnapshot) {
 @Composable
 private fun HealthScoreDial(score: Float, modifier: Modifier = Modifier) {
   val fraction = (score / 100f).coerceIn(0f, 1f)
+  val trackColor = WearableColors.Track
   val color =
     when {
       score >= 75f -> WearableColors.Good
@@ -518,7 +520,7 @@ private fun HealthScoreDial(score: Float, modifier: Modifier = Modifier) {
       val arcSize = Size(size.width - stroke, size.height - stroke)
       val arcOffset = Offset(stroke / 2f, stroke / 2f)
       drawArc(
-        color = WearableColors.Track,
+        color = trackColor,
         startAngle = 135f,
         sweepAngle = 270f,
         useCenter = false,

@@ -224,19 +224,6 @@ constructor(
    * smallest remaining model in the task.
    */
   fun resolveModelForTask(task: Task): Model? {
-    val preferred2B =
-      listOf(
-        "Gemma-3n-E2B-it-int4",
-        "Gemma-3n-E2B-it",
-        "Gemma-2B-Multimodal",
-        "Gemma-4-E2B-it",
-        "Gemma3-1B-IT q4",
-        "Gemma3-1B-IT",
-      )
-    for (name in preferred2B) {
-      task.models.find { it.name == name }?.let { return it }
-    }
-
     fun isTooLarge(model: Model): Boolean {
       val n = model.name.lowercase()
       return n.contains("e4b") ||
@@ -246,9 +233,82 @@ constructor(
         n.contains("gemma-4b")
     }
 
+    val requiresImage =
+      task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS
+
+    fun isDownloaded(m: Model): Boolean {
+      return uiState.value.modelDownloadStatus[m.name]?.status == ModelDownloadStatusType.SUCCEEDED ||
+        isModelDownloaded(m)
+    }
+
+    // 1. If any model in task.models is already downloaded and meets requirements, prioritize it!
+    val downloadedInTask = task.models.filter { isDownloaded(it) }
+    if (requiresImage) {
+      val downloadedVisionInTask = downloadedInTask.filter { it.llmSupportImage }
+      if (downloadedVisionInTask.isNotEmpty()) {
+        if (downloadedVisionInTask.any { it.name == uiState.value.selectedModel.name }) {
+          return uiState.value.selectedModel
+        }
+        val safe = downloadedVisionInTask.filterNot { isTooLarge(it) }
+        return if (safe.isNotEmpty()) safe.first() else downloadedVisionInTask.first()
+      }
+    } else {
+      if (downloadedInTask.isNotEmpty()) {
+        if (downloadedInTask.any { it.name == uiState.value.selectedModel.name }) {
+          return uiState.value.selectedModel
+        }
+        val safe = downloadedInTask.filterNot { isTooLarge(it) }
+        return if (safe.isNotEmpty()) safe.first() else downloadedInTask.first()
+      }
+    }
+
+    // 2. If no model in task.models is downloaded, check if ANY downloaded model exists across all known models
+    // that satisfies this task's requirements. If so, link it to task.models and return it!
+    val allKnownModels = (getAllModels() + _allowlistModels).distinctBy { it.name }
+    val allDownloaded = allKnownModels.filter { isDownloaded(it) }
+    if (requiresImage) {
+      val downloadedVision = allDownloaded.filter { it.llmSupportImage }
+      if (downloadedVision.isNotEmpty()) {
+        val safe = downloadedVision.filterNot { isTooLarge(it) }
+        val chosen = if (safe.isNotEmpty()) safe.first() else downloadedVision.first()
+        if (!task.models.any { it.name == chosen.name }) {
+          task.models.add(0, chosen)
+        }
+        return chosen
+      }
+    } else if (task.id == BuiltInTaskId.LLM_CHAT ||
+      task.id == BuiltInTaskId.LLM_PROMPT_LAB ||
+      task.id == BuiltInTaskId.HEALTH_ASSISTANT ||
+      task.id == BuiltInTaskId.LLM_AGENT_CHAT
+    ) {
+      val downloadedLlm = allDownloaded.filter { it.isLlm }
+      if (downloadedLlm.isNotEmpty()) {
+        val safe = downloadedLlm.filterNot { isTooLarge(it) }
+        val chosen = if (safe.isNotEmpty()) safe.first() else downloadedLlm.first()
+        if (!task.models.any { it.name == chosen.name }) {
+          task.models.add(0, chosen)
+        }
+        return chosen
+      }
+    }
+
+    // 3. Fallback when nothing is downloaded yet: pick the best candidate to recommend.
+    val preferred2B =
+      listOf(
+        "Gemma-4-E2B-it",
+        "Gemma-3n-E2B-it",
+        "Gemma-3n-E2B-it-int4",
+        "Gemma-2B-Multimodal",
+        "Gemma3-1B-IT",
+        "Gemma3-1B-IT q4",
+      )
+    for (name in preferred2B) {
+      task.models.find { it.name == name }?.let { return it }
+    }
+
     val safeModels = task.models.filterNot { isTooLarge(it) }
     val pool = if (safeModels.isNotEmpty()) safeModels else task.models
-    if (task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS) {
+    if (requiresImage) {
       task.models.find { it.llmSupportImage }?.let { return it }
       return pool.find { it.llmSupportImage } ?: pool.firstOrNull()
     }
@@ -572,6 +632,23 @@ constructor(
         status.status == ModelDownloadStatusType.NOT_DOWNLOADED
     ) {
       deleteFileFromExternalFilesDir(curModel.downloadFileName)
+    }
+
+    if (status.status == ModelDownloadStatusType.SUCCEEDED) {
+      for (customTask in getActiveCustomTasks()) {
+        val task = customTask.task
+        val canAdd =
+          (curModel.llmSupportImage &&
+            (task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS)) ||
+            (curModel.isLlm &&
+              (task.id == BuiltInTaskId.LLM_CHAT ||
+                task.id == BuiltInTaskId.LLM_PROMPT_LAB ||
+                task.id == BuiltInTaskId.HEALTH_ASSISTANT ||
+                task.id == BuiltInTaskId.LLM_AGENT_CHAT))
+        if (canAdd && !task.models.any { it.name == curModel.name }) {
+          task.models.add(0, curModel)
+        }
+      }
     }
 
     _uiState.update { newUiState }
@@ -1048,14 +1125,28 @@ constructor(
           }
         }
 
-        // Scan Docs needs vision models; if modelNames drift from the allowlist, attach any
-        // image-capable model so the home-screen shortcut can still open the task.
-        curTasks.find { it.id == BuiltInTaskId.SCAN_DOCS }?.let { scanDocsTask ->
-          if (scanDocsTask.models.isEmpty()) {
-            for (model in nameToModel.values) {
-              if (model.llmSupportImage) {
-                scanDocsTask.models.add(model)
-              }
+        // Ensure vision models are linked to all image tasks, and LLMs are linked to all text/chat tasks
+        for (model in _allowlistModels) {
+          if (model.llmSupportImage) {
+            curTasks.find { it.id == BuiltInTaskId.LLM_ASK_IMAGE }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
+            }
+            curTasks.find { it.id == BuiltInTaskId.SCAN_DOCS }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
+            }
+          }
+          if (model.isLlm) {
+            curTasks.find { it.id == BuiltInTaskId.LLM_CHAT }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
+            }
+            curTasks.find { it.id == BuiltInTaskId.LLM_PROMPT_LAB }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
+            }
+            curTasks.find { it.id == BuiltInTaskId.HEALTH_ASSISTANT }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
+            }
+            curTasks.find { it.id == BuiltInTaskId.LLM_AGENT_CHAT }?.let { task ->
+              if (!task.models.any { it.name == model.name }) task.models.add(model)
             }
           }
         }
@@ -1175,6 +1266,29 @@ constructor(
         modelInstances[model.name] =
           ModelInitializationStatus(status = ModelInitializationStatusType.NOT_INITIALIZED)
         checkedModelNames.add(model.name)
+      }
+    }
+
+    // Also populate download status for all allowlist models, and link any downloaded model to compatible tasks
+    for (model in _allowlistModels) {
+      if (!checkedModelNames.contains(model.name)) {
+        modelDownloadStatus[model.name] = getModelDownloadStatus(model = model)
+        modelInstances[model.name] =
+          ModelInitializationStatus(status = ModelInitializationStatusType.NOT_INITIALIZED)
+        checkedModelNames.add(model.name)
+      }
+      val isDownloaded = modelDownloadStatus[model.name]?.status == ModelDownloadStatusType.SUCCEEDED
+      if (isDownloaded) {
+        if (model.llmSupportImage) {
+          tasks[BuiltInTaskId.LLM_ASK_IMAGE]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+          tasks[BuiltInTaskId.SCAN_DOCS]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+        }
+        if (model.isLlm) {
+          tasks[BuiltInTaskId.LLM_CHAT]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+          tasks[BuiltInTaskId.LLM_PROMPT_LAB]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+          tasks[BuiltInTaskId.HEALTH_ASSISTANT]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+          tasks[BuiltInTaskId.LLM_AGENT_CHAT]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
+        }
       }
     }
 
@@ -1517,7 +1631,26 @@ constructor(
           listOf(model.normalizedName, version, model.unzipDir).joinToString(File.separator)
         )
 
-    return downloadedFileExists || unzippedDirectoryExists
+    if (downloadedFileExists || unzippedDirectoryExists) return true
+
+    // Also check if any model file exists inside the model's directory in externalFilesDir
+    if (externalFilesDir != null && model.normalizedName.isNotEmpty()) {
+      val modelDir = File(externalFilesDir, model.normalizedName)
+      if (modelDir.exists() && modelDir.isDirectory) {
+        val matchingFile = modelDir.walkTopDown().firstOrNull { file ->
+          file.isFile && file.length() > 0 &&
+            (file.name == fileName ||
+              file.name.endsWith(".litertlm") ||
+              file.name.endsWith(".task") ||
+              file.name.endsWith(".bin"))
+        }
+        if (matchingFile != null) {
+          return true
+        }
+      }
+    }
+
+    return false
   }
 }
 

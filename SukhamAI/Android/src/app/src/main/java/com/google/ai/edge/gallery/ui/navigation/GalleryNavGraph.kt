@@ -88,6 +88,7 @@ import com.google.ai.edge.gallery.ui.modelmanager.GlobalModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelInitializationStatusType
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
+import com.google.ai.edge.gallery.ui.profile.ProfileScreen
 import com.google.ai.edge.gallery.ui.programs.ProgramsScreen
 import com.google.ai.edge.gallery.ui.wearables.WearablesAnalysisScreen
 import com.google.ai.edge.gallery.ui.yoga.YogaPoseScreen
@@ -105,6 +106,7 @@ private const val ROUTE_YOGA = "yoga_coach"
 private const val ROUTE_WEARABLES = "wearables_insights"
 private const val ROUTE_INSIGHTS = "insights"
 private const val ROUTE_PROGRAMS = "programs"
+private const val ROUTE_PROFILE = "profile"
 private const val ENTER_ANIMATION_DURATION_MS = 500
 private val ENTER_ANIMATION_EASING = EaseOutExpo
 private const val ENTER_ANIMATION_DELAY_MS = 100
@@ -189,6 +191,31 @@ fun GalleryNavHost(
     onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
   }
 
+  fun navigateToTab(route: String) {
+    if (navController.currentDestination?.route != route) {
+      navController.navigate(route) {
+        popUpTo(ROUTE_HOMESCREEN) {
+          saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+      }
+    }
+  }
+
+  fun openCentralImageChat() {
+    val imageTask =
+      modelManagerViewModel.getTaskById(com.google.ai.edge.gallery.data.BuiltInTaskId.LLM_ASK_IMAGE)
+    val model = imageTask?.let { modelManagerViewModel.resolveModelForTask(it) }
+    if (imageTask != null && model != null) {
+      modelManagerViewModel.selectModel(model)
+      if (!modelManagerViewModel.isModelDownloaded(model)) {
+        modelManagerViewModel.downloadModel(imageTask, model)
+      }
+      navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
+    }
+  }
+
   NavHost(
     navController = navController,
     startDestination = ROUTE_HOMESCREEN,
@@ -216,22 +243,34 @@ fun GalleryNavHost(
           navController.navigate("$ROUTE_MODEL/${task.id}/${model.name}")
         },
         onModelsClicked = { navController.navigate(ROUTE_MODEL_MANAGER) },
+        onLiveExerciseClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
+        onVideoAnalysisClicked = { navController.navigate("$ROUTE_YOGA?mode=video") },
         onYogaClicked = { navController.navigate(ROUTE_YOGA) },
         onWearablesClicked = { navController.navigate(ROUTE_WEARABLES) },
-        onInsightsClicked = { navController.navigate(ROUTE_INSIGHTS) },
-        onProgramsClicked = { navController.navigate(ROUTE_PROGRAMS) },
+        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
         gm4 = false,
       )
     }
 
     // Yoga pose coach screen.
     composable(
-      route = ROUTE_YOGA,
+      route = "$ROUTE_YOGA?mode={mode}",
+      arguments =
+        listOf(
+          navArgument("mode") {
+            type = NavType.StringType
+            defaultValue = "photo"
+          }
+        ),
       enterTransition = { slideEnter() },
       exitTransition = { slideExit() },
-    ) {
+    ) { backStackEntry ->
+      val initialMode = backStackEntry.arguments?.getString("mode") ?: "photo"
       YogaPoseScreen(
         modelManagerViewModel = modelManagerViewModel,
+        initialMode = initialMode,
         onNavigateUp = { navController.navigateUp() },
       )
     }
@@ -257,19 +296,11 @@ fun GalleryNavHost(
       InsightsScreen(
         onNavigateUp = { navController.navigateUp() },
         onOpenWearablesAnalysis = { navController.navigate(ROUTE_WEARABLES) },
-        onOpenImageChat = {
-          val imageTask =
-            modelManagerViewModel.getTaskById(com.google.ai.edge.gallery.data.BuiltInTaskId.LLM_ASK_IMAGE)
-          val model = imageTask?.let { modelManagerViewModel.resolveModelForTask(it) }
-          if (imageTask != null && model != null) {
-            modelManagerViewModel.selectModel(model)
-            if (!modelManagerViewModel.isModelDownloaded(model)) {
-              modelManagerViewModel.downloadModel(imageTask, model)
-            }
-            navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
-          }
-        },
+        onOpenImageChat = { openCentralImageChat() },
         onOpenYogaCoach = { navController.navigate(ROUTE_YOGA) },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
       )
     }
 
@@ -279,7 +310,29 @@ fun GalleryNavHost(
       enterTransition = { slideEnter() },
       exitTransition = { slideExit() },
     ) {
-      ProgramsScreen(onNavigateUp = { navController.navigateUp() })
+      ProgramsScreen(
+        onNavigateUp = { navController.navigateUp() },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
+        onCentralClick = { openCentralImageChat() },
+      )
+    }
+
+    // Profile screen (bottom-nav · Profile & top-bar avatar).
+    composable(
+      route = ROUTE_PROFILE,
+      enterTransition = { slideEnter() },
+      exitTransition = { slideExit() },
+    ) {
+      ProfileScreen(
+        onNavigateUp = { navController.navigateUp() },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onCentralClick = { openCentralImageChat() },
+        modelManagerViewModel = modelManagerViewModel,
+      )
     }
 
     // Model list.

@@ -61,7 +61,7 @@ class HealthAssistantTask @Inject constructor(
       shortDescription = context.getString(R.string.health_assistant_short_description),
       defaultSystemPrompt = context.getString(R.string.health_assistant_system_prompt),
       textInputPlaceHolderRes = R.string.text_input_placeholder_llm_chat,
-      modelNames = listOf("Gemma-3n-E4B-it-int4", "Gemma3-1B-IT q4"),
+      modelNames = listOf("Gemma-4-E2B-it", "Gemma-3n-E2B-it", "Gemma3-1B-IT"),
     )
 
   override fun initializeModelFn(

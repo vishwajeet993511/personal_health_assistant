@@ -318,10 +318,13 @@ fun StatusBarColorController(useDarkTheme: Boolean) {
 
 @Composable
 fun GalleryTheme(content: @Composable () -> Unit) {
-  val themeOverride = ThemeSettings.themeOverride
-  val darkTheme: Boolean =
-    (isSystemInDarkTheme() || themeOverride.value == Theme.THEME_DARK) &&
-      themeOverride.value != Theme.THEME_LIGHT
+  val themeOverride = ThemeSettings.themeOverride.value
+  val isSystemDark = isSystemInDarkTheme()
+  val darkTheme: Boolean = when (themeOverride) {
+    Theme.THEME_DARK -> true
+    Theme.THEME_LIGHT -> false
+    else -> isSystemDark
+  }
   val view = LocalView.current
 
   StatusBarColorController(useDarkTheme = darkTheme)
@@ -333,8 +336,12 @@ fun GalleryTheme(content: @Composable () -> Unit) {
     }
 
   val customColorsPalette = if (darkTheme) darkCustomColors else lightCustomColors
+  val sukhamPalette = if (darkTheme) DarkSukhamPalette else LightSukhamPalette
 
-  CompositionLocalProvider(LocalCustomColors provides customColorsPalette) {
+  CompositionLocalProvider(
+    LocalCustomColors provides customColorsPalette,
+    LocalSukhamPalette provides sukhamPalette,
+  ) {
     MaterialTheme(colorScheme = colorScheme, typography = AppTypography, content = content)
   }
 

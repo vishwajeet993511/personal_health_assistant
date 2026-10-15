@@ -10,8 +10,14 @@
 
 package com.google.ai.edge.gallery.ui.insights
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,29 +30,38 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
-import androidx.compose.material.icons.outlined.Bedtime
-import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.ElectricBolt
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.outlined.MonitorHeart
 import androidx.compose.material.icons.outlined.SelfImprovement
-import androidx.compose.material.icons.outlined.WaterDrop
+import androidx.compose.material.icons.outlined.Spa
+import androidx.compose.material.icons.outlined.Watch
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import com.google.ai.edge.gallery.ui.home.SukhamBottomNav
+import com.google.ai.edge.gallery.ui.home.SukhamNavTab
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -56,30 +71,46 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.google.ai.edge.gallery.ui.wearables.Insight
-import com.google.ai.edge.gallery.ui.wearables.Verdict
+import androidx.compose.ui.unit.sp
 import com.google.ai.edge.gallery.ui.wearables.WearableSnapshot
 import com.google.ai.edge.gallery.ui.wearables.loadLatestWearableSnapshot
-import kotlin.math.roundToInt
 
-private object InsightColors {
-  val ScreenBg = Color(0xFFF5F4EF)
-  val Card = Color.White
-  val Title = Color(0xFF1A1A1A)
-  val Body = Color(0xFF5C5C66)
-  val Purple = Color(0xFF7E57C2)
-  val PurpleDark = Color(0xFF5E35B1)
-  val Soft = Color(0xFFEDE7F6)
-  val PeachSoft = Color(0xFFFFE0B2)
-  val MintSoft = Color(0xFFB2DFDB)
-  val Good = Color(0xFF43A047)
-  val Warn = Color(0xFFFB8C00)
-  val Bad = Color(0xFFE53935)
+import com.google.ai.edge.gallery.ui.theme.SukhamColors
+import com.google.ai.edge.gallery.ui.theme.isSukhamDarkTheme
+
+// MARK: - Zen-Tech Theme Palette
+private object SukhamInsightColors {
+  val ScreenBg: Color @Composable get() = SukhamColors.ScreenBg
+  val CardBg: Color @Composable get() = SukhamColors.CardBg
+  val CardBorder: Color @Composable get() = SukhamColors.CardBorder
+  val TitleBlack: Color @Composable get() = SukhamColors.TitleBlack
+  val BodyGray: Color @Composable get() = SukhamColors.BodyGray
+
+  val SagePrimary: Color @Composable get() = SukhamColors.SagePrimary
+  val SageContainer: Color @Composable get() = SukhamColors.SageContainer
+  val SageDark: Color @Composable get() = SukhamColors.SageDark
+
+  val LavenderPrimary: Color @Composable get() = SukhamColors.LavenderPrimary
+  val LavenderSoft: Color @Composable get() = SukhamColors.LavenderSoft
+
+  val AmberPrimary: Color @Composable get() = SukhamColors.StreakAmber
+  val AmberSoft: Color @Composable get() = SukhamColors.StreakGlow
+
+  val ChipBg: Color @Composable get() = SukhamColors.ChipBg
+}
+
+enum class InsightFilter(val label: String) {
+  ALL("All Highlights"),
+  SPINE("Spine & Posture"),
+  BALANCE("Kinetic Balance"),
+  ASANA("Asana Mastery"),
+  VITALS("Sleep & Vitals"),
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,419 +120,1002 @@ fun InsightsScreen(
   onOpenWearablesAnalysis: () -> Unit,
   onOpenImageChat: () -> Unit,
   onOpenYogaCoach: () -> Unit,
+  onHomeClicked: () -> Unit = onNavigateUp,
+  onProgramsClicked: () -> Unit = {},
+  onProfileClicked: () -> Unit = {},
 ) {
   val context = LocalContext.current
   var snapshot by remember { mutableStateOf<WearableSnapshot?>(null) }
-  LaunchedEffect(Unit) { snapshot = loadLatestWearableSnapshot(context) }
+  var selectedFilter by remember { mutableStateOf(InsightFilter.ALL) }
+
+  LaunchedEffect(Unit) {
+    snapshot = loadLatestWearableSnapshot(context)
+  }
 
   Scaffold(
-    containerColor = InsightColors.ScreenBg,
+    containerColor = SukhamInsightColors.ScreenBg,
     topBar = {
       TopAppBar(
         title = {
-          Text(
-            "My Insights",
-            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
-          )
+          Column {
+            Text(
+              "Health & Mobility Insights",
+              style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamInsightColors.TitleBlack,
+                fontSize = 17.5.sp,
+              ),
+            )
+            Text(
+              "AI Kinetic & Biometric Synthesis",
+              style = MaterialTheme.typography.bodySmall.copy(
+                color = SukhamInsightColors.BodyGray,
+                fontSize = 11.5.sp,
+              ),
+            )
+          }
         },
         navigationIcon = {
           IconButton(onClick = onNavigateUp) {
-            Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
+            Icon(
+              Icons.AutoMirrored.Rounded.ArrowBack,
+              contentDescription = "Back",
+              tint = SukhamInsightColors.TitleBlack,
+            )
           }
         },
-        colors =
-          TopAppBarDefaults.topAppBarColors(
-            containerColor = InsightColors.ScreenBg,
-            titleContentColor = InsightColors.Title,
-          ),
+        actions = {
+          Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = SukhamInsightColors.SageContainer,
+            border = BorderStroke(1.dp, SukhamInsightColors.SagePrimary.copy(alpha = 0.25f)),
+            modifier = Modifier.padding(end = 16.dp),
+          ) {
+            Text(
+              text = "Oct 7 – 13",
+              modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamInsightColors.SageDark,
+                fontSize = 11.sp,
+              ),
+            )
+          }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+          containerColor = SukhamInsightColors.ScreenBg,
+        ),
+      )
+    },
+    bottomBar = {
+      SukhamBottomNav(
+        currentTab = SukhamNavTab.INSIGHTS,
+        onHomeClick = onHomeClicked,
+        onProgramsClick = onProgramsClicked,
+        onProfileClick = onProfileClicked,
+        onCentralClick = onOpenImageChat,
       )
     },
   ) { padding ->
-    val snap = snapshot
-    if (snap == null) {
-      Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
-        contentAlignment = Alignment.Center,
+    Column(
+      modifier = Modifier
+        .fillMaxSize()
+        .padding(padding)
+        .verticalScroll(rememberScrollState())
+        .padding(horizontal = 18.dp, vertical = 10.dp),
+      verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+      // 1. Weekly Consistency Calendar Strip
+      WeeklyConsistencyStrip()
+
+      // 2. Hero Card: Biological Mobility Age
+      MobilityAgeHeroCard()
+
+      // 3. Featured Cross-Modal Synthesis (Wearables x Vision AI)
+      CrossModalDiscoveryCard()
+
+      // 4. Interactive Filter Row
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .horizontalScroll(rememberScrollState()),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
       ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-          CircularProgressIndicator()
-          Spacer(Modifier.height(12.dp))
-          Text(
-            "Reading your records…",
-            style = MaterialTheme.typography.bodyMedium.copy(color = InsightColors.Body),
+        InsightFilter.values().forEach { filter ->
+          FilterChip(
+            selected = selectedFilter == filter,
+            onClick = { selectedFilter = filter },
+            label = {
+              Text(
+                filter.label,
+                style = MaterialTheme.typography.labelMedium.copy(
+                  fontWeight = if (selectedFilter == filter) FontWeight.Bold else FontWeight.Medium,
+                  fontSize = 12.sp,
+                ),
+              )
+            },
+            shape = RoundedCornerShape(20.dp),
+            colors = FilterChipDefaults.filterChipColors(
+              selectedContainerColor = SukhamInsightColors.SagePrimary,
+              selectedLabelColor = SukhamColors.ScreenBg,
+              containerColor = SukhamInsightColors.ChipBg,
+              labelColor = SukhamInsightColors.BodyGray,
+            ),
+            border = BorderStroke(
+              1.dp,
+              if (selectedFilter == filter) SukhamInsightColors.SagePrimary else SukhamInsightColors.CardBorder,
+            ),
           )
         }
       }
-      return@Scaffold
-    }
 
-    Column(
-      modifier =
-        Modifier.fillMaxSize()
-          .padding(padding)
-          .verticalScroll(rememberScrollState())
-          .padding(horizontal = 20.dp, vertical = 12.dp),
-      verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-      TodaySummaryCard(snap)
-      WearablesAnalysisSection(snap = snap, onOpenFullAnalysis = onOpenWearablesAnalysis)
-      PersonalFilesSection(onOpenImageChat = onOpenImageChat)
-      YogaHistorySection(onOpenYoga = onOpenYogaCoach)
-      Spacer(Modifier.height(8.dp))
+      // Filterable Sections
+      val showBalance = selectedFilter == InsightFilter.ALL || selectedFilter == InsightFilter.BALANCE
+      val showAsana = selectedFilter == InsightFilter.ALL || selectedFilter == InsightFilter.ASANA
+      val showSpine = selectedFilter == InsightFilter.ALL || selectedFilter == InsightFilter.SPINE
+      val showVitals = selectedFilter == InsightFilter.ALL || selectedFilter == InsightFilter.VITALS
+
+      if (showBalance) {
+        // 5. Lateral Symmetry & Balance Radar Card
+        LateralSymmetryCard()
+      }
+
+      if (showAsana) {
+        // 6. Pocket Yoga 6-Category Mastery Breakdown
+        PocketYogaMasteryOverviewCard(onExplorePrograms = onOpenYogaCoach)
+      }
+
+      if (showSpine || selectedFilter == InsightFilter.ALL) {
+        // 7. Daily AI Actionable Prescription Card
+        DailyPrescriptionCard(onStartPrescription = onOpenYogaCoach)
+      }
+
+      if (showVitals) {
+        // 8. Wearables & Lab Biometrics Quick Hub
+        WearablesBiometricsQuickCard(onOpenWearables = onOpenWearablesAnalysis, onOpenReports = onOpenImageChat)
+      }
+
+      Spacer(modifier = Modifier.height(16.dp))
     }
   }
 }
 
-// ----------------------------------------------------------------------- Today summary card
-
+// -----------------------------------------------------------------------------
+// Component 1: Weekly Consistency Strip
+// -----------------------------------------------------------------------------
 @Composable
-private fun TodaySummaryCard(snap: WearableSnapshot) {
-  val progress = snap.dailyProgress
+private fun WeeklyConsistencyStrip() {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(28.dp),
-    colors = CardDefaults.cardColors(containerColor = InsightColors.Soft),
+    shape = RoundedCornerShape(18.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
   ) {
-    Column(modifier = Modifier.padding(20.dp)) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 14.dp, vertical = 10.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      val days = listOf("M", "T", "W", "T", "F", "S", "S")
+      days.forEachIndexed { index, day ->
+        Column(
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(5.dp),
+        ) {
+          Text(
+            text = day,
+            style = MaterialTheme.typography.labelSmall.copy(
+              color = SukhamInsightColors.BodyGray,
+              fontWeight = FontWeight.SemiBold,
+              fontSize = 11.sp,
+            ),
+          )
+
+          when {
+            index < 5 -> {
+              Surface(
+                modifier = Modifier.size(28.dp),
+                shape = CircleShape,
+                color = SukhamInsightColors.SageContainer,
+              ) {
+                Box(contentAlignment = Alignment.Center) {
+                  Icon(
+                    Icons.Outlined.Check,
+                    contentDescription = null,
+                    tint = SukhamInsightColors.SagePrimary,
+                    modifier = Modifier.size(15.dp),
+                  )
+                }
+              }
+            }
+            index == 5 -> {
+              Surface(
+                modifier = Modifier.size(28.dp),
+                shape = CircleShape,
+                color = SukhamInsightColors.SagePrimary,
+              ) {
+                Box(contentAlignment = Alignment.Center) {
+                  Text(
+                    text = "12",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                      fontWeight = FontWeight.Bold,
+                      color = Color.White,
+                      fontSize = 11.sp,
+                    ),
+                  )
+                }
+              }
+            }
+            else -> {
+              Surface(
+                modifier = Modifier.size(28.dp),
+                shape = CircleShape,
+                color = SukhamInsightColors.ChipBg,
+              ) {
+                Box(contentAlignment = Alignment.Center) {
+                  Text(
+                    text = "13",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                      fontWeight = FontWeight.Bold,
+                      color = SukhamInsightColors.TitleBlack,
+                      fontSize = 11.sp,
+                    ),
+                  )
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Component 2: Hero Biological Mobility Age Card
+// -----------------------------------------------------------------------------
+@Composable
+private fun MobilityAgeHeroCard() {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(SukhamInsightColors.CardBg)
+        .padding(18.dp),
+    ) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        // Circular Radial Ring Gauge (88 Index)
+        var startAnim by remember { mutableStateOf(false) }
+        val ringProgress by animateFloatAsState(
+          targetValue = if (startAnim) 0.88f else 0f,
+          animationSpec = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
+          label = "mobilityGauge"
+        )
+        LaunchedEffect(Unit) {
+          startAnim = true
+        }
+
+        Box(
+          modifier = Modifier.size(86.dp),
+          contentAlignment = Alignment.Center,
+        ) {
+          CircularProgressIndicator(
+            progress = { ringProgress },
+            modifier = Modifier.fillMaxSize(),
+            color = SukhamInsightColors.SagePrimary,
+            trackColor = SukhamInsightColors.SageContainer,
+            strokeWidth = 7.dp,
+            strokeCap = StrokeCap.Round,
+          )
+          Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+              text = "${(ringProgress * 100).toInt()}",
+              style = MaterialTheme.typography.titleLarge.copy(
+                fontWeight = FontWeight.ExtraBold,
+                color = SukhamInsightColors.SageDark,
+                fontSize = 24.sp,
+                lineHeight = 24.sp,
+              ),
+            )
+            Text(
+              text = "INDEX",
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamInsightColors.BodyGray,
+                letterSpacing = 0.5.sp,
+                fontSize = 9.sp,
+              ),
+            )
+          }
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+          Surface(
+            shape = RoundedCornerShape(6.dp),
+            color = SukhamInsightColors.SageContainer,
+          ) {
+            Text(
+              text = "KINETIC BIOMARKER",
+              modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamInsightColors.SageDark,
+                fontSize = 9.5.sp,
+                letterSpacing = 0.6.sp,
+              ),
+            )
+          }
+
+          Spacer(modifier = Modifier.height(4.dp))
+
+          Text(
+            text = "Mobility Age: 24 yrs",
+            style = MaterialTheme.typography.titleMedium.copy(
+              fontWeight = FontWeight.ExtraBold,
+              color = SukhamInsightColors.TitleBlack,
+              fontSize = 18.sp,
+            ),
+          )
+
+          Spacer(modifier = Modifier.height(2.dp))
+
+          Text(
+            text = "You are 4 years younger in joint mobility & spinal flexibility than your chronological age (28).",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamInsightColors.BodyGray,
+              fontSize = 11.5.sp,
+              lineHeight = 16.sp,
+            ),
+          )
+        }
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Component 3: Cross-Modal Discovery Card
+// -----------------------------------------------------------------------------
+@Composable
+private fun CrossModalDiscoveryCard() {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(SukhamInsightColors.CardBg)
+        .padding(18.dp),
+    ) {
+      Column {
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = SukhamInsightColors.LavenderSoft,
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+              verticalAlignment = Alignment.CenterVertically,
+            ) {
+              Icon(
+                Icons.Outlined.ElectricBolt,
+                contentDescription = null,
+                tint = SukhamInsightColors.LavenderPrimary,
+                modifier = Modifier.size(13.dp),
+              )
+              Spacer(modifier = Modifier.width(4.dp))
+              Text(
+                text = "CROSS-MODAL DISCOVERY",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SukhamInsightColors.LavenderPrimary,
+                  fontSize = 10.sp,
+                  letterSpacing = 0.5.sp,
+                ),
+              )
+            }
+          }
+
+          Text(
+            text = "+14% Stability",
+            style = MaterialTheme.typography.labelSmall.copy(
+              fontWeight = FontWeight.ExtraBold,
+              color = SukhamInsightColors.SagePrimary,
+              fontSize = 11.5.sp,
+            ),
+          )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        Text(
+          text = "High Sleep Recovery (>85%) strongly boosted your 10s Pose Stability today.",
+          style = MaterialTheme.typography.titleSmall.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 14.5.sp,
+            lineHeight = 20.sp,
+          ),
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Dual Metric Comparison Box
+        Surface(
+          shape = RoundedCornerShape(14.dp),
+          color = SukhamInsightColors.ChipBg,
+          border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+        ) {
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 14.dp, vertical = 10.dp),
+          ) {
+            Column(modifier = Modifier.weight(1f)) {
+              Text(
+                text = "Overnight HRV & Sleep",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SukhamInsightColors.BodyGray,
+                  fontSize = 10.5.sp,
+                  fontWeight = FontWeight.Medium,
+                ),
+              )
+              Spacer(modifier = Modifier.height(2.dp))
+              Text(
+                text = "88% (Restorative)",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SukhamInsightColors.TitleBlack,
+                  fontSize = 13.5.sp,
+                ),
+              )
+            }
+
+            Box(
+              modifier = Modifier
+                .width(1.dp)
+                .height(34.dp)
+                .background(SukhamInsightColors.CardBorder),
+            )
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+              Text(
+                text = "10s Hold Equilibrium",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SukhamInsightColors.BodyGray,
+                  fontSize = 10.5.sp,
+                  fontWeight = FontWeight.Medium,
+                ),
+              )
+              Spacer(modifier = Modifier.height(2.dp))
+              Text(
+                text = "94% (Near Zero Sway)",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SukhamInsightColors.TitleBlack,
+                  fontSize = 13.5.sp,
+                ),
+              )
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Component 4: Lateral Symmetry Radar Card
+// -----------------------------------------------------------------------------
+@Composable
+private fun LateralSymmetryCard() {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
+  ) {
+    Column(modifier = Modifier.padding(18.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Text(
+          text = "Lateral Symmetry Radar",
+          style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 15.5.sp,
+          ),
+        )
+        Text(
+          text = "Left vs. Right",
+          style = MaterialTheme.typography.labelSmall.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.SagePrimary,
+            fontSize = 11.5.sp,
+          ),
+        )
+      }
+
+      Text(
+        text = "Evaluated across 10-second unilateral holds (Tree, Warrior II, Side Plank).",
+        style = MaterialTheme.typography.bodySmall.copy(
+          color = SukhamInsightColors.BodyGray,
+          fontSize = 11.5.sp,
+        ),
+      )
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      // Left Side Bar
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Text(
+          text = "Left Side",
+          modifier = Modifier.width(70.dp),
+          style = MaterialTheme.typography.labelMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 12.sp,
+          ),
+        )
+        LinearProgressIndicator(
+          progress = { 0.47f },
+          modifier = Modifier
+            .weight(1f)
+            .height(8.dp)
+            .clip(RoundedCornerShape(4.dp)),
+          color = SukhamInsightColors.SagePrimary,
+          trackColor = SukhamInsightColors.ChipBg,
+          strokeCap = StrokeCap.Round,
+        )
+        Text(
+          text = "47%",
+          modifier = Modifier.width(42.dp),
+          style = MaterialTheme.typography.labelMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 12.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.End,
+          ),
+        )
+      }
+
+      Spacer(modifier = Modifier.height(10.dp))
+
+      // Right Side Bar
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Text(
+          text = "Right Side",
+          modifier = Modifier.width(70.dp),
+          style = MaterialTheme.typography.labelMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 12.sp,
+          ),
+        )
+        LinearProgressIndicator(
+          progress = { 0.53f },
+          modifier = Modifier
+            .weight(1f)
+            .height(8.dp)
+            .clip(RoundedCornerShape(4.dp)),
+          color = SukhamInsightColors.SagePrimary,
+          trackColor = SukhamInsightColors.ChipBg,
+          strokeCap = StrokeCap.Round,
+        )
+        Text(
+          text = "53%",
+          modifier = Modifier.width(42.dp),
+          style = MaterialTheme.typography.labelMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 12.sp,
+            textAlign = androidx.compose.ui.text.style.TextAlign.End,
+          ),
+        )
+      }
+
+      Spacer(modifier = Modifier.height(12.dp))
+
+      // Tip Card
+      Surface(
+        shape = RoundedCornerShape(10.dp),
+        color = SukhamInsightColors.AmberSoft,
+        border = BorderStroke(1.dp, SukhamInsightColors.AmberPrimary.copy(alpha = 0.2f)),
+      ) {
+        Text(
+          text = "💡 Tip: Mild right-hip dominance detected (+6%). Reinforce left glute medius holds during unilateral practice.",
+          modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+          style = MaterialTheme.typography.bodySmall.copy(
+            color = SukhamInsightColors.AmberPrimary,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 11.sp,
+            lineHeight = 15.sp,
+          ),
+        )
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Component 5: Pocket Yoga 6-Category Mastery Breakdown
+// -----------------------------------------------------------------------------
+@Composable
+private fun PocketYogaMasteryOverviewCard(onExplorePrograms: () -> Unit) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
+  ) {
+    Column(modifier = Modifier.padding(18.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
         Column(modifier = Modifier.weight(1f)) {
           Text(
-            "Today's snapshot",
-            style =
-              MaterialTheme.typography.labelMedium.copy(
-                color = InsightColors.Body,
-                fontWeight = FontWeight.SemiBold,
-              ),
-          )
-          Spacer(Modifier.height(2.dp))
-          Text(
-            "${snap.dayOfWeek} · ${snap.timestamp}",
+            text = "Asana Dictionary Mastery",
             style = MaterialTheme.typography.titleMedium.copy(
-              color = InsightColors.Title,
               fontWeight = FontWeight.Bold,
+              color = SukhamInsightColors.TitleBlack,
+              fontSize = 15.sp,
+            ),
+          )
+          Text(
+            text = "Pocket Yoga Curriculum",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamInsightColors.BodyGray,
+              fontSize = 11.sp,
             ),
           )
         }
         Surface(
-          shape = RoundedCornerShape(14.dp),
-          color = scoreColor(progress.healthScore.toFloat()).copy(alpha = 0.18f),
+          shape = RoundedCornerShape(8.dp),
+          color = SukhamInsightColors.SageContainer,
         ) {
-          Column(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
+          Text(
+            text = "21/29 (86%)",
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelSmall.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamInsightColors.SageDark,
+              fontSize = 11.sp,
+            ),
+          )
+        }
+      }
+
+      Spacer(modifier = Modifier.height(12.dp))
+
+      // 6 Category Grid
+      val categories = listOf(
+        Triple("Standing", 0.88f, SukhamInsightColors.SagePrimary),
+        Triple("Seated", 0.74f, SukhamInsightColors.SagePrimary),
+        Triple("Supine", 0.95f, SukhamInsightColors.SagePrimary),
+        Triple("Prone", 0.60f, SukhamInsightColors.AmberPrimary),
+        Triple("Support", 0.52f, SukhamInsightColors.AmberPrimary),
+        Triple("Inversions", 0.40f, SukhamInsightColors.AmberPrimary),
+      )
+
+      Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        for (i in categories.indices step 2) {
+          Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
           ) {
-            Text(
-              "${progress.healthScore.roundToInt()}",
-              style =
-                MaterialTheme.typography.titleLarge.copy(
-                  color = scoreColor(progress.healthScore.toFloat()),
-                  fontWeight = FontWeight.Bold,
-                ),
-            )
-            Text(
-              "Health",
-              style = MaterialTheme.typography.labelSmall.copy(color = InsightColors.Body),
-            )
+            CategoryProgressCell(categories[i], modifier = Modifier.weight(1f))
+            if (i + 1 < categories.size) {
+              CategoryProgressCell(categories[i + 1], modifier = Modifier.weight(1f))
+            } else {
+              Spacer(modifier = Modifier.weight(1f))
+            }
           }
         }
       }
-      Spacer(Modifier.height(14.dp))
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      Surface(
+        modifier = Modifier
+          .fillMaxWidth()
+          .clip(RoundedCornerShape(12.dp))
+          .clickable(onClick = onExplorePrograms),
+        color = SukhamInsightColors.SageContainer,
+        shape = RoundedCornerShape(12.dp),
       ) {
-        SummaryTile(
-          icon = Icons.Outlined.Favorite,
-          tint = InsightColors.Bad,
-          label = "Heart rate",
-          value = "${snap.heartRate} bpm",
-          modifier = Modifier.weight(1f),
-        )
-        SummaryTile(
-          icon = Icons.Outlined.Bedtime,
-          tint = InsightColors.PurpleDark,
-          label = "Sleep",
-          value = "${"%.1f".format(snap.sleepDuration)} h",
-          modifier = Modifier.weight(1f),
-        )
-      }
-      Spacer(Modifier.height(10.dp))
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-      ) {
-        SummaryTile(
-          icon = Icons.Outlined.WaterDrop,
-          tint = Color(0xFF29B6F6),
-          label = "Water",
-          value = "${"%.1f".format(snap.waterLiters)} L",
-          modifier = Modifier.weight(1f),
-        )
-        SummaryTile(
-          icon = Icons.Outlined.MonitorHeart,
-          tint = Color(0xFF26A69A),
-          label = "ECG",
-          value = snap.ecg,
-          modifier = Modifier.weight(1f),
-        )
+        Row(
+          modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+          Text(
+            text = "Open Asana Dictionary & Audits",
+            style = MaterialTheme.typography.labelMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamInsightColors.SageDark,
+              fontSize = 12.5.sp,
+            ),
+          )
+          Icon(
+            Icons.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+            tint = SukhamInsightColors.SageDark,
+            modifier = Modifier.size(18.dp),
+          )
+        }
       }
     }
   }
 }
 
 @Composable
-private fun SummaryTile(
-  icon: ImageVector,
-  tint: Color,
-  label: String,
-  value: String,
+private fun CategoryProgressCell(
+  data: Triple<String, Float, Color>,
   modifier: Modifier = Modifier,
 ) {
+  val (name, progress, barColor) = data
   Surface(
     modifier = modifier,
-    shape = RoundedCornerShape(16.dp),
-    color = InsightColors.Card,
+    shape = RoundedCornerShape(12.dp),
+    color = SukhamInsightColors.ChipBg,
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
   ) {
-    Row(
-      modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Box(
-        modifier =
-          Modifier.size(30.dp)
-            .clip(RoundedCornerShape(9.dp))
-            .background(tint.copy(alpha = 0.18f)),
-        contentAlignment = Alignment.Center,
+    Column(modifier = Modifier.padding(10.dp)) {
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
       ) {
-        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(16.dp))
-      }
-      Spacer(Modifier.width(10.dp))
-      Column {
         Text(
-          label,
-          style = MaterialTheme.typography.labelSmall.copy(color = InsightColors.Body),
-        )
-        Text(
-          value,
-          style =
-            MaterialTheme.typography.bodyMedium.copy(
-              color = InsightColors.Title,
-              fontWeight = FontWeight.SemiBold,
-            ),
-        )
-      }
-    }
-  }
-}
-
-private fun scoreColor(score: Float): Color =
-  when {
-    score >= 75f -> InsightColors.Good
-    score >= 55f -> InsightColors.Warn
-    else -> InsightColors.Bad
-  }
-
-// --------------------------------------------------------------- Wearables analysis section
-
-@Composable
-private fun WearablesAnalysisSection(snap: WearableSnapshot, onOpenFullAnalysis: () -> Unit) {
-  SectionContainer(
-    title = "Wearables Analysis",
-    subtitle = "Past rule-based reviews on this snapshot",
-    icon = Icons.Outlined.MonitorHeart,
-    iconTint = InsightColors.PurpleDark,
-  ) {
-    snap.localInsights.take(4).forEachIndexed { idx, insight ->
-      InsightRow(insight)
-      if (idx != 3 && idx != snap.localInsights.lastIndex) {
-        Spacer(Modifier.height(12.dp))
-      }
-    }
-    Spacer(Modifier.height(14.dp))
-    LinkRow(label = "View full wearables analysis", onClick = onOpenFullAnalysis)
-  }
-}
-
-@Composable
-private fun InsightRow(insight: Insight) {
-  Row(verticalAlignment = Alignment.Top) {
-    Box(
-      modifier =
-        Modifier.size(10.dp)
-          .clip(RoundedCornerShape(5.dp))
-          .background(verdictColor(insight.severity)),
-    )
-    Spacer(Modifier.width(10.dp))
-    Column(modifier = Modifier.weight(1f)) {
-      Text(
-        insight.title,
-        style =
-          MaterialTheme.typography.bodyMedium.copy(
-            fontWeight = FontWeight.SemiBold,
-            color = InsightColors.Title,
+          text = name,
+          style = MaterialTheme.typography.labelSmall.copy(
+            fontWeight = FontWeight.Bold,
+            color = SukhamInsightColors.TitleBlack,
+            fontSize = 11.5.sp,
           ),
-      )
-      Spacer(Modifier.height(2.dp))
-      Text(
-        insight.body,
-        style = MaterialTheme.typography.bodySmall.copy(color = InsightColors.Body),
+        )
+        Text(
+          text = "${(progress * 100).toInt()}%",
+          style = MaterialTheme.typography.labelSmall.copy(
+            fontWeight = FontWeight.Bold,
+            color = barColor,
+            fontSize = 11.5.sp,
+          ),
+        )
+      }
+      Spacer(modifier = Modifier.height(6.dp))
+      LinearProgressIndicator(
+        progress = { progress },
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(6.dp)
+          .clip(RoundedCornerShape(3.dp)),
+        color = barColor,
+        trackColor = SukhamInsightColors.ChipBg,
+        strokeCap = StrokeCap.Round,
       )
     }
   }
 }
 
-private fun verdictColor(v: Verdict): Color =
-  when (v) {
-    Verdict.GOOD -> InsightColors.Good
-    Verdict.WARN -> InsightColors.Warn
-    Verdict.BAD -> InsightColors.Bad
-  }
-
-// ----------------------------------------------------------------- Personal files section
-
+// -----------------------------------------------------------------------------
+// Component 6: Daily AI Prescription Action Card
+// -----------------------------------------------------------------------------
 @Composable
-private fun PersonalFilesSection(onOpenImageChat: () -> Unit) {
-  SectionContainer(
-    title = "Personal Files Analysis",
-    subtitle = "Reports, scans and photos you've analyzed",
-    icon = Icons.Outlined.Description,
-    iconTint = Color(0xFFEF6C00),
+private fun DailyPrescriptionCard(onStartPrescription: () -> Unit) {
+  Card(
+    modifier = Modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(
+      containerColor = if (isSukhamDarkTheme()) Color(0xFF1B382F) else Color(0xFF2E4E43)
+    ),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
   ) {
-    EmptyStateRow(
-      headline = "No reports analyzed yet",
-      body =
-        "Upload a scan or lab report inside the chat — SUKHAM will read it on-device and log " +
-          "the analysis here for future reference.",
-      ctaLabel = "Upload a report",
-      onCta = onOpenImageChat,
-      tint = Color(0xFFEF6C00),
-    )
+    Column(modifier = Modifier.padding(20.dp)) {
+      Surface(
+        shape = RoundedCornerShape(6.dp),
+        color = Color.White.copy(alpha = 0.2f),
+      ) {
+        Text(
+          text = "DAILY AI PRESCRIPTION",
+          modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp),
+          style = MaterialTheme.typography.labelSmall.copy(
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 9.5.sp,
+            letterSpacing = 0.6.sp,
+          ),
+        )
+      }
+
+      Spacer(modifier = Modifier.height(8.dp))
+
+      Text(
+        text = "3-Min Cervical Spine Reset",
+        style = MaterialTheme.typography.titleMedium.copy(
+          fontWeight = FontWeight.ExtraBold,
+          color = Color.White,
+          fontSize = 17.sp,
+        ),
+      )
+
+      Spacer(modifier = Modifier.height(4.dp))
+
+      Text(
+        text = "Based on detected neck forward tilt, decompress with Cat-Cow and Sphinx pose before afternoon desk work.",
+        style = MaterialTheme.typography.bodySmall.copy(
+          color = Color.White.copy(alpha = 0.9f),
+          fontSize = 12.sp,
+          lineHeight = 16.5.sp,
+        ),
+      )
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      Button(
+        onClick = onStartPrescription,
+        modifier = Modifier
+          .fillMaxWidth()
+          .height(46.dp),
+        shape = RoundedCornerShape(percent = 50),
+        colors = ButtonDefaults.buttonColors(
+          containerColor = if (isSukhamDarkTheme()) Color(0xFF67BFA5) else Color.White
+        ),
+      ) {
+        Text(
+          text = "Start 3-Minute Routine",
+          style = MaterialTheme.typography.labelLarge.copy(
+            fontWeight = FontWeight.ExtraBold,
+            color = if (isSukhamDarkTheme()) Color(0xFF080908) else Color(0xFF2E4E43),
+            fontSize = 13.5.sp,
+          ),
+        )
+      }
+    }
   }
 }
 
-// ----------------------------------------------------------------- Yoga history section
-
+// -----------------------------------------------------------------------------
+// Component 7: Wearables & Lab Biometrics Quick Hub
+// -----------------------------------------------------------------------------
 @Composable
-private fun YogaHistorySection(onOpenYoga: () -> Unit) {
-  SectionContainer(
-    title = "Yoga Coaching",
-    subtitle = "Past pose feedback sessions",
-    icon = Icons.Outlined.SelfImprovement,
-    iconTint = Color(0xFF7CB342),
-  ) {
-    EmptyStateRow(
-      headline = "No coaching sessions yet",
-      body =
-        "Snap a photo of yourself in a yoga pose to get on-device form feedback. Sessions you " +
-          "save will appear here.",
-      ctaLabel = "Start a session",
-      onCta = onOpenYoga,
-      tint = Color(0xFF7CB342),
-    )
-  }
-}
-
-// ----------------------------------------------------------------------------- shared bits
-
-@Composable
-private fun SectionContainer(
-  title: String,
-  subtitle: String,
-  icon: ImageVector,
-  iconTint: Color,
-  content: @Composable () -> Unit,
+private fun WearablesBiometricsQuickCard(
+  onOpenWearables: () -> Unit,
+  onOpenReports: () -> Unit,
 ) {
   Card(
     modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(24.dp),
-    colors = CardDefaults.cardColors(containerColor = InsightColors.Card),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamInsightColors.CardBg),
+    border = BorderStroke(1.dp, SukhamInsightColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 0.5.dp),
   ) {
     Column(modifier = Modifier.padding(18.dp)) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        Box(
-          modifier =
-            Modifier.size(36.dp)
-              .clip(RoundedCornerShape(12.dp))
-              .background(iconTint.copy(alpha = 0.16f)),
-          contentAlignment = Alignment.Center,
+      Text(
+        text = "Biometrics & Lab Integration",
+        style = MaterialTheme.typography.titleMedium.copy(
+          fontWeight = FontWeight.Bold,
+          color = SukhamInsightColors.TitleBlack,
+          fontSize = 15.5.sp,
+        ),
+      )
+      Spacer(modifier = Modifier.height(4.dp))
+      Text(
+        text = "Wearable sensors and blood biomarker tracking linked to motion performance.",
+        style = MaterialTheme.typography.bodySmall.copy(
+          color = SukhamInsightColors.BodyGray,
+          fontSize = 11.5.sp,
+        ),
+      )
+
+      Spacer(modifier = Modifier.height(14.dp))
+
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+      ) {
+        Surface(
+          modifier = Modifier
+            .weight(1f)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable(onClick = onOpenWearables),
+          color = SukhamInsightColors.SageContainer,
+          shape = RoundedCornerShape(14.dp),
         ) {
-          Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.size(20.dp))
+          Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(Icons.Outlined.Watch, contentDescription = null, tint = SukhamInsightColors.SageDark)
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+              Text(
+                text = "Wearables",
+                style = MaterialTheme.typography.labelMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SukhamInsightColors.SageDark,
+                ),
+              )
+              Text(
+                text = "HRV & Sleep",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SukhamInsightColors.BodyGray,
+                  fontSize = 10.sp,
+                ),
+              )
+            }
+          }
         }
-        Spacer(Modifier.width(12.dp))
-        Column {
-          Text(
-            title,
-            style =
-              MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.SemiBold,
-                color = InsightColors.Title,
-              ),
-          )
-          Text(
-            subtitle,
-            style = MaterialTheme.typography.labelSmall.copy(color = InsightColors.Body),
-          )
+
+        Surface(
+          modifier = Modifier
+            .weight(1f)
+            .clip(RoundedCornerShape(14.dp))
+            .clickable(onClick = onOpenReports),
+          color = SukhamInsightColors.LavenderSoft,
+          shape = RoundedCornerShape(14.dp),
+        ) {
+          Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(Icons.Outlined.MonitorHeart, contentDescription = null, tint = SukhamInsightColors.LavenderPrimary)
+            Spacer(modifier = Modifier.width(8.dp))
+            Column {
+              Text(
+                text = "Lab Reports",
+                style = MaterialTheme.typography.labelMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = SukhamInsightColors.LavenderPrimary,
+                ),
+              )
+              Text(
+                text = "hs-CRP & Biomarkers",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SukhamInsightColors.BodyGray,
+                  fontSize = 10.sp,
+                ),
+              )
+            }
+          }
         }
       }
-      Spacer(Modifier.height(14.dp))
-      content()
-    }
-  }
-}
-
-@Composable
-private fun EmptyStateRow(
-  headline: String,
-  body: String,
-  ctaLabel: String,
-  onCta: () -> Unit,
-  tint: Color,
-) {
-  Column {
-    Text(
-      headline,
-      style =
-        MaterialTheme.typography.bodyMedium.copy(
-          fontWeight = FontWeight.SemiBold,
-          color = InsightColors.Title,
-        ),
-    )
-    Spacer(Modifier.height(4.dp))
-    Text(
-      body,
-      style = MaterialTheme.typography.bodySmall.copy(color = InsightColors.Body),
-    )
-    Spacer(Modifier.height(12.dp))
-    LinkRow(label = ctaLabel, onClick = onCta, accent = tint)
-  }
-}
-
-@Composable
-private fun LinkRow(label: String, onClick: () -> Unit, accent: Color = InsightColors.PurpleDark) {
-  Surface(
-    modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(14.dp)).clickable(onClick = onClick),
-    color = accent.copy(alpha = 0.10f),
-    shape = RoundedCornerShape(14.dp),
-  ) {
-    Row(
-      modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
-      verticalAlignment = Alignment.CenterVertically,
-    ) {
-      Text(
-        label,
-        modifier = Modifier.weight(1f),
-        style =
-          MaterialTheme.typography.bodyMedium.copy(
-            color = accent,
-            fontWeight = FontWeight.SemiBold,
-          ),
-      )
-      Icon(
-        Icons.AutoMirrored.Rounded.ArrowForward,
-        contentDescription = null,
-        tint = accent,
-        modifier = Modifier.size(18.dp),
-      )
     }
   }
 }

@@ -52,6 +52,13 @@ import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Summarize
+import androidx.compose.material.icons.automirrored.outlined.VolumeOff
+import androidx.compose.material.icons.automirrored.outlined.VolumeUp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.google.ai.edge.gallery.ui.common.tts.rememberSukhamTtsHelper
+import com.google.ai.edge.gallery.ui.profile.ProfileViewModel
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -62,8 +69,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -118,12 +127,16 @@ fun ScanDocsScreen(
   task: Task,
   modelManagerViewModel: ModelManagerViewModel,
   navigateUp: () -> Unit,
+  profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
   val context = LocalContext.current
   val screenScope = rememberCoroutineScope()
   val uiScope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate) }
   val inferenceScope = remember { CoroutineScope(SupervisorJob() + Dispatchers.Default) }
   val uiState by modelManagerViewModel.uiState.collectAsState()
+  val profileUiState by profileViewModel.uiState.collectAsState()
+  val isReadAloudEnabled = profileUiState.profile.isReadAloudEnabled
+  val ttsHelper = rememberSukhamTtsHelper()
   val downloadedVisionModel =
     task.models.firstOrNull {
       it.llmSupportImage &&
@@ -192,7 +205,10 @@ fun ScanDocsScreen(
       TopAppBar(
         title = { Text(stringResource(R.string.scan_docs_label)) },
         navigationIcon = {
-          IconButton(onClick = navigateUp) {
+          IconButton(onClick = {
+            ttsHelper.stop()
+            navigateUp()
+          }) {
             Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "Back")
           }
         },
@@ -425,10 +441,50 @@ fun ScanDocsScreen(
             modifier = Modifier.padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
           ) {
-            Text(
-              "SUKHAM analysis",
-              style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
-            )
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.SpaceBetween,
+              verticalAlignment = Alignment.CenterVertically,
+            ) {
+              Text(
+                "SUKHAM analysis",
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold),
+              )
+              if (analysis.isNotBlank() && !inferenceInFlight && !pendingInference) {
+                Surface(
+                  shape = RoundedCornerShape(percent = 50),
+                  color = if (ttsHelper.isSpeaking.value) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant,
+                  modifier = Modifier.clickable {
+                    if (ttsHelper.isSpeaking.value) {
+                      ttsHelper.stop()
+                    } else {
+                      ttsHelper.speak(formatAnalysisForDisplay(analysis))
+                    }
+                  }
+                ) {
+                  Row(
+                    modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                  ) {
+                    Icon(
+                      imageVector = if (ttsHelper.isSpeaking.value) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,
+                      contentDescription = if (ttsHelper.isSpeaking.value) "Stop voice" else "Read aloud",
+                      tint = if (ttsHelper.isSpeaking.value) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                      modifier = Modifier.size(13.dp)
+                    )
+                    Spacer(Modifier.width(4.dp))
+                    Text(
+                      text = if (ttsHelper.isSpeaking.value) "Stop" else "Read Aloud",
+                      style = MaterialTheme.typography.labelSmall.copy(
+                        color = if (ttsHelper.isSpeaking.value) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold
+                      )
+                    )
+                  }
+                }
+              }
+            }
             val displayText =
               when {
                 inferenceInFlight || pendingInference ->
@@ -510,6 +566,9 @@ fun ScanDocsScreen(
                 statusText = "Analysis complete (empty output)."
               } else {
                 statusText = "Analysis complete."
+                if (isReadAloudEnabled) {
+                  ttsHelper.speak(formatAnalysisForDisplay(analysis))
+                }
               }
             }
           }

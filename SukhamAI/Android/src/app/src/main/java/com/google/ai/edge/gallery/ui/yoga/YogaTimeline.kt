@@ -29,6 +29,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.VolumeOff
+import androidx.compose.material.icons.automirrored.outlined.VolumeUp
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -49,14 +54,21 @@ import androidx.compose.ui.unit.dp
  * of the session view is seeing form change *across* the sampled poses, not studying one frame.
  */
 @Composable
-fun CoachingCardRow(card: CoachingCard, modifier: Modifier = Modifier) {
+fun CoachingCardRow(
+  card: CoachingCard,
+  modifier: Modifier = Modifier,
+  onSpeak: ((String) -> Unit)? = null,
+  isSpeaking: Boolean = false,
+) {
   Card(
     modifier = modifier.fillMaxWidth(),
     shape = RoundedCornerShape(16.dp),
-    colors = CardDefaults.cardColors(containerColor = Color(0xFFF6F4FB)),
+    colors = CardDefaults.cardColors(containerColor = Color.White),
+    border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFFE8E6DF)),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
   ) {
     Row(
-      modifier = Modifier.fillMaxWidth().padding(10.dp),
+      modifier = Modifier.fillMaxWidth().padding(12.dp),
       horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Box(
@@ -77,18 +89,38 @@ fun CoachingCardRow(card: CoachingCard, modifier: Modifier = Modifier) {
       }
 
       Column(modifier = Modifier.weight(1f)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Text(
-            formatTimestamp(card.timestampMs),
-            style =
-              MaterialTheme.typography.labelMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF4A148C),
-              ),
-          )
-          if (card.status == CoachingStatus.ANALYZING) {
-            Spacer(Modifier.size(8.dp))
-            CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 2.dp)
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+              formatTimestamp(card.timestampMs),
+              style =
+                MaterialTheme.typography.labelMedium.copy(
+                  fontWeight = FontWeight.Bold,
+                  color = Color(0xFF4A148C),
+                ),
+            )
+            if (card.status == CoachingStatus.ANALYZING) {
+              Spacer(Modifier.size(8.dp))
+              CircularProgressIndicator(modifier = Modifier.size(12.dp), strokeWidth = 2.dp)
+            }
+          }
+
+          if (card.status == CoachingStatus.DONE && card.text.isNotBlank() && onSpeak != null) {
+            IconButton(
+              onClick = { onSpeak(card.text) },
+              modifier = Modifier.size(24.dp)
+            ) {
+              Icon(
+                imageVector = if (isSpeaking) Icons.AutoMirrored.Outlined.VolumeOff else Icons.AutoMirrored.Outlined.VolumeUp,
+                contentDescription = if (isSpeaking) "Stop voice" else "Read aloud",
+                tint = if (isSpeaking) Color(0xFF2E7D32) else Color(0xFF7E57C2),
+                modifier = Modifier.size(16.dp)
+              )
+            }
           }
         }
         Spacer(Modifier.size(4.dp))

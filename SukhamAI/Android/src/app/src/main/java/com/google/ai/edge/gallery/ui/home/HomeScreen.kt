@@ -24,11 +24,24 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -40,13 +53,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -54,22 +71,31 @@ import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ListAlt
+import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.material.icons.outlined.Eco
+import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Insights
 import androidx.compose.material.icons.outlined.MedicalServices
 import androidx.compose.material.icons.outlined.Menu
 import androidx.compose.material.icons.outlined.Mms
+import androidx.compose.material.icons.outlined.MusicNote
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.PlayCircleOutline
+import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.KeyboardArrowRight
+import androidx.compose.material.icons.outlined.Timer
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material.icons.rounded.Error
 import androidx.compose.material.icons.rounded.Flag
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -103,10 +129,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Brush.Companion.linearGradient
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -124,6 +154,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
@@ -145,6 +176,7 @@ import com.google.ai.edge.gallery.ui.common.tos.AppTosDialog
 import com.google.ai.edge.gallery.ui.common.tos.TosViewModel
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
 import com.google.ai.edge.gallery.ui.share.shareDailyProgressToWhatsApp
+import com.google.ai.edge.gallery.ui.theme.SukhamColors
 import com.google.ai.edge.gallery.ui.theme.customColors
 import com.google.ai.edge.gallery.ui.theme.homePageTitleStyle
 import com.google.ai.edge.gallery.ui.wearables.loadLatestWearableSnapshot
@@ -153,20 +185,6 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "AGHomeScreen"
 
-/** Sukham brand colors aligned with the UI mockup. */
-private object SukhamColors {
-  val TitleBlack = Color(0xFF1A1A1A)
-  val BodyGray = Color(0xFF616161)
-  val ScreenBg = Color(0xFFF5F4EF)
-  val Purple = Color(0xFF7E57C2)
-  val PurpleDark = Color(0xFF673AB7)
-  val LavenderCard = Color(0xFFF3E8FF)
-  val Teal = Color(0xFF26A69A)
-  val Peach = Color(0xFFFFAB91)
-  val LightBlue = Color(0xFF81D4FA)
-  val LavenderBtn = Color(0xFFE1BEE7)
-  val LiveGreen = Color(0xFF43A047)
-}
 private const val TASK_COUNT_ANIMATION_DURATION = 250
 private const val ANIMATION_INIT_DELAY = 0L
 private const val TOP_APP_BAR_ANIMATION_DURATION = 600
@@ -197,10 +215,13 @@ fun HomeScreen(
   navigateToTaskScreen: (Task) -> Unit,
   navigateToModelScreen: (Task, Model) -> Unit,
   onModelsClicked: () -> Unit,
+  onLiveExerciseClicked: () -> Unit = {},
+  onVideoAnalysisClicked: () -> Unit = {},
   onYogaClicked: () -> Unit = {},
   onWearablesClicked: () -> Unit = {},
   onInsightsClicked: () -> Unit = {},
   onProgramsClicked: () -> Unit = {},
+  onProfileClicked: () -> Unit = {},
   enableAnimation: Boolean,
   modifier: Modifier = Modifier,
   gm4: Boolean = false,
@@ -210,6 +231,15 @@ fun HomeScreen(
   var showTosDialog by remember { mutableStateOf(!tosViewModel.getIsTosAccepted()) }
   val scope = rememberCoroutineScope()
   val context = LocalContext.current
+
+  val dbHelper = remember(context) { com.google.ai.edge.gallery.ui.profile.data.UserProfileDatabaseHelper(context) }
+  var profileName by remember { mutableStateOf("Alex") }
+  LaunchedEffect(Unit) {
+    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+      val fullName = dbHelper.getProfile().name
+      profileName = fullName.split(" ").firstOrNull() ?: "Alex"
+    }
+  }
 
   // SUKHAM AI now standardises on the multimodal "Ask Image" chat — same 2B Gemma but with
   // the vision tower enabled. resolveModelForTask refuses to escalate to the 4B variant so we
@@ -323,13 +353,19 @@ fun HomeScreen(
         Scaffold(
           containerColor = SukhamColors.ScreenBg,
           topBar = {
-            SukhamHeader(onMenuClick = { scope.launch { drawerState.open() } })
+            SukhamHeader(
+              name = profileName,
+              onAvatarClick = onProfileClicked,
+              onMenuClick = { scope.launch { drawerState.open() } },
+            )
           },
           bottomBar = {
             SukhamBottomNav(
+              currentTab = SukhamNavTab.HOME,
               onCentralClick = { openImageChat() },
               onInsightsClick = onInsightsClicked,
               onProgramsClick = onProgramsClicked,
+              onProfileClick = onProfileClicked,
             )
           }
         ) { innerPadding ->
@@ -338,84 +374,71 @@ fun HomeScreen(
               Modifier.fillMaxSize()
                 .padding(innerPadding)
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp)
           ) {
-            // App Title and Subtitle
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-              Text(
-                text = "SUKHAM AI",
-                style = MaterialTheme.typography.headlineLarge.copy(
-                  fontWeight = FontWeight.Bold,
-                  letterSpacing = 4.sp,
-                  color = SukhamColors.TitleBlack,
-                ),
-                textAlign = TextAlign.Center
-              )
-              Text(
-                text = "Your AI Partner in Holistic Wellbeing",
-                style = MaterialTheme.typography.bodyMedium.copy(color = SukhamColors.BodyGray),
-                textAlign = TextAlign.Center
-              )
-            }
+            // 1. Personal Progress Dashboard (Concentric Gauge, 7-Day Consistency, Spine Align)
+            PersonalProgressDashboard(
+              formScore = 84,
+              spineAlignImprovement = 6,
+            )
 
+            // 1.5 Smart AI Recommendations Carousel
+            SmartRecommendationsCarousel(
+              onViewAllInsights = onInsightsClicked,
+              onStartSpineReset = onYogaClicked,
+              onStartBalanceAudit = onProgramsClicked,
+              onStartSleepWinddown = onProgramsClicked,
+              onStartCoreMobility = onProgramsClicked,
+            )
+
+            // 2. Hero Action 1: Live AI Motion Coach (Gym, Dance, Yoga)
+            LiveAiCoachHeroCard(
+              onClick = { onLiveExerciseClicked() }
+            )
+
+            // 3. Hero Action 2: Video & Photo Form Analysis (Async Audit)
+            VideoAnalysisHeroCard(
+              onClick = { onVideoAnalysisClicked() }
+            )
+
+            // 4. Multimodal Chat Card (Ask Image / Voice / Text)
             if (imageChatTask != null) {
-                SukhamMainChatCard(onClick = { openImageChat() })
+              SukhamMainChatCard(onClick = { openImageChat() })
             }
 
-            // Grid Section
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SukhamGridCard(
-                    title = "Live Exercise",
-                    subtitle = "Join expert-led sessions in real time.",
-                    imageRes = R.drawable.live_exercise,
-                    modifier = Modifier.weight(1f),
-                    badge = "LIVE",
-                    badgeColor = SukhamColors.LiveGreen,
-                    actionText = "Join Live",
-                    actionColor = SukhamColors.Teal,
-                    onClick = { openImageChat() }
-                )
-                SukhamGridCard(
-                    title = "Yoga Tips",
-                    subtitle = "Snap a pose. Get AI form feedback.",
-                    imageRes = R.drawable.yoga_tips,
-                    modifier = Modifier.weight(1f),
-                    icon = Icons.Outlined.Eco,
-                    iconTint = Color(0xFF8D6E63),
-                    actionText = "Analyze Pose",
-                    actionColor = SukhamColors.Peach,
-                    onClick = { onYogaClicked() }
-                )
+            // 5. Secondary Quick-Action Row: Wearables & Documents Analysis
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+              SukhamGridCard(
+                title = "Wearables",
+                subtitle = "Biometrics & sleep",
+                imageRes = R.drawable.wearables_biometric_art,
+                modifier = Modifier.weight(1f),
+                actionText = "Insights",
+                actionColor = SukhamColors.SageContainer,
+                actionTextColor = SukhamColors.SageDark,
+                onClick = { onWearablesClicked() }
+              )
+              SukhamGridCard(
+                title = "Health Reports",
+                subtitle = "Lab tests & vitals",
+                imageRes = R.drawable.health_reports_art,
+                modifier = Modifier.weight(1f),
+                actionText = "Upload",
+                actionColor = SukhamColors.LavenderSoft,
+                actionTextColor = SukhamColors.LavenderPrimary,
+                onClick = { openScanDocsChat() }
+              )
             }
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                SukhamGridCard(
-                    title = "Wearables Data Analysis",
-                    subtitle = "Understand your body. Improve every day.",
-                    imageRes = R.drawable.wearables_analysis,
-                    modifier = Modifier.weight(1f),
-                    actionText = "View Insights",
-                    actionColor = SukhamColors.LightBlue,
-                    onClick = { onWearablesClicked() }
-                )
-                // Personal Files Analysis
-                SukhamGridCard(
-                    title = "Personal Files Analysis",
-                    subtitle = "Upload your reports. Get AI insights.",
-                    imageRes = R.drawable.personal_files,
-                    modifier = Modifier.weight(1f),
-                    actionText = "Upload & Analyze",
-                    actionColor = SukhamColors.LavenderBtn,
-                    onClick = { openScanDocsChat() }
-                )
-            }
-
-            // Share My Progress Footer
+            // 6. Share Progress Card
             SukhamFooterCard(onClick = { onShareDailyProgress() })
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(40.dp))
           }
         }
     }
@@ -442,78 +465,895 @@ fun HomeScreen(
 }
 
 @Composable
-fun SukhamHeader(onMenuClick: () -> Unit) {
+fun SukhamHeader(
+  name: String = "Alex",
+  streakDays: Int = 6,
+  onMenuClick: () -> Unit = {},
+  onAvatarClick: () -> Unit = {},
+  onNotificationClick: () -> Unit = {},
+) {
+  val streakTransition = rememberInfiniteTransition(label = "streakGlow")
+  val streakScale by streakTransition.animateFloat(
+    initialValue = 1f,
+    targetValue = 1.04f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(1200, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "streakScale"
+  )
+
+  Column(
+    modifier = Modifier
+      .fillMaxWidth()
+      .statusBarsPadding()
+      .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 4.dp),
+    verticalArrangement = Arrangement.spacedBy(14.dp)
+  ) {
+    // Top Row: Menu Button on left, Notification & Glowing Avatar on right
     Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      // Menu drawer button in frosted pill
+      Box(
+        modifier = Modifier
+          .size(40.dp)
+          .clip(CircleShape)
+          .background(SukhamColors.ChipBg)
+          .border(1.dp, SukhamColors.CardBorder, CircleShape)
+          .clickable(onClick = onMenuClick),
+        contentAlignment = Alignment.Center
+      ) {
+        Icon(
+          imageVector = Icons.Outlined.Menu,
+          contentDescription = "Menu",
+          tint = SukhamColors.TitleBlack,
+          modifier = Modifier.size(20.dp)
+        )
+      }
+
+      // Right: Streak pill + Notification + Profile avatar with glowing border
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+      ) {
+        // Streak Badge
+        Surface(
+          color = SukhamColors.StreakGlow,
+          shape = RoundedCornerShape(percent = 50),
+          border = BorderStroke(0.8.dp, SukhamColors.StreakAmber.copy(alpha = 0.35f)),
+          modifier = Modifier.graphicsLayer {
+            scaleX = streakScale
+            scaleY = streakScale
+          }
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 9.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Text(
+              text = "$streakDays-Day Streak 🔥",
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamColors.TitleBlack,
+                fontSize = 11.5.sp
+              )
+            )
+          }
+        }
+
+        // Notification button in frosted pill
+        Box(
+          modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .background(SukhamColors.ChipBg)
+            .border(1.dp, SukhamColors.CardBorder, CircleShape)
+            .clickable(onClick = onNotificationClick),
+          contentAlignment = Alignment.Center
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Notifications,
+            contentDescription = "Notifications",
+            tint = SukhamColors.TitleBlack,
+            modifier = Modifier.size(20.dp)
+          )
+        }
+
+        // Avatar with subtle glowing sage ring
+        Box(
+          modifier = Modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .border(1.8.dp, SukhamColors.SagePrimary, CircleShape)
+            .clickable(onClick = onAvatarClick),
+          contentAlignment = Alignment.Center
+        ) {
+          Image(
+            painter = painterResource(R.drawable.user_avatar_alex),
+            contentDescription = "Profile",
+            modifier = Modifier
+              .size(38.dp)
+              .clip(CircleShape),
+            contentScale = ContentScale.Crop
+          )
+        }
+      }
+    }
+
+    // Elegant greeting headline matching Screenshot 1
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 2.dp)
+    ) {
+      Text(
+        text = "Hello, $name!",
+        style = MaterialTheme.typography.bodyMedium.copy(
+          color = SukhamColors.BodyGray,
+          fontSize = 14.5.sp,
+          fontWeight = FontWeight.Medium
+        )
+      )
+      Spacer(modifier = Modifier.height(2.dp))
+      Text(
+        text = "—What practice are you excited to begin today?",
+        style = MaterialTheme.typography.headlineSmall.copy(
+          color = SukhamColors.TitleBlack,
+          fontSize = 20.sp,
+          fontWeight = FontWeight.SemiBold,
+          letterSpacing = (-0.3).sp,
+          lineHeight = 26.sp
+        )
+      )
+    }
+  }
+}
+
+@Composable
+fun ConcentricFormScoreGauge(
+  score: Int = 84,
+  modifier: Modifier = Modifier,
+  sizeDp: Dp = 100.dp,
+) {
+  val trackColor = SukhamColors.CardBorder
+  var startAnim by remember { mutableStateOf(false) }
+  val progress by animateFloatAsState(
+    targetValue = if (startAnim) score / 100f else 0f,
+    animationSpec = tween(durationMillis = 1100, easing = FastOutSlowInEasing),
+    label = "gaugeSweep"
+  )
+  LaunchedEffect(Unit) {
+    startAnim = true
+  }
+
+  Box(
+    modifier = modifier.size(sizeDp),
+    contentAlignment = Alignment.Center
+  ) {
+    Canvas(modifier = Modifier.fillMaxSize().padding(4.dp)) {
+      val strokeOuter = 7.dp.toPx()
+      val strokeInner = 5.dp.toPx()
+
+      // Outer track
+      drawArc(
+        color = trackColor,
+        startAngle = 135f,
+        sweepAngle = 270f,
+        useCenter = false,
+        style = Stroke(width = strokeOuter, cap = StrokeCap.Round)
+      )
+
+      // Outer gradient: Green -> Lime -> Amber -> Coral
+      val outerGradient = Brush.sweepGradient(
+        0.0f to Color(0xFF43A047),
+        0.28f to Color(0xFF8BC34A),
+        0.58f to Color(0xFFFFB300),
+        0.82f to Color(0xFFFF7043),
+        1.0f to Color(0xFFE53935)
+      )
+      val outerSweep = 270f * progress
+      drawArc(
+        brush = outerGradient,
+        startAngle = 135f,
+        sweepAngle = outerSweep,
+        useCenter = false,
+        style = Stroke(width = strokeOuter, cap = StrokeCap.Round)
+      )
+
+      // Outer milestone indicators
+      val radiusOuter = (size.minDimension - strokeOuter) / 2f
+      val center = Offset(size.width / 2f, size.height / 2f)
+
+      // Indicator 1: ring handle near start
+      val rad1 = Math.toRadians(150.0)
+      val dot1Center = Offset(
+        (center.x + radiusOuter * Math.cos(rad1)).toFloat(),
+        (center.y + radiusOuter * Math.sin(rad1)).toFloat()
+      )
+      drawCircle(
+        color = Color.White,
+        radius = 3.5.dp.toPx(),
+        center = dot1Center
+      )
+      drawCircle(
+        color = Color(0xFF43A047),
+        radius = 2.dp.toPx(),
+        center = dot1Center
+      )
+
+      // Indicator 2: solid coral dot near end of arc
+      val rad2 = Math.toRadians((135.0 + outerSweep.toDouble()))
+      val dot2Center = Offset(
+        (center.x + radiusOuter * Math.cos(rad2)).toFloat(),
+        (center.y + radiusOuter * Math.sin(rad2)).toFloat()
+      )
+      drawCircle(
+        color = Color(0xFFFF5722),
+        radius = 3.dp.toPx(),
+        center = dot2Center
+      )
+
+      // Inner track
+      val innerPadding = strokeOuter + 4.dp.toPx()
+      val innerSize = Size(size.width - innerPadding * 2, size.height - innerPadding * 2)
+      val innerTopLeft = Offset(innerPadding, innerPadding)
+
+      drawArc(
+        color = trackColor,
+        startAngle = 160f,
+        sweepAngle = 220f,
+        useCenter = false,
+        topLeft = innerTopLeft,
+        size = innerSize,
+        style = Stroke(width = strokeInner, cap = StrokeCap.Round)
+      )
+
+      // Inner gradient: Magenta -> Purple -> Cyan -> Amber
+      val innerGradient = Brush.sweepGradient(
+        0.0f to Color(0xFFAB47BC),
+        0.35f to Color(0xFF673AB7),
+        0.65f to Color(0xFF00ACC1),
+        1.0f to Color(0xFFFFB300)
+      )
+      val innerSweep = 220f * (progress * 0.9f).coerceAtLeast(0f)
+      drawArc(
+        brush = innerGradient,
+        startAngle = 160f,
+        sweepAngle = innerSweep,
+        useCenter = false,
+        topLeft = innerTopLeft,
+        size = innerSize,
+        style = Stroke(width = strokeInner, cap = StrokeCap.Round)
+      )
+    }
+
+    // Centered Form Score text
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+      Text(
+        text = "${(progress * 100).toInt()}%",
+        style = MaterialTheme.typography.titleMedium.copy(
+          fontWeight = FontWeight.ExtraBold,
+          color = SukhamColors.TitleBlack,
+          fontSize = 18.sp
+        )
+      )
+      Text(
+        text = "Form Score",
+        style = MaterialTheme.typography.labelSmall.copy(
+          fontWeight = FontWeight.Medium,
+          color = SukhamColors.BodyGray,
+          fontSize = 9.sp
+        )
+      )
+    }
+  }
+}
+
+@Composable
+fun DayConsistencyCapsule(
+  day: String,
+  isCompleted: Boolean,
+  modifier: Modifier = Modifier,
+  heightDp: Dp = 52.dp,
+) {
+  val capsuleBg = SukhamColors.ChipBg
+  val checkGreen = SukhamColors.SagePrimary
+
+  Column(
+    modifier = modifier
+      .widthIn(min = 16.dp, max = 22.dp)
+      .height(heightDp)
+      .background(capsuleBg, RoundedCornerShape(percent = 50))
+      .border(0.8.dp, SukhamColors.ChipBorder, RoundedCornerShape(percent = 50))
+      .padding(vertical = 3.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.SpaceBetween
+  ) {
+    Text(
+      text = day,
+      style = MaterialTheme.typography.labelSmall.copy(
+        fontWeight = FontWeight.Bold,
+        color = SukhamColors.TitleBlack,
+        fontSize = 10.sp
+      ),
+      modifier = Modifier.padding(top = 1.dp)
+    )
+
+    if (isCompleted) {
+      Box(
+        modifier = Modifier
+          .size(16.dp)
+          .background(checkGreen, CircleShape),
+        contentAlignment = Alignment.Center
+      ) {
+        Icon(
+          imageVector = Icons.Outlined.Check,
+          contentDescription = null,
+          tint = Color.White,
+          modifier = Modifier.size(10.dp)
+        )
+      }
+    } else {
+      Spacer(modifier = Modifier.size(16.dp))
+    }
+  }
+}
+
+@Composable
+fun PersonalProgressDashboard(
+  modifier: Modifier = Modifier,
+  formScore: Int = 84,
+  spineAlignImprovement: Int = 6,
+) {
+  Card(
+    modifier = modifier.fillMaxWidth(),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamColors.CardBg),
+    border = BorderStroke(1.dp, SukhamColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+  ) {
+    BoxWithConstraints(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(12.dp)
+    ) {
+      val isCompact = maxWidth < 360.dp
+      val gaugeSize = if (isCompact) 86.dp else 98.dp
+
+      Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          // Left Column: Concentric Arc Gauge
+          ConcentricFormScoreGauge(
+            score = formScore,
+            sizeDp = gaugeSize,
+          )
+
+          Spacer(modifier = Modifier.width(6.dp))
+
+          // Right Column: 7-Day Consistency (flexibly adapts to width)
+          Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+          ) {
+            Text(
+              text = "7-Day Consistency",
+              style = MaterialTheme.typography.titleSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamColors.TitleBlack,
+                fontSize = if (isCompact) 13.sp else 14.sp
+              ),
+              maxLines = 1
+            )
+
+            // 7 capsules: M, T, W, T, F, S, S (each with weight(1f) to guarantee screen fit)
+            val weekDays = listOf("M", "T", "W", "T", "F", "S", "S")
+            val completedDays = listOf(true, true, true, true, true, false, false)
+
+            Row(
+              modifier = Modifier.fillMaxWidth(),
+              horizontalArrangement = Arrangement.spacedBy(2.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              weekDays.forEachIndexed { index, day ->
+                Box(
+                  modifier = Modifier.weight(1f),
+                  contentAlignment = Alignment.Center
+                ) {
+                  DayConsistencyCapsule(
+                    day = day,
+                    isCompleted = completedDays.getOrElse(index) { false },
+                    heightDp = if (isCompact) 48.dp else 52.dp
+                  )
+                }
+              }
+            }
+          }
+        }
+
+        // Bottom Row: Spine Align improvement indicator
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          modifier = Modifier.padding(start = 2.dp, top = 1.dp)
+        ) {
+          Text(
+            buildAnnotatedString {
+              withStyle(SpanStyle(color = SukhamColors.TitleBlack, fontWeight = FontWeight.Medium, fontSize = 12.sp)) {
+                append("Spine Align: ")
+              }
+              withStyle(SpanStyle(color = SukhamColors.SagePrimary, fontWeight = FontWeight.Bold, fontSize = 12.sp)) {
+                append("+$spineAlignImprovement%")
+              }
+              withStyle(SpanStyle(color = SukhamColors.BodyGray, fontWeight = FontWeight.Normal, fontSize = 12.sp)) {
+                append(" this week")
+              }
+            }
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun LiveAiCoachHeroCard(
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  val liveTransition = rememberInfiniteTransition(label = "livePulse")
+  val liveDotAlpha by liveTransition.animateFloat(
+    initialValue = 0.35f,
+    targetValue = 1f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(750, easing = LinearEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "liveDotAlpha"
+  )
+  val liveDotScale by liveTransition.animateFloat(
+    initialValue = 0.85f,
+    targetValue = 1.25f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(750, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "liveDotScale"
+  )
+  val playPulse by liveTransition.animateFloat(
+    initialValue = 1f,
+    targetValue = 1.08f,
+    animationSpec = infiniteRepeatable(
+      animation = tween(1400, easing = FastOutSlowInEasing),
+      repeatMode = RepeatMode.Reverse
+    ),
+    label = "playPulse"
+  )
+
+  Card(
+    modifier = modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick),
+    shape = RoundedCornerShape(26.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamColors.CardGlassBg),
+    border = BorderStroke(1.2.dp, SukhamColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+  ) {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+      verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+      // Top badges: LIVE COACH · 30 min on left, Bookmark / Save on right
+      Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onMenuClick, modifier = Modifier.background(Color(0xFFF5F5F5), CircleShape)) {
-            Icon(Icons.Outlined.Menu, contentDescription = "Menu")
+      ) {
+        Surface(
+          color = SukhamColors.SageContainer,
+          shape = RoundedCornerShape(percent = 50),
+          border = BorderStroke(0.8.dp, SukhamColors.SagePrimary.copy(alpha = 0.3f))
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            Box(
+              modifier = Modifier
+                .size(6.dp)
+                .graphicsLayer {
+                  alpha = liveDotAlpha
+                  scaleX = liveDotScale
+                  scaleY = liveDotScale
+                }
+                .background(SukhamColors.SagePrimary, CircleShape)
+            )
+            Spacer(modifier = Modifier.width(6.dp))
+            Text(
+              text = "((•)) LIVE COACH · 30 MIN",
+              style = MaterialTheme.typography.labelSmall.copy(
+                color = SukhamColors.SageDark,
+                fontWeight = FontWeight.Bold,
+                fontSize = 10.5.sp,
+                letterSpacing = 0.5.sp
+              )
+            )
+          }
         }
-        Image(
-            painter = painterResource(R.drawable.lotus_logo),
-            contentDescription = "Sukham Logo",
-            modifier = Modifier.size(40.dp)
-        )
-        IconButton(onClick = {}, modifier = Modifier.background(Color(0xFFF5F5F5), CircleShape)) {
-            Icon(Icons.Outlined.Notifications, contentDescription = "Notifications")
+
+        Box(
+          modifier = Modifier
+            .size(32.dp)
+            .clip(CircleShape)
+            .background(SukhamColors.ChipBg)
+            .border(1.dp, SukhamColors.CardBorder, CircleShape),
+          contentAlignment = Alignment.Center
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Check,
+            contentDescription = "Active",
+            tint = SukhamColors.SagePrimary,
+            modifier = Modifier.size(16.dp)
+          )
         }
+      }
+
+      // Middle: Main Title, Description & Visual
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Column(modifier = Modifier.weight(1f)) {
+          Text(
+            text = "Yoga & Kinetic Motion",
+            style = MaterialTheme.typography.titleLarge.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.TitleBlack,
+              fontSize = 18.5.sp
+            )
+          )
+          Spacer(modifier = Modifier.height(3.dp))
+          Text(
+            text = "Real-time AI posture tracking, kinetic balance & spinal alignment coaching",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamColors.BodyGray,
+              fontSize = 11.5.sp,
+              lineHeight = 15.5.sp
+            )
+          )
+
+          Spacer(modifier = Modifier.height(8.dp))
+
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            DisciplineChip(icon = Icons.Outlined.FitnessCenter, label = "Gym")
+            DisciplineChip(icon = Icons.Outlined.MusicNote, label = "Dance")
+            DisciplineChip(icon = Icons.Outlined.SelfImprovement, label = "Yoga")
+          }
+        }
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Box(
+          modifier = Modifier
+            .size(90.dp)
+            .clip(RoundedCornerShape(18.dp))
+            .border(1.2.dp, SukhamColors.CardBorder, RoundedCornerShape(18.dp)),
+          contentAlignment = Alignment.Center
+        ) {
+          Image(
+            painter = painterResource(R.drawable.live_ai_coach_hero),
+            contentDescription = "Live AI Coach",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+          )
+        }
+      }
+
+      // Bottom Docked Action Pill (matching reference screenshot bottom pill)
+      Surface(
+        color = SukhamColors.SageContainer,
+        shape = RoundedCornerShape(18.dp),
+        border = BorderStroke(1.dp, SukhamColors.SagePrimary.copy(alpha = 0.25f)),
+        modifier = Modifier
+          .fillMaxWidth()
+          .clickable(onClick = onClick)
+      ) {
+        Row(
+          modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Column {
+            Text(
+              text = "Experiencing Genuine Flow",
+              style = MaterialTheme.typography.bodyMedium.copy(
+                fontWeight = FontWeight.Bold,
+                color = SukhamColors.SageDark,
+                fontSize = 13.sp
+              )
+            )
+            Text(
+              text = "Tap to begin real-time session",
+              style = MaterialTheme.typography.labelSmall.copy(
+                color = SukhamColors.BodyGray,
+                fontSize = 10.sp
+              )
+            )
+          }
+
+          Box(
+            modifier = Modifier
+              .size(34.dp)
+              .graphicsLayer {
+                scaleX = playPulse
+                scaleY = playPulse
+              }
+              .clip(CircleShape)
+              .background(SukhamColors.SagePrimary),
+            contentAlignment = Alignment.Center
+          ) {
+            Icon(
+              imageVector = Icons.Outlined.PlayCircleOutline,
+              contentDescription = "Start",
+              tint = Color.White,
+              modifier = Modifier.size(20.dp)
+            )
+          }
+        }
+      }
     }
+  }
+}
+
+@Composable
+fun VideoAnalysisHeroCard(
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier
+) {
+  Card(
+    modifier = modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick),
+    shape = RoundedCornerShape(20.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamColors.CardBg),
+    border = BorderStroke(1.dp, SukhamColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.5.dp)
+  ) {
+    BoxWithConstraints(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(13.dp)
+    ) {
+      // Image resizes dynamically based on device screen width
+      val imageSize = (maxWidth * 0.28f).coerceIn(76.dp, 106.dp)
+
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+      ) {
+        Column(
+          modifier = Modifier.weight(1f)
+        ) {
+          Surface(
+            color = SukhamColors.LavenderSoft,
+            shape = RoundedCornerShape(6.dp),
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Icon(
+                imageVector = Icons.Outlined.Videocam,
+                contentDescription = null,
+                tint = SukhamColors.LavenderPrimary,
+                modifier = Modifier.size(12.dp)
+              )
+              Spacer(modifier = Modifier.width(4.dp))
+              Text(
+                text = "ASYNC AUDIT",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  color = SukhamColors.LavenderPrimary,
+                  fontWeight = FontWeight.ExtraBold,
+                  fontSize = 10.sp
+                )
+              )
+            }
+          }
+
+          Spacer(modifier = Modifier.height(5.dp))
+
+          Text(
+            text = "Upload & Analyze Video",
+            style = MaterialTheme.typography.titleMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.TitleBlack,
+              fontSize = 17.sp
+            )
+          )
+
+          Text(
+            text = "Frame-by-frame joint angles & form critique",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamColors.BodyGray,
+              fontSize = 11.5.sp
+            ),
+            maxLines = 1,
+            modifier = Modifier.padding(top = 1.dp, bottom = 8.dp)
+          )
+
+          Button(
+            onClick = onClick,
+            shape = RoundedCornerShape(10.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = SukhamColors.LavenderPrimary),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+            modifier = Modifier.height(34.dp)
+          ) {
+            Icon(
+              imageVector = Icons.Outlined.Videocam,
+              contentDescription = null,
+              tint = Color.White,
+              modifier = Modifier.size(15.dp)
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+            Text(
+              text = "Upload & Audit Video",
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 11.5.sp
+              )
+            )
+          }
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Image(
+          painter = painterResource(R.drawable.video_motion_audit_hero),
+          contentDescription = "Video Motion Audit",
+          modifier = Modifier
+            .size(imageSize)
+            .clip(RoundedCornerShape(16.dp))
+            .border(1.dp, SukhamColors.CardBorder, RoundedCornerShape(16.dp)),
+          contentScale = ContentScale.Crop
+        )
+      }
+    }
+  }
+}
+
+@Composable
+private fun DisciplineChip(icon: ImageVector, label: String) {
+  Surface(
+    color = SukhamColors.ChipBg,
+    shape = RoundedCornerShape(6.dp),
+    border = BorderStroke(1.dp, SukhamColors.ChipBorder)
+  ) {
+    Row(
+      modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.5.dp),
+      verticalAlignment = Alignment.CenterVertically
+    ) {
+      Icon(
+        imageVector = icon,
+        contentDescription = null,
+        tint = SukhamColors.SagePrimary,
+        modifier = Modifier.size(11.dp)
+      )
+      Spacer(modifier = Modifier.width(3.dp))
+      Text(
+        text = label,
+        style = MaterialTheme.typography.labelSmall.copy(
+          color = SukhamColors.TitleBlack,
+          fontWeight = FontWeight.SemiBold,
+          fontSize = 10.sp
+        )
+      )
+    }
+  }
 }
 
 @Composable
 fun SukhamMainChatCard(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().height(160.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(32.dp),
-        colors = CardDefaults.cardColors(containerColor = SukhamColors.LavenderCard)
+  Surface(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick),
+    shape = RoundedCornerShape(18.dp),
+    color = SukhamColors.LavenderSoft,
+    border = BorderStroke(1.dp, SukhamColors.LavenderBorder),
+    shadowElevation = 0.5.dp
+  ) {
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 14.dp, vertical = 11.dp),
+      verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(20.dp),
-            verticalAlignment = Alignment.CenterVertically
+      // Left: 3D AI Lotus Orb thumbnail + Prompt Header
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.weight(1f)
+      ) {
+        Box(
+          modifier = Modifier
+            .size(42.dp)
+            .clip(CircleShape)
+            .border(1.5.dp, SukhamColors.LavenderBorder, CircleShape)
         ) {
-            Box(
-                modifier = Modifier.size(80.dp).background(
-                    brush = Brush.radialGradient(listOf(Color(0xFFD1C4E9), SukhamColors.Purple)),
-                    shape = CircleShape
-                ),
-                contentAlignment = Alignment.Center
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.lotus_logo),
-                    contentDescription = null,
-                    modifier = Modifier.size(48.dp),
-                )
-            }
-            Spacer(modifier = Modifier.width(16.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    "Chat with SUKHAM AI",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = SukhamColors.TitleBlack,
-                    ),
-                )
-                Text(
-                    "Ask anything. Share a photo, report or scan for on-device analysis.",
-                    style = MaterialTheme.typography.bodyMedium.copy(color = SukhamColors.BodyGray),
-                )
-            }
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                IconButton(
-                    onClick = onClick,
-                    modifier = Modifier.size(56.dp).background(SukhamColors.PurpleDark, CircleShape)
-                ) {
-                    Icon(Icons.Outlined.ChatBubbleOutline, contentDescription = null, tint = Color.White)
-                }
-                Text(
-                    "Start Chat",
-                    style = MaterialTheme.typography.labelSmall.copy(color = SukhamColors.TitleBlack),
-                )
-            }
+          Image(
+            painter = painterResource(R.drawable.sukham_ai_chat_orb),
+            contentDescription = "Sukham AI Assistant",
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+          )
         }
+
+        Spacer(modifier = Modifier.width(11.dp))
+
+        Column(modifier = Modifier.padding(end = 4.dp)) {
+          Text(
+            text = "Ask Sukham AI ✨",
+            style = MaterialTheme.typography.titleSmall.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.TitleBlack,
+              fontSize = 15.sp
+            ),
+            maxLines = 1,
+            softWrap = false
+          )
+          Text(
+            text = "Form critique, nutrition & lab reports",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamColors.BodyGray,
+              fontSize = 11.5.sp
+            ),
+            maxLines = 1
+          )
+        }
+      }
+
+      Spacer(modifier = Modifier.width(10.dp))
+
+      // Right: Slim Prompt Action Pill
+      Surface(
+        color = SukhamColors.LavenderPrimary,
+        shape = RoundedCornerShape(percent = 50),
+        modifier = Modifier.clickable(onClick = onClick)
+      ) {
+        Row(
+          modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.ChatBubbleOutline,
+            contentDescription = null,
+            tint = Color.White,
+            modifier = Modifier.size(13.dp)
+          )
+          Spacer(modifier = Modifier.width(5.dp))
+          Text(
+            text = "Chat",
+            style = MaterialTheme.typography.labelSmall.copy(
+              fontWeight = FontWeight.Bold,
+              color = Color.White,
+              fontSize = 11.5.sp
+            )
+          )
+        }
+      }
     }
+  }
 }
 
 @Composable
@@ -525,145 +1365,443 @@ fun SukhamGridCard(
     badge: String? = null,
     badgeColor: Color = Color.Transparent,
     icon: ImageVector? = null,
-    iconTint: Color = Color(0xFF8D6E63),
+    iconTint: Color = Color.Unspecified,
     actionText: String,
-    actionColor: Color = Color(0xFFEEEEEE),
+    actionColor: Color = Color.Unspecified,
+    actionTextColor: Color = Color.Unspecified,
     onClick: () -> Unit
 ) {
+    val actualActionColor = if (actionColor != Color.Unspecified) actionColor else SukhamColors.SageContainer
+    val actualActionTextColor = if (actionTextColor != Color.Unspecified) actionTextColor else SukhamColors.SageDark
+
     Card(
-        modifier = modifier.height(280.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFF9F9F9))
+        modifier = modifier.clickable(onClick = onClick),
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = SukhamColors.CardBg),
+        border = BorderStroke(1.dp, SukhamColors.CardBorder),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.5.dp)
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                if (badge != null) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            val cardWidth = maxWidth
+            val isNarrow = cardWidth < 165.dp
+            val imgHeight = (cardWidth * 0.58f).coerceIn(68.dp, 94.dp)
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                // Top row: Action tag
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Surface(
-                        color = badgeColor,
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        color = actualActionColor,
+                        shape = RoundedCornerShape(6.dp)
                     ) {
                         Text(
-                            text = badge,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
-                            style = MaterialTheme.typography.labelSmall.copy(color = Color.White)
+                            text = actionText.uppercase(),
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 9.5.sp,
+                                color = actualActionTextColor
+                            ),
+                            modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.5.dp)
                         )
                     }
-                } else if (icon != null) {
-                    Icon(icon, contentDescription = null, tint = iconTint, modifier = Modifier.padding(bottom = 8.dp))
                 }
 
-                Text(
-                    title,
-                    style = MaterialTheme.typography.titleMedium.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = SukhamColors.TitleBlack,
-                    ),
-                )
-                Text(
-                    subtitle,
-                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
-                    maxLines = 2,
-                )
-                
-                Spacer(modifier = Modifier.height(8.dp))
-                
-                Button(
-                    onClick = onClick,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = actionColor),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
-                    modifier = Modifier.height(32.dp)
-                ) {
+                // Title & subtitle
+                Column {
                     Text(
-                        actionText,
-                        style = MaterialTheme.typography.labelSmall.copy(
+                        text = title,
+                        style = MaterialTheme.typography.titleSmall.copy(
+                            fontWeight = FontWeight.Bold,
                             color = SukhamColors.TitleBlack,
-                            fontWeight = FontWeight.SemiBold,
+                            fontSize = if (isNarrow) 13.5.sp else 15.sp
                         ),
+                        maxLines = 1
+                    )
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = SukhamColors.BodyGray,
+                            fontSize = if (isNarrow) 10.5.sp else 11.5.sp
+                        ),
+                        maxLines = 1,
+                        modifier = Modifier.padding(top = 1.dp)
                     )
                 }
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                // Screen-responsive image preview
+                Image(
+                    painter = painterResource(imageRes),
+                    contentDescription = title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(imgHeight)
+                        .clip(RoundedCornerShape(14.dp))
+                        .border(1.dp, SukhamColors.CardBorder, RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
             }
-            Image(
-                painter = painterResource(imageRes),
-                contentDescription = null,
-                modifier = Modifier.align(Alignment.BottomEnd).size(140.dp).offset(x = 10.dp, y = 10.dp),
-                contentScale = ContentScale.Fit
-            )
         }
     }
 }
 
 @Composable
-fun SukhamFooterCard(onClick: () -> Unit) {
-    Card(
-        modifier = Modifier.fillMaxWidth().height(180.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(24.dp)
+fun SukhamFooterCard(
+  onClick: () -> Unit,
+  name: String = "Alex",
+  formScore: Int = 84,
+  streakDays: Int = 6,
+  spineImprovement: Int = 6,
+) {
+  Card(
+    modifier = Modifier
+      .fillMaxWidth()
+      .clickable(onClick = onClick),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = Color.Transparent),
+    elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+  ) {
+    Box(
+      modifier = Modifier
+        .fillMaxWidth()
+        .background(
+          brush = Brush.linearGradient(
+            colors = listOf(
+              Color(0xFF1B4332), // Deep Forest Emerald
+              Color(0xFF2D6A4F), // Sage Emerald
+              Color(0xFF1F3A2B)  // Dark Zen Green
+            ),
+            start = Offset(0f, 0f),
+            end = Offset(1000f, 1000f)
+          )
+        )
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            Image(
-                painter = painterResource(R.drawable.gemma_promo_bg),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
-            Column(modifier = Modifier.padding(16.dp).align(Alignment.BottomStart)) {
-                Text(
-                    "Share My Progress",
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = SukhamColors.TitleBlack,
-                    ),
+      // Subtle background decoration glow circle
+      Canvas(modifier = Modifier.matchParentSize()) {
+        drawCircle(
+          brush = Brush.radialGradient(
+            colors = listOf(Color(0x3352B788), Color.Transparent),
+            center = Offset(size.width * 0.85f, size.height * 0.2f),
+            radius = size.width * 0.45f
+          )
+        )
+      }
+
+      Column(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(16.dp)
+      ) {
+        // Top Header: Milestone Badge & Share Icon
+        Row(
+          modifier = Modifier.fillMaxWidth(),
+          horizontalArrangement = Arrangement.SpaceBetween,
+          verticalAlignment = Alignment.CenterVertically
+        ) {
+          Surface(
+            color = Color(0x33FFFFFF),
+            shape = RoundedCornerShape(percent = 50),
+            border = BorderStroke(1.dp, Color(0x44FFFFFF))
+          ) {
+            Row(
+              modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp),
+              verticalAlignment = Alignment.CenterVertically
+            ) {
+              Text(
+                text = "🔥 $streakDays-DAY STREAK UNLOCKED",
+                style = MaterialTheme.typography.labelSmall.copy(
+                  fontWeight = FontWeight.ExtraBold,
+                  fontSize = 10.sp,
+                  color = Color(0xFFFFD166), // Warm Gold
+                  letterSpacing = 0.5.sp
                 )
-                Text(
-                    "Celebrate milestones. Inspire others. Stay motivated together.",
-                    style = MaterialTheme.typography.bodySmall.copy(color = SukhamColors.BodyGray),
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = onClick,
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF455A64))
-                ) {
-                    Icon(Icons.Outlined.Share, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Share Progress", style = MaterialTheme.typography.labelSmall)
-                }
+              )
             }
+          }
+
+          Surface(
+            color = Color(0x22FFFFFF),
+            shape = CircleShape,
+            modifier = Modifier.size(32.dp)
+          ) {
+            Box(contentAlignment = Alignment.Center) {
+              Icon(
+                imageVector = Icons.Outlined.Share,
+                contentDescription = "Share",
+                tint = Color.White,
+                modifier = Modifier.size(16.dp)
+              )
+            }
+          }
         }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // Title and Pitch
+        Text(
+          text = "Share Your Weekly Report Card",
+          style = MaterialTheme.typography.titleMedium.copy(
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 18.sp
+          )
+        )
+        Text(
+          text = "Inspire your fitness circle. Top 5% form accuracy this week!",
+          style = MaterialTheme.typography.bodySmall.copy(
+            color = Color(0xFFD8F3DC),
+            fontSize = 12.sp
+          ),
+          modifier = Modifier.padding(top = 2.dp)
+        )
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // Mini preview card of their shareable story
+        Surface(
+          color = Color(0x1AFFFFFF),
+          shape = RoundedCornerShape(14.dp),
+          border = BorderStroke(1.dp, Color(0x22FFFFFF)),
+          modifier = Modifier.fillMaxWidth()
+        ) {
+          Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+          ) {
+            // User Avatar & Name
+            Row(verticalAlignment = Alignment.CenterVertically) {
+              Image(
+                painter = painterResource(R.drawable.user_avatar_alex),
+                contentDescription = null,
+                modifier = Modifier
+                  .size(34.dp)
+                  .clip(CircleShape)
+                  .border(1.dp, Color(0xFF52B788), CircleShape),
+                contentScale = ContentScale.Crop
+              )
+              Spacer(modifier = Modifier.width(8.dp))
+              Column {
+                Text(
+                  text = "$name's Summary",
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    fontSize = 12.sp
+                  )
+                )
+                Text(
+                  text = "Sukham AI Verified",
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    color = Color(0xFFB7E4C7),
+                    fontSize = 10.sp
+                  )
+                )
+              }
+            }
+
+            // Quick Stats Preview
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+              Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                  text = "$formScore%",
+                  style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFF74C69D),
+                    fontSize = 14.sp
+                  )
+                )
+                Text(
+                  text = "Form",
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    color = Color(0xAAFFFFFF),
+                    fontSize = 9.sp
+                  )
+                )
+              }
+
+              Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                  text = "+$spineImprovement%",
+                  style = MaterialTheme.typography.labelMedium.copy(
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color(0xFFFFD166),
+                    fontSize = 14.sp
+                  )
+                )
+                Text(
+                  text = "Spine",
+                  style = MaterialTheme.typography.labelSmall.copy(
+                    color = Color(0xAAFFFFFF),
+                    fontSize = 9.sp
+                  )
+                )
+              }
+            }
+          }
+        }
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        // CTA Share Button
+        Button(
+          onClick = onClick,
+          shape = RoundedCornerShape(12.dp),
+          colors = ButtonDefaults.buttonColors(containerColor = Color.White),
+          contentPadding = PaddingValues(horizontal = 14.dp, vertical = 8.dp),
+          modifier = Modifier.fillMaxWidth().height(42.dp)
+        ) {
+          Icon(
+            imageVector = Icons.Outlined.Share,
+            contentDescription = null,
+            modifier = Modifier.size(16.dp),
+            tint = SukhamColors.SageDark
+          )
+          Spacer(modifier = Modifier.width(6.dp))
+          Text(
+            text = "Share Story Card",
+            style = MaterialTheme.typography.labelMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.SageDark,
+              fontSize = 13.sp
+            ),
+            maxLines = 1
+          )
+          Spacer(modifier = Modifier.width(6.dp))
+          Surface(
+            color = SukhamColors.SageContainer,
+            shape = RoundedCornerShape(4.dp)
+          ) {
+            Text(
+              text = "INSTA • WHATSAPP",
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.ExtraBold,
+                color = SukhamColors.SagePrimary,
+                fontSize = 9.sp
+              ),
+              modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
+            )
+          }
+        }
+      }
     }
+  }
+}
+
+enum class SukhamNavTab {
+  HOME,
+  INSIGHTS,
+  PROGRAMS,
+  PROFILE,
 }
 
 @Composable
 fun SukhamBottomNav(
-    onCentralClick: () -> Unit = {},
-    onInsightsClick: () -> Unit = {},
-    onProgramsClick: () -> Unit = {},
-    onProfileClick: () -> Unit = {},
+  currentTab: SukhamNavTab = SukhamNavTab.HOME,
+  onHomeClick: () -> Unit = {},
+  onInsightsClick: () -> Unit = {},
+  onProgramsClick: () -> Unit = {},
+  onProfileClick: () -> Unit = {},
+  onCentralClick: () -> Unit = {},
+  modifier: Modifier = Modifier,
 ) {
+  Box(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 10.dp),
+    contentAlignment = Alignment.Center
+  ) {
     Surface(
-        modifier = Modifier.fillMaxWidth().height(80.dp),
-        shadowElevation = 8.dp,
-        color = Color.White,
-        shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+      modifier = Modifier
+        .fillMaxWidth()
+        .height(66.dp),
+      shadowElevation = 14.dp,
+      color = SukhamColors.NavDockBg,
+      shape = RoundedCornerShape(33.dp),
+      border = BorderStroke(1.2.dp, SukhamColors.NavDockBorder),
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            SukhamNavItem(icon = Icons.Outlined.Home, label = "Home", selected = true)
-            SukhamNavItem(icon = Icons.Outlined.Insights, label = "Insights", onClick = onInsightsClick)
-            IconButton(
-                onClick = onCentralClick,
-                modifier = Modifier.size(56.dp).offset(y = (-10).dp).background(SukhamColors.LavenderCard, CircleShape)
-            ) {
-                Image(painter = painterResource(R.drawable.lotus_logo), contentDescription = null, modifier = Modifier.size(32.dp))
+      Row(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(horizontal = 10.dp),
+        horizontalArrangement = Arrangement.SpaceAround,
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        SukhamNavItem(
+          icon = Icons.Outlined.Home,
+          label = "Home",
+          selected = currentTab == SukhamNavTab.HOME,
+          onClick = if (currentTab != SukhamNavTab.HOME) onHomeClick else null,
+        )
+        SukhamNavItem(
+          icon = Icons.Outlined.Insights,
+          label = "Insights",
+          selected = currentTab == SukhamNavTab.INSIGHTS,
+          onClick = if (currentTab != SukhamNavTab.INSIGHTS) onInsightsClick else null,
+        )
+        // Central Lotus Coach Button in elevated glowing circle with subtle breath animation
+        val coachTransition = rememberInfiniteTransition(label = "coachBreath")
+        val coachScale by coachTransition.animateFloat(
+          initialValue = 1f,
+          targetValue = 1.06f,
+          animationSpec = infiniteRepeatable(
+            animation = tween(1800, easing = FastOutSlowInEasing),
+            repeatMode = RepeatMode.Reverse
+          ),
+          label = "coachScale"
+        )
+
+        Box(
+          modifier = Modifier
+            .size(48.dp)
+            .graphicsLayer {
+              scaleX = coachScale
+              scaleY = coachScale
             }
-            SukhamNavItem(icon = Icons.Outlined.PlayCircleOutline, label = "Programs", onClick = onProgramsClick)
-            SukhamNavItem(icon = Icons.Outlined.Person, label = "Profile", onClick = onProfileClick)
+            .clip(CircleShape)
+            .background(
+              Brush.linearGradient(
+                listOf(SukhamColors.SagePrimary, SukhamColors.TealAccent)
+              )
+            )
+            .border(2.dp, Color.White.copy(alpha = 0.35f), CircleShape)
+            .clickable(onClick = onCentralClick),
+          contentAlignment = Alignment.Center
+        ) {
+          Image(
+            painter = painterResource(R.drawable.lotus_logo),
+            contentDescription = "AI Coach",
+            modifier = Modifier.size(26.dp),
+          )
         }
+        SukhamNavItem(
+          icon = Icons.Outlined.PlayCircleOutline,
+          label = "Programs",
+          selected = currentTab == SukhamNavTab.PROGRAMS,
+          onClick = if (currentTab != SukhamNavTab.PROGRAMS) onProgramsClick else null,
+        )
+        SukhamNavItem(
+          icon = Icons.Outlined.Person,
+          label = "Profile",
+          selected = currentTab == SukhamNavTab.PROFILE,
+          onClick = if (currentTab != SukhamNavTab.PROFILE) onProfileClick else null,
+        )
+      }
     }
+  }
 }
 
 @Composable
@@ -675,12 +1813,56 @@ fun SukhamNavItem(
 ) {
     val baseModifier =
         if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier
-    Column(
-        modifier = baseModifier.padding(horizontal = 8.dp, vertical = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+    val itemColor by animateColorAsState(
+        targetValue = if (selected) SukhamColors.SagePrimary else SukhamColors.MutedGray,
+        animationSpec = tween(durationMillis = 220),
+        label = "navItemColor"
+    )
+    val pillBg by animateColorAsState(
+        targetValue = if (selected) SukhamColors.SageContainer else Color.Transparent,
+        animationSpec = tween(durationMillis = 220),
+        label = "navPillBg"
+    )
+    val iconScale by animateFloatAsState(
+        targetValue = if (selected) 1.12f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "navIconScale"
+    )
+
+    Box(
+        modifier = baseModifier
+            .clip(RoundedCornerShape(20.dp))
+            .background(pillBg)
+            .padding(horizontal = 12.dp, vertical = 6.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(icon, contentDescription = label, tint = if (selected) SukhamColors.PurpleDark else Color.LightGray)
-        Text(label, style = MaterialTheme.typography.labelSmall.copy(color = if (selected) SukhamColors.PurpleDark else Color.LightGray))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                icon,
+                contentDescription = label,
+                tint = itemColor,
+                modifier = Modifier
+                    .size(20.dp)
+                    .graphicsLayer {
+                        scaleX = iconScale
+                        scaleY = iconScale
+                    }
+            )
+            Text(
+                label,
+                style = MaterialTheme.typography.labelSmall.copy(
+                    color = itemColor,
+                    fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
+                    fontSize = 9.5.sp
+                )
+            )
+        }
     }
 }
 
@@ -715,3 +1897,354 @@ fun SquareDrawerItem(
     }
   }
 }
+
+// -----------------------------------------------------------------------------
+// MARK: - Smart Recommendations Carousel
+// -----------------------------------------------------------------------------
+data class HomeRecommendation(
+  val id: String,
+  val tag: String,
+  val title: String,
+  val description: String,
+  val metricBenefit: String,
+  val duration: String,
+  val imageRes: Int,
+  val tagBg: Color,
+  val tagColor: Color,
+  val buttonText: String,
+  val onClick: () -> Unit,
+)
+
+@Composable
+fun SmartRecommendationsCarousel(
+  onViewAllInsights: () -> Unit,
+  onStartSpineReset: () -> Unit,
+  onStartBalanceAudit: () -> Unit,
+  onStartSleepWinddown: () -> Unit,
+  onStartCoreMobility: () -> Unit,
+  modifier: Modifier = Modifier,
+) {
+  val recommendations = listOf(
+    HomeRecommendation(
+      id = "spine_reset",
+      tag = "POSTURE AI",
+      title = "3-Min Cervical Spine Reset",
+      description = "Decompress forward neck tilt with Cat-Cow & Sphinx holds before afternoon desk work.",
+      metricBenefit = "Spine Align +8%",
+      duration = "3 min",
+      imageRes = R.drawable.pose_cat_cow,
+      tagBg = SukhamColors.SageContainer,
+      tagColor = SukhamColors.SageDark,
+      buttonText = "Start Routine",
+      onClick = onStartSpineReset,
+    ),
+    HomeRecommendation(
+      id = "balance_radar",
+      tag = "BALANCE RADAR",
+      title = "Left Hip Symmetry Boost",
+      description = "Correct 6% right-side bias with Tree & Warrior II unilateral stability holds.",
+      metricBenefit = "Symmetry 50:50",
+      duration = "10s Hold",
+      imageRes = R.drawable.pose_tree,
+      tagBg = SukhamColors.StreakGlow,
+      tagColor = SukhamColors.StreakAmber,
+      buttonText = "Test Balance",
+      onClick = onStartBalanceAudit,
+    ),
+    HomeRecommendation(
+      id = "sleep_recovery",
+      tag = "RECOVERY",
+      title = "Restorative Winddown",
+      description = "Calm evening HRV stress with Corpse & Child's pose to enhance deep sleep cycles.",
+      metricBenefit = "HRV Recovery +14%",
+      duration = "5 min",
+      imageRes = R.drawable.pose_childs,
+      tagBg = SukhamColors.LavenderSoft,
+      tagColor = SukhamColors.LavenderPrimary,
+      buttonText = "Begin Winddown",
+      onClick = onStartSleepWinddown,
+    ),
+    HomeRecommendation(
+      id = "core_stabilizer",
+      tag = "CORE STRENGTH",
+      title = "Boat & Plank Kinetic Hold",
+      description = "Reinforce abdominal wall & lumbar support with 10-second posture audits.",
+      metricBenefit = "Core Stability 92%",
+      duration = "2 min",
+      imageRes = R.drawable.pose_boat,
+      tagBg = Color(0xFFE0F2F1),
+      tagColor = Color(0xFF00796B),
+      buttonText = "Audit Form",
+      onClick = onStartCoreMobility,
+    ),
+  )
+
+  Column(
+    modifier = modifier.fillMaxWidth(),
+    verticalArrangement = Arrangement.spacedBy(10.dp),
+  ) {
+    // Header Row with "See Insights" link
+    Row(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 4.dp),
+      horizontalArrangement = Arrangement.SpaceBetween,
+      verticalAlignment = Alignment.CenterVertically,
+    ) {
+      Row(
+        modifier = Modifier.weight(1f, fill = false),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Surface(
+          shape = CircleShape,
+          color = SukhamColors.SageContainer,
+          modifier = Modifier.size(24.dp),
+        ) {
+          Box(contentAlignment = Alignment.Center) {
+            Icon(
+              Icons.Outlined.Eco,
+              contentDescription = null,
+              tint = SukhamColors.SagePrimary,
+              modifier = Modifier.size(13.dp),
+            )
+          }
+        }
+        Spacer(modifier = Modifier.width(6.dp))
+        Column {
+          Text(
+            text = "Smart Recommendations",
+            style = MaterialTheme.typography.titleMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.TitleBlack,
+              fontSize = 13.5.sp,
+            ),
+            maxLines = 1,
+          )
+          Text(
+            text = "Personalized mobility & recovery plan",
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamColors.BodyGray,
+              fontSize = 10.5.sp,
+            ),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+          )
+        }
+      }
+
+      Surface(
+        shape = RoundedCornerShape(20.dp),
+        color = Color.Transparent,
+        modifier = Modifier.clickable(onClick = onViewAllInsights),
+      ) {
+        Row(
+          modifier = Modifier.padding(start = 6.dp, end = 2.dp, top = 4.dp, bottom = 4.dp),
+          verticalAlignment = Alignment.CenterVertically,
+        ) {
+          Text(
+            text = "See Insights",
+            softWrap = false,
+            style = MaterialTheme.typography.labelMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.SagePrimary,
+              fontSize = 11.5.sp,
+            ),
+          )
+          Icon(
+            Icons.Outlined.KeyboardArrowRight,
+            contentDescription = null,
+            tint = SukhamColors.SagePrimary,
+            modifier = Modifier.size(16.dp),
+          )
+        }
+      }
+    }
+
+    // Horizontally Scrollable Carousel of Cards
+    LazyRow(
+      modifier = Modifier.fillMaxWidth(),
+      horizontalArrangement = Arrangement.spacedBy(12.dp),
+      contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp),
+    ) {
+      items(recommendations.size) { index ->
+        val item = recommendations[index]
+        RecommendationCard(item)
+      }
+    }
+  }
+}
+
+@Composable
+private fun RecommendationCard(item: HomeRecommendation) {
+  Card(
+    modifier = Modifier
+      .width(295.dp)
+      .clickable(onClick = item.onClick),
+    shape = RoundedCornerShape(22.dp),
+    colors = CardDefaults.cardColors(containerColor = SukhamColors.CardBg),
+    border = BorderStroke(1.dp, SukhamColors.CardBorder),
+    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+  ) {
+    Column(
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp),
+      verticalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+      // Top Tag & Duration Row
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Surface(
+          shape = RoundedCornerShape(6.dp),
+          color = item.tagBg,
+        ) {
+          Text(
+            text = item.tag,
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+            style = MaterialTheme.typography.labelSmall.copy(
+              fontWeight = FontWeight.Bold,
+              color = item.tagColor,
+              fontSize = 9.5.sp,
+              letterSpacing = 0.5.sp,
+            ),
+          )
+        }
+
+        Surface(
+          shape = RoundedCornerShape(20.dp),
+          color = SukhamColors.ChipBg,
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Icon(
+              Icons.Outlined.Timer,
+              contentDescription = null,
+              tint = SukhamColors.BodyGray,
+              modifier = Modifier.size(11.dp),
+            )
+            Spacer(modifier = Modifier.width(3.dp))
+            Text(
+              text = item.duration,
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.SemiBold,
+                color = SukhamColors.BodyGray,
+                fontSize = 10.sp,
+              ),
+            )
+          }
+        }
+      }
+
+      // Title & Illustration Row
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Column(modifier = Modifier.weight(1f)) {
+          Text(
+            text = item.title,
+            style = MaterialTheme.typography.titleMedium.copy(
+              fontWeight = FontWeight.Bold,
+              color = SukhamColors.TitleBlack,
+              fontSize = 14.sp,
+              lineHeight = 18.sp,
+            ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+          )
+
+          Spacer(modifier = Modifier.height(3.dp))
+
+          Text(
+            text = item.description,
+            style = MaterialTheme.typography.bodySmall.copy(
+              color = SukhamColors.BodyGray,
+              fontSize = 11.5.sp,
+              lineHeight = 15.sp,
+            ),
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis,
+          )
+        }
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        // Visual Illustration Box with actual Pocket Yoga PDF illustration
+        Surface(
+          modifier = Modifier.size(56.dp),
+          shape = RoundedCornerShape(14.dp),
+          color = Color.White,
+          border = BorderStroke(1.dp, SukhamColors.CardBorder),
+          shadowElevation = 0.5.dp,
+        ) {
+          Box(
+            modifier = Modifier.fillMaxSize().padding(3.dp),
+            contentAlignment = Alignment.Center,
+          ) {
+            Image(
+              painter = painterResource(item.imageRes),
+              contentDescription = item.title,
+              modifier = Modifier.fillMaxSize(),
+              contentScale = ContentScale.Fit,
+            )
+          }
+        }
+      }
+
+      // Metric Benefit pill & Action Button Row
+      Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+      ) {
+        Surface(
+          shape = RoundedCornerShape(6.dp),
+          color = item.tagBg,
+        ) {
+          Text(
+            text = item.metricBenefit,
+            modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
+            style = MaterialTheme.typography.labelSmall.copy(
+              fontWeight = FontWeight.Bold,
+              color = item.tagColor,
+              fontSize = 10.sp,
+            ),
+          )
+        }
+
+        Surface(
+          shape = RoundedCornerShape(20.dp),
+          color = SukhamColors.SagePrimary,
+          modifier = Modifier.clickable(onClick = item.onClick),
+        ) {
+          Row(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+          ) {
+            Text(
+              text = item.buttonText,
+              style = MaterialTheme.typography.labelSmall.copy(
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 11.sp,
+              ),
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Icon(
+              Icons.Outlined.KeyboardArrowRight,
+              contentDescription = null,
+              tint = Color.White,
+              modifier = Modifier.size(13.dp),
+            )
+          }
+        }
+      }
+    }
+  }
+}
+

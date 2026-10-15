@@ -367,11 +367,28 @@ data class Model(
     val baseDir =
       listOf(context.getExternalFilesDir(null)?.absolutePath ?: "", normalizedName, version)
         .joinToString(File.separator)
-    return if (this.isZip && this.unzipDir.isNotEmpty()) {
+    val defaultPath = if (this.isZip && this.unzipDir.isNotEmpty()) {
       listOf(baseDir, this.unzipDir).joinToString(File.separator)
     } else {
       listOf(baseDir, fileName).joinToString(File.separator)
     }
+    if (File(defaultPath).exists()) {
+      return defaultPath
+    }
+    val extDir = context.getExternalFilesDir(null)
+    if (extDir != null && normalizedName.isNotEmpty()) {
+      val modelDir = File(extDir, normalizedName)
+      if (modelDir.exists() && modelDir.isDirectory) {
+        val found = modelDir.walkTopDown().firstOrNull { f ->
+          f.isFile && f.length() > 0 &&
+            (f.name == fileName || f.extension == "litertlm" || f.extension == "task" || f.extension == "bin")
+        }
+        if (found != null) {
+          return found.absolutePath
+        }
+      }
+    }
+    return defaultPath
   }
 
   fun getIntConfigValue(key: ConfigKey, defaultValue: Int = 0): Int {
