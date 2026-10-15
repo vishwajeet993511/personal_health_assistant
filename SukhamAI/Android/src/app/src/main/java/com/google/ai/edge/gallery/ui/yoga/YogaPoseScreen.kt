@@ -1613,7 +1613,6 @@ private fun SessionOverlay(
     when {
       analyzing -> "analysing\u2026"
       holdState == PoseHoldDetector.State.NO_PERSON -> "step into frame"
-      holdState == PoseHoldDetector.State.NOT_STANDING -> "stand up to be coached"
       holdState == PoseHoldDetector.State.MOVING -> "hold your pose"
       holdState == PoseHoldDetector.State.SETTLING ->
         "holding\u2026 ${(holdProgress * 100).toInt()}%"

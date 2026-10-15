@@ -23,8 +23,36 @@ import kotlin.math.sqrt
 
 private const val TAG = "PoseHoldDetector"
 
-/** Mean per-landmark movement (normalised image units) below which the body counts as still. */
-private const val STILLNESS_THRESHOLD = 0.018f
+/**
+ * Median per-joint movement between frames, as a fraction of torso length, below which the body
+ * counts as still. Measured in torso lengths so it means the same thing whether the person
+ * fills the frame or stands at the back of the room.
+ */
+private const val STILLNESS_THRESHOLD = 0.08f
+
+/**
+ * Consecutive over-threshold frames tolerated mid-hold before the hold is reset.
+ *
+ * MediaPipe runs per image here, with no temporal tracking, so a held pose still produces the
+ * odd frame where a wrist or ankle jumps. Resetting the whole hold on one such frame meant a
+ * perfectly still person could be told to "hold your pose" indefinitely.
+ */
+private const val MAX_GLITCH_FRAMES = 1
+
+/** Weight of the newest frame in the landmark moving average; lower is smoother but laggier. */
+private const val SMOOTHING_ALPHA = 0.5f
+
+/** Joints below this visibility are guesses by the model and are left out of the movement test. */
+private const val MIN_VISIBILITY = 0.5f
+
+/** Fewer visible core joints than this and we cannot tell still from moving. */
+private const val MIN_VISIBLE_JOINTS = 4
+
+/**
+ * Shoulders, elbows, wrists, hips, knees and ankles. The face, finger and toe landmarks are
+ * the noisiest MediaPipe produces and say nothing about whether a pose is being held.
+ */
+private val CORE_JOINTS = intArrayOf(11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28)
 
 /** How long the body must stay still before the pose counts as held. */
 private const val HOLD_MS = 2_000L
@@ -73,8 +101,6 @@ class PoseHoldDetector {
   /** What the detector is waiting on — drives the on-screen hint during a session. */
   enum class State {
     NO_PERSON,
-    /** Someone is there, but on the floor — we only coach standing poses. */
-    NOT_STANDING,
     MOVING,
     SETTLING,
     READY,
@@ -101,7 +127,9 @@ class PoseHoldDetector {
    */
   private val heldFeatures = mutableListOf<FloatArray>()
 
+  /** Exponentially smoothed landmark positions from the previous frame. */
   private var previous: List<Pair<Float, Float>>? = null
+  private var glitchFrames = 0
   private var stillSinceMs = 0L
   private var lastAnalysedPose: String? = null
   private var lastAnalysedScore = 0f
@@ -110,6 +138,7 @@ class PoseHoldDetector {
   fun reset() {
     heldFeatures.clear()
     previous = null
+    glitchFrames = 0
     stillSinceMs = 0L
     lastAnalysedPose = null
     lastAnalysedScore = 0f
@@ -130,40 +159,56 @@ class PoseHoldDetector {
     val landmarks = result?.landmarks()?.firstOrNull()
     if (landmarks == null || landmarks.isEmpty()) {
       previous = null
+      glitchFrames = 0
       stillSinceMs = 0L
       return Decision(State.NO_PERSON, 0f, null, null)
     }
 
-    if (!PoseClassifier.isStandingPose(result)) {
-      previous = null
+    val prev = previous
+    if (prev == null || prev.size != landmarks.size) {
+      previous = landmarks.map { it.x() to it.y() }
       stillSinceMs = 0L
-      heldFeatures.clear()
-      return Decision(State.NOT_STANDING, 0f, null, null)
+      return Decision(State.MOVING, 0f, null, null)
     }
 
-    val current = landmarks.map { it.x() to it.y() }
-    val prev = previous
+    // Smooth before differencing, so per-frame landmark jitter is damped rather than read as
+    // movement. A real change of pose still shows up within a frame or two.
+    val current =
+      landmarks.mapIndexed { i, lm ->
+        val (px, py) = prev[i]
+        (px + SMOOTHING_ALPHA * (lm.x() - px)) to (py + SMOOTHING_ALPHA * (lm.y() - py))
+      }
     previous = current
 
-    if (prev == null || prev.size != current.size) {
-      stillSinceMs = 0L
-      return Decision(State.MOVING, 0f, null, null)
-    }
-
-    // Mean Euclidean displacement across all joints, in normalised image units.
-    var total = 0f
-    for (i in current.indices) {
-      val dx = current[i].first - prev[i].first
-      val dy = current[i].second - prev[i].second
-      total += sqrt(dx * dx + dy * dy)
-    }
-    val movement = total / current.size
+    val visible = CORE_JOINTS.filter { landmarks[it].visibility().orElse(1f) >= MIN_VISIBILITY }
+    val movement =
+      if (visible.size < MIN_VISIBLE_JOINTS) Float.MAX_VALUE
+      else {
+        val torso = torsoLength(current)
+        // Median, not mean: one joint glitching should not outvote the eleven holding still.
+        visible
+          .map { i ->
+            val dx = current[i].first - prev[i].first
+            val dy = current[i].second - prev[i].second
+            sqrt(dx * dx + dy * dy) / torso
+          }
+          .sorted()
+          .let { it[it.size / 2] }
+      }
 
     if (movement > STILLNESS_THRESHOLD) {
+      glitchFrames++
+      if (stillSinceMs != 0L && glitchFrames <= MAX_GLITCH_FRAMES) {
+        // A lone spike mid-hold: keep the hold clock running, but keep this frame out of the
+        // pooled features so the spike cannot skew classification either.
+        val progress = ((nowMs - stillSinceMs).toFloat() / HOLD_MS).coerceIn(0f, 1f)
+        return Decision(State.SETTLING, progress, null, null)
+      }
       stillSinceMs = 0L
       heldFeatures.clear()
       return Decision(State.MOVING, 0f, null, null)
     }
+    glitchFrames = 0
 
     if (stillSinceMs == 0L) stillSinceMs = nowMs
     PoseClassifier.featuresOf(result)?.let { f ->
@@ -216,6 +261,15 @@ class PoseHoldDetector {
     )
     return Decision(State.READY, 1f, candidates, topName)
   }
+  /** Shoulder-midpoint to hip-midpoint distance, the yardstick for body-relative movement. */
+  private fun torsoLength(pts: List<Pair<Float, Float>>): Float {
+    val sx = (pts[11].first + pts[12].first) / 2f
+    val sy = (pts[11].second + pts[12].second) / 2f
+    val hx = (pts[23].first + pts[24].first) / 2f
+    val hy = (pts[23].second + pts[24].second) / 2f
+    return sqrt((sx - hx) * (sx - hx) + (sy - hy) * (sy - hy)).coerceAtLeast(0.05f)
+  }
+
   /** Per-feature median across the hold window; null until we have a couple of frames. */
   private fun medianFeatures(): FloatArray? {
     if (heldFeatures.size < 2) return heldFeatures.firstOrNull()

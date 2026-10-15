@@ -182,6 +182,76 @@ object PoseCues {
           "drop the shoulders down away from the ears",
           "press the palms evenly together at the centre of the chest",
         ),
+      "Easy Pose (Sukhasana)" to
+        listOf(
+          "sit up tall, stacking the shoulders over the hips",
+          "let the knees drop toward the floor, sitting on a block if they ride higher than the hips",
+        ),
+      "Bound Angle (Baddha Konasana)" to
+        listOf(
+          "lengthen up through the spine instead of rounding forward",
+          "draw the heels in toward the pelvis and let the knees fall open",
+        ),
+      "Half Pigeon (Ardha Kapotasana)" to
+        listOf(
+          "square the hips toward the front of the mat",
+          "flex the front foot to protect the knee",
+          "extend the back leg straight behind the hip",
+        ),
+      "Garland / Squat (Malasana)" to
+        listOf(
+          "lower the heels toward the floor, rolling a blanket under them if they lift",
+          "lift the chest and press the elbows into the inner knees",
+        ),
+      "Corpse (Shavasana)" to
+        listOf(
+          "let the feet fall open and rest the arms a little away from the body, palms up",
+          "lengthen the back of the neck so the chin is not tipping up",
+        ),
+      "Supine Spinal Twist (Supta Matsyendrasana)" to
+        listOf(
+          "keep both shoulders resting on the floor",
+          "stack the bent knee over the hip instead of letting it slide down",
+        ),
+      "Bow (Dhanurasana)" to
+        listOf(
+          "kick the feet back into the hands to lift the chest",
+          "keep the knees hip-width apart rather than splaying them wide",
+        ),
+      "Upward Dog (Urdhva Mukha Svanasana)" to
+        listOf(
+          "lift the thighs clear of the floor by pressing through the tops of the feet",
+          "roll the shoulders back and down away from the ears",
+          "stack the shoulders directly over the wrists",
+        ),
+      "Cat (Marjariasana)" to
+        listOf(
+          "round evenly through the whole spine, not just the upper back",
+          "keep the wrists under the shoulders and the knees under the hips",
+        ),
+      "Cow (Bitilasana)" to
+        listOf(
+          "draw the shoulders away from the ears as the chest lifts",
+          "keep the wrists under the shoulders and the knees under the hips",
+        ),
+      "Crane / Crow (Bakasana)" to
+        listOf(
+          "shift the weight further forward over the hands",
+          "squeeze the knees high up on the backs of the upper arms",
+          "look slightly forward rather than straight down",
+        ),
+      "Headstand (Sirsasana)" to
+        listOf(
+          "press down through the forearms so the neck is not carrying the weight",
+          "stack the hips directly over the shoulders",
+          "draw the legs together and reach up through the heels",
+        ),
+      "Shoulder Stand (Sarvangasana)" to
+        listOf(
+          "walk the hands further up the back toward the shoulder blades",
+          "bring the elbows in toward each other, shoulder-width apart",
+          "straighten the body so the legs stack over the hips",
+        ),
     )
 
   /**
@@ -279,7 +349,24 @@ object PoseCues {
       "Downward Dog (Adho Mukha Svanasana)" to
         "an inverted V, hands and feet on the floor with the hips lifted high",
       "Plank (Kumbhakasana)" to
-        "face down, body in one straight line from shoulders to heels, supported on the hands",
+        "face down, body in one straight line from shoulders to heels, supported on BOTH hands " +
+        "with the chest and hips facing the floor",
+      "Shoulder Stand (Sarvangasana)" to
+        "inverted with the weight on the SHOULDERS and upper arms, hands supporting the back, " +
+        "head flat on the floor and legs straight up",
+      "Bound Angle (Baddha Konasana)" to
+        "seated upright with the soles of the feet pressed together and the knees dropping " +
+        "out to the sides",
+      "Half Pigeon (Ardha Kapotasana)" to
+        "one shin folded in front across the mat, the other leg stretched straight back along " +
+        "the floor",
+      "Supine Spinal Twist (Supta Matsyendrasana)" to
+        "lying on the back with one bent knee dropped across the body to the floor, arms out wide",
+      "Bow (Dhanurasana)" to
+        "lying face down with the knees bent, hands holding the ankles, chest and thighs lifted",
+      "Crane / Crow (Bakasana)" to
+        "balancing on the hands with the knees resting on the upper arms and both feet off the " +
+        "floor",
       "Cobra (Bhujangasana)" to
         "lying face down with the hips ON THE FLOOR, chest lifted and hands under the shoulders",
       "Camel (Ustrasana)" to

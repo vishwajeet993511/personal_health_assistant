@@ -45,13 +45,6 @@ object PoseClassifier {
 
   private const val TAG = "PoseClassifier"
 
-  /** Above this leg angle the body is lying down or inverted, not standing. */
-  private const val MAX_STANDING_LEG_LEAN = 60f
-  /** Below this wrist height the hands are bearing weight on the floor. */
-  private const val MIN_STANDING_WRIST_HEIGHT = 0.25f
-  /** Hands-down only rules a pose out when the legs are off vertical too (cf. a forward fold). */
-  private const val HANDS_DOWN_LEG_LEAN = 25f
-
   /** A candidate pose and how well the skeleton matched it, 0..1 (1 = exact). */
   data class PoseMatch(val name: String, val score: Float)
 
@@ -138,12 +131,21 @@ object PoseClassifier {
    * reaches only ~79% top-1, so fine-grained separation at that scale is hard even for much
    * larger models than anything that fits on a phone.
    *
-   * Restricting to ten well-separated, commonly practised poses lifts the worst-case separation
-   * to 21.2 and the median to 34.1, which is comfortably outside the noise floor. Add to this
-   * list only after checking the new pose does not sit on top of an existing one.
+   * So this is the commonly practised subset — the poses the Programs screen teaches, across
+   * standing, seated, supine, prone, arm-support and inversion families. Poses from different
+   * families sit at least 21.3 apart (Standing Forward Fold vs Downward Dog is the closest), so
+   * one list ranks them all without first having to decide whether the person is upright.
+   *
+   * A few same-family pairs are closer than the noise floor and are expected to trade places:
+   * Cobra / Upward Dog (4.7), Cat / Cow (9.7), Headstand / Shoulder Stand (10.7),
+   * Plank / Side Plank (12.1) and Chair / Eagle (12.4). Both members of such a pair land in the
+   * top three together, and [PoseCues] gives each a description naming the visual difference so
+   * the model, which can see the image, breaks the tie. Add to this list only after checking
+   * the new pose does not sit on top of an existing one.
    */
   val CURATED_POSES =
     listOf(
+      // Standing
       "Mountain (Tadasana)",
       "Upward Salute (Urdhva Hastasana)",
       "Chair (Utkatasana)",
@@ -154,6 +156,33 @@ object PoseClassifier {
       "Triangle (Utthita Trikonasana)",
       "Standing Forward Fold (Uttanasana)",
       "Extended Side Angle (Utthita Parsvakonasana)",
+      "Half Moon (Ardha Chandrasana)",
+      "Eagle (Garudasana)",
+      // Seated
+      "Easy Pose (Sukhasana)",
+      "Boat (Navasana)",
+      "Bound Angle (Baddha Konasana)",
+      "Half Pigeon (Ardha Kapotasana)",
+      "Garland / Squat (Malasana)",
+      // Supine
+      "Bridge (Setu Bandha Sarvangasana)",
+      "Corpse (Shavasana)",
+      "Supine Spinal Twist (Supta Matsyendrasana)",
+      // Prone
+      "Cobra (Bhujangasana)",
+      "Child's Pose (Balasana)",
+      "Bow (Dhanurasana)",
+      // Arm & leg support
+      "Downward Dog (Adho Mukha Svanasana)",
+      "Plank (Kumbhakasana)",
+      "Cat (Marjariasana)",
+      "Cow (Bitilasana)",
+      "Side Plank (Vasisthasana)",
+      "Upward Dog (Urdhva Mukha Svanasana)",
+      // Arm balance & inversion
+      "Crane / Crow (Bakasana)",
+      "Headstand (Sirsasana)",
+      "Shoulder Stand (Sarvangasana)",
     )
 
   private val POSE_TEMPLATES: Map<String, FloatArray> =
@@ -173,49 +202,13 @@ object PoseClassifier {
    * two is kept, because every asana can be practised on either side and a mirrored Warrior II
    * is still Warrior II.
    */
-  /**
-   * Whether the body is upright enough to be one of the standing poses we classify.
-   *
-   * With only standing templates loaded, a person on the floor would otherwise be forced onto
-   * the nearest standing label — Downward Dog came out as "Standing Forward Fold", Cat as
-   * "Chair". Refusing to answer is the honest result, and it lets the UI ask them to stand
-   * instead of coaching a pose they are not in.
-   *
-   * Two measurements, both validated against the 78 reference images:
-   *  - legs horizontal (legLean > 60) means lying or inverted;
-   *  - hands down near the floor while the legs are not vertical means a hands-and-knees or
-   *    hands-and-feet pose. The second clause needs the leg condition because a standing
-   *    forward fold also has the hands low, but its legs stay vertical.
-   */
-  fun isStandingPose(result: PoseLandmarkerResult): Boolean {
-    val f = extractFeatures(result) ?: return false
-    if (f[F_LEG_LEAN] > MAX_STANDING_LEG_LEAN) return false
-    val w = wristHeightAboveAnkles(result) ?: return true
-    return !(w < MIN_STANDING_WRIST_HEIGHT && f[F_LEG_LEAN] > HANDS_DOWN_LEG_LEAN)
-  }
-
-  /** Wrist height above the ankles, in leg-lengths. Negative means hands below the feet. */
-  private fun wristHeightAboveAnkles(result: PoseLandmarkerResult): Float? {
-    val pts = worldPoints(result) ?: return null
-    val legLength =
-      (dist(pts[L_HIP], pts[L_KNEE]) + dist(pts[L_KNEE], pts[L_ANKLE])).coerceAtLeast(1e-4f)
-    val ankleY = (pts[L_ANKLE].y + pts[R_ANKLE].y) / 2f
-    val wristY = (pts[L_WRIST].y + pts[R_WRIST].y) / 2f
-    // y grows downward, so a positive result means the wrists sit above the ankles.
-    return (ankleY - wristY) / legLength
+  fun classify(result: PoseLandmarkerResult, topN: Int = 3): List<PoseMatch> {
+    val features = extractFeatures(result) ?: return emptyList()
+    return classifyFeatures(features, topN)
   }
 
   /** The raw 12-feature vector, exposed so callers can average it across frames. */
   fun featuresOf(result: PoseLandmarkerResult): FloatArray? = extractFeatures(result)
-
-  fun classify(result: PoseLandmarkerResult, topN: Int = 3): List<PoseMatch> {
-    if (!isStandingPose(result)) {
-      Log.d(TAG, "Not a standing pose; declining to classify.")
-      return emptyList()
-    }
-    val features = extractFeatures(result) ?: return emptyList()
-    return classifyFeatures(features, topN)
-  }
 
   /**
    * Ranks a feature vector that may have been pooled over several frames.
