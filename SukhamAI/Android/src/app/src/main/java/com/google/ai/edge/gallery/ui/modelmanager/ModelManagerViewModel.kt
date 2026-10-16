@@ -84,6 +84,18 @@ private const val ALLOWLIST_BASE_URL =
 
 private const val TEST_MODEL_ALLOW_LIST = ""
 
+/**
+ * The only models Sukham offers. Both are Gemma 4 and both download without a Hugging Face
+ * login; the gated Gemma3-1B was dropped so the first-launch download can run unattended.
+ */
+private val SUKHAM_MODEL_NAMES = setOf("Gemma-4-E2B-it", "Gemma-4-E4B-it")
+
+/** Downloaded automatically on first launch, on every device regardless of RAM. */
+private const val DEFAULT_MODEL_NAME = "Gemma-4-E2B-it"
+
+private const val SUKHAM_PREFS = "sukham_model_prefs"
+private const val KEY_AUTO_DOWNLOAD_DONE = "auto_download_done"
+
 data class ModelInitializationStatus(
   val status: ModelInitializationStatusType,
   var error: String = "",
@@ -972,8 +984,43 @@ constructor(
             checkedModelNames.add(model.name)
           }
         }
+
+        // Runs here, after cancelAll has finished, so the new worker can't be cancelled by it.
+        autoDownloadDefaultModelOnce()
       }
     }
+  }
+
+  /**
+   * On the very first launch with no model on disk, start downloading [DEFAULT_MODEL_NAME] in the
+   * background so the app is ready without the user having to find the Profile screen.
+   *
+   * It runs once per install: if the user later deletes the model, it stays deleted until they
+   * download it again from Profile.
+   */
+  private fun autoDownloadDefaultModelOnce() {
+    val prefs = context.getSharedPreferences(SUKHAM_PREFS, Context.MODE_PRIVATE)
+    if (prefs.getBoolean(KEY_AUTO_DOWNLOAD_DONE, false)) return
+
+    val haveOrFetching =
+      _allowlistModels.any { model ->
+        val status = uiState.value.modelDownloadStatus[model.name]?.status
+        status == ModelDownloadStatusType.SUCCEEDED ||
+          status == ModelDownloadStatusType.IN_PROGRESS ||
+          status == ModelDownloadStatusType.PARTIALLY_DOWNLOADED ||
+          isModelDownloaded(model)
+      }
+    val model = _allowlistModels.firstOrNull { it.name == DEFAULT_MODEL_NAME }
+    if (!haveOrFetching && model != null) {
+      val task =
+        uiState.value.tasks.firstOrNull { it.id == BuiltInTaskId.LLM_ASK_IMAGE }
+          ?: uiState.value.tasks.firstOrNull { t -> t.models.any { it.name == model.name } }
+      Log.d(TAG, "First launch with no model on disk; auto-downloading '${model.name}'.")
+      selectModel(model)
+      downloadModel(task, model)
+    }
+    // Recorded even when nothing was needed, so a later delete is never undone automatically.
+    if (model != null) prefs.edit().putBoolean(KEY_AUTO_DOWNLOAD_DONE, true).apply()
   }
 
   fun loadModelAllowlist() {
@@ -1049,6 +1096,12 @@ constructor(
         val nameToModel = mutableMapOf<String, Model>()
         for (allowedModel in modelAllowlist.models) {
           if (allowedModel.disabled == true) {
+            continue
+          }
+
+          // Sukham ships a fixed, small catalogue; everything else in the upstream allowlist is
+          // hidden so it can't be picked or downloaded by mistake.
+          if (allowedModel.name !in SUKHAM_MODEL_NAMES) {
             continue
           }
 

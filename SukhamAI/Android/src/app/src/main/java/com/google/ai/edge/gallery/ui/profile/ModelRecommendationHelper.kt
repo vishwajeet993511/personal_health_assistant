@@ -57,18 +57,17 @@ fun resolveModelRecommendation(context: Context, models: List<Model>): ModelReco
 
   return when {
     ramGb < 8 -> {
-      // Devices with < 8GB RAM (e.g. 4-6GB): prioritize lightweight footprint
+      // Devices with < 8GB RAM: still Gemma 4 E2B. It is the smallest model Sukham ships (the
+      // gated 1B was dropped), and the one downloaded automatically on first launch.
       val candidate =
-        llmModels.firstOrNull { it.name.contains("1b", ignoreCase = true) }
-          ?: llmModels.filter {
-            !it.name.contains("4b", ignoreCase = true) && !it.name.contains("e4b", ignoreCase = true)
-          }.minByOrNull { it.sizeInBytes.takeIf { s -> s > 0 } ?: Long.MAX_VALUE }
+        llmModels.firstOrNull { it.name.contains("e2b", ignoreCase = true) }
+          ?: llmModels.minByOrNull { it.sizeInBytes.takeIf { s -> s > 0 } ?: Long.MAX_VALUE }
           ?: llmModels.firstOrNull()
 
       ModelRecommendationInfo(
         recommendedModel = candidate,
         reason =
-          "Your device has ~${ramGb} GB RAM. A compact 1B–2B quantized model is recommended to ensure fast generation, prevent background app termination, and keep battery and thermals optimal.",
+          "Your device has ~${ramGb} GB RAM. Gemma 4 E2B is the most compact model available and keeps every feature, including image and pose analysis, working on-device.",
         ramGb = ramGb,
         tierName = "Efficiency Tier (< 8 GB)",
       )
