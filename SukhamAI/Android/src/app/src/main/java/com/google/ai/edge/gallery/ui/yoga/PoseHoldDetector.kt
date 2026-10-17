@@ -31,13 +31,22 @@ private const val TAG = "PoseHoldDetector"
 private const val STILLNESS_THRESHOLD = 0.08f
 
 /**
- * Consecutive over-threshold frames tolerated mid-hold before the hold is reset.
- *
- * MediaPipe runs per image here, with no temporal tracking, so a held pose still produces the
- * odd frame where a wrist or ankle jumps. Resetting the whole hold on one such frame meant a
- * perfectly still person could be told to "hold your pose" indefinitely.
+ * Once a hold has started, movement has to exceed this (rather than [STILLNESS_THRESHOLD]) to
+ * count as a disturbance. Entering a hold is strict, staying in one is forgiving, so a person
+ * who sways slightly or a landmark that wobbles does not knock them out of it.
  */
-private const val MAX_GLITCH_FRAMES = 1
+private const val HOLD_BREAK_THRESHOLD = 0.20f
+
+/**
+ * How long a mid-hold disturbance (movement above [HOLD_BREAK_THRESHOLD], a person briefly lost,
+ * or too few joints visible) is ridden out before the hold is abandoned. The hold clock keeps
+ * running and the UI keeps showing "holding" throughout.
+ *
+ * MediaPipe runs per image here, with no temporal tracking, so a held pose still produces
+ * stretches where a wrist or ankle jumps or the model drops out. Resetting the hold on those
+ * meant a perfectly still person was told to "hold your pose" over and over.
+ */
+private const val DISTURBANCE_GRACE_MS = 2_500L
 
 /** Weight of the newest frame in the landmark moving average; lower is smoother but laggier. */
 private const val SMOOTHING_ALPHA = 0.5f
@@ -129,7 +138,7 @@ class PoseHoldDetector {
 
   /** Exponentially smoothed landmark positions from the previous frame. */
   private var previous: List<Pair<Float, Float>>? = null
-  private var glitchFrames = 0
+  private var disturbedSinceMs = 0L
   private var stillSinceMs = 0L
   private var lastAnalysedPose: String? = null
   private var lastAnalysedScore = 0f
@@ -138,7 +147,7 @@ class PoseHoldDetector {
   fun reset() {
     heldFeatures.clear()
     previous = null
-    glitchFrames = 0
+    disturbedSinceMs = 0L
     stillSinceMs = 0L
     lastAnalysedPose = null
     lastAnalysedScore = 0f
@@ -158,9 +167,12 @@ class PoseHoldDetector {
   ): Decision {
     val landmarks = result?.landmarks()?.firstOrNull()
     if (landmarks == null || landmarks.isEmpty()) {
+      // A dropped detection mid-hold is usually the model, not the person leaving.
+      rideOutDisturbance(nowMs)?.let { return it }
       previous = null
-      glitchFrames = 0
+      disturbedSinceMs = 0L
       stillSinceMs = 0L
+      heldFeatures.clear()
       return Decision(State.NO_PERSON, 0f, null, null)
     }
 
@@ -181,8 +193,9 @@ class PoseHoldDetector {
     previous = current
 
     val visible = CORE_JOINTS.filter { landmarks[it].visibility().orElse(1f) >= MIN_VISIBILITY }
+    val readable = visible.size >= MIN_VISIBLE_JOINTS
     val movement =
-      if (visible.size < MIN_VISIBLE_JOINTS) Float.MAX_VALUE
+      if (!readable) Float.MAX_VALUE
       else {
         val torso = torsoLength(current)
         // Median, not mean: one joint glitching should not outvote the eleven holding still.
@@ -196,19 +209,18 @@ class PoseHoldDetector {
           .let { it[it.size / 2] }
       }
 
-    if (movement > STILLNESS_THRESHOLD) {
-      glitchFrames++
-      if (stillSinceMs != 0L && glitchFrames <= MAX_GLITCH_FRAMES) {
-        // A lone spike mid-hold: keep the hold clock running, but keep this frame out of the
-        // pooled features so the spike cannot skew classification either.
-        val progress = ((nowMs - stillSinceMs).toFloat() / HOLD_MS).coerceIn(0f, 1f)
-        return Decision(State.SETTLING, progress, null, null)
-      }
+    // Hysteresis: strict to start a hold, forgiving to keep one.
+    val inHold = stillSinceMs != 0L
+    val limit = if (inHold) HOLD_BREAK_THRESHOLD else STILLNESS_THRESHOLD
+    if (movement > limit) {
+      // Keep the disturbed frame out of the pooled features so it cannot skew classification.
+      rideOutDisturbance(nowMs)?.let { return it }
       stillSinceMs = 0L
+      disturbedSinceMs = 0L
       heldFeatures.clear()
       return Decision(State.MOVING, 0f, null, null)
     }
-    glitchFrames = 0
+    disturbedSinceMs = 0L
 
     if (stillSinceMs == 0L) stillSinceMs = nowMs
     PoseClassifier.featuresOf(result)?.let { f ->
@@ -261,6 +273,18 @@ class PoseHoldDetector {
     )
     return Decision(State.READY, 1f, candidates, topName)
   }
+  /**
+   * If a hold is in progress and the disturbance is still within [DISTURBANCE_GRACE_MS], returns
+   * a SETTLING decision that keeps the hold clock running; otherwise null (hold is broken).
+   */
+  private fun rideOutDisturbance(nowMs: Long): Decision? {
+    if (stillSinceMs == 0L) return null
+    if (disturbedSinceMs == 0L) disturbedSinceMs = nowMs
+    if (nowMs - disturbedSinceMs > DISTURBANCE_GRACE_MS) return null
+    val progress = ((nowMs - stillSinceMs).toFloat() / HOLD_MS).coerceIn(0f, 1f)
+    return Decision(State.SETTLING, progress, null, null)
+  }
+
   /** Shoulder-midpoint to hip-midpoint distance, the yardstick for body-relative movement. */
   private fun torsoLength(pts: List<Pair<Float, Float>>): Float {
     val sx = (pts[11].first + pts[12].first) / 2f

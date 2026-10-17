@@ -109,12 +109,39 @@ internal fun buildYogaPrompt(
   append("good, write exactly \"Fix: None, hold it\" and do not invent a problem. ")
   append("When you do correct something, name a specific body part and the direction to move ")
   append("it (for example \"drop the left hip down and back\"). Never give generic advice ")
-  append("like \"engage your core\" or \"breathe deeply\".\n\n")
-  append("Reply in exactly three lines, under 50 words total. Plain text only, no markdown, ")
+  append("like \"engage your core\" or \"breathe deeply\". Speak gently, like a calm yoga ")
+  append("teacher, and never score or grade the person.\n\n")
+  append("Reply in exactly two lines, under 40 words total. Plain text only, no markdown, ")
   append("no dashes as separators:\n")
   append("Pose: <name>\n")
-  append("Fix: <one specific correction, or \"None, hold it\">\n")
-  append("Form: <1-10>/10")
+  append("Fix: <one specific, gently phrased correction, or \"None, hold it\">")
+}
+
+/**
+ * What the voice coach says for a finished card: the correction only.
+ *
+ * The pose name and any score are for the screen; reading "Pose: Tree, Fix: ..." aloud sounds
+ * like a form being filled in. A pose that needs nothing gets a quiet reassurance instead of
+ * the literal "None, hold it".
+ */
+internal fun spokenCoachingText(raw: String): String {
+  val fix =
+    raw.lineSequence()
+      .map { it.trim() }
+      .firstOrNull { it.startsWith("Fix:", ignoreCase = true) }
+      ?.substringAfter(':')
+      ?.trim()
+      .orEmpty()
+  if (fix.isEmpty()) {
+    // Unstructured text: drop pose and score lines, keep whatever is left.
+    return raw.lineSequence()
+      .map { it.trim() }
+      .filterNot { it.startsWith("Pose:", true) || it.startsWith("Form:", true) }
+      .joinToString(" ")
+      .trim()
+  }
+  return if (fix.startsWith("none", ignoreCase = true)) "Lovely. Stay here, and keep breathing."
+  else fix.trimEnd('.') + ". Then breathe, and stay with it."
 }
 
 /** Classifier score above which the skeleton is close enough to the template to call it good. */

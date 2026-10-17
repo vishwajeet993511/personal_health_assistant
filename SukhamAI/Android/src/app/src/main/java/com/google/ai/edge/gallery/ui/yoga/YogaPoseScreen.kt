@@ -759,7 +759,7 @@ fun YogaPoseScreen(
                                 if (ttsHelper.isSpeaking.value) {
                                   ttsHelper.stop()
                                 } else {
-                                  ttsHelper.speak(aiResponse)
+                                  ttsHelper.speak(spokenCoachingText(aiResponse), calm = true)
                                 }
                               }
                             ) {
@@ -1148,7 +1148,7 @@ fun YogaPoseScreen(
                 if (ttsHelper.isSpeaking.value) {
                   ttsHelper.stop()
                 } else {
-                  ttsHelper.speak(text)
+                  ttsHelper.speak(spokenCoachingText(text), calm = true)
                 }
               },
               isSpeaking = ttsHelper.isSpeaking.value,
@@ -1393,7 +1393,7 @@ fun YogaPoseScreen(
               if (ttsHelper.isSpeaking.value) {
                 ttsHelper.stop()
               } else {
-                ttsHelper.speak(text)
+                ttsHelper.speak(spokenCoachingText(text), calm = true)
               }
             },
             isSpeaking = ttsHelper.isSpeaking.value,
@@ -1495,13 +1495,13 @@ fun YogaPoseScreen(
             )
             model.runtimeHelper.stopResponse(model)
             if (isReadAloudEnabled && aiResponse.isNotBlank()) {
-              ttsHelper.speak(aiResponse)
+              ttsHelper.speak(spokenCoachingText(aiResponse), calm = true)
             }
           }
           if (done) {
             aiInFlight = false
             if (isReadAloudEnabled && aiResponse.isNotBlank()) {
-              ttsHelper.speak(aiResponse)
+              ttsHelper.speak(spokenCoachingText(aiResponse), calm = true)
             }
           }
         },
@@ -1556,7 +1556,7 @@ fun YogaPoseScreen(
     val latestCompletedCard = cards.lastOrNull { it.status == CoachingStatus.DONE && it.text.isNotBlank() }
     if (latestCompletedCard != null && latestCompletedCard.id != lastSpokenLiveCardId) {
       lastSpokenLiveCardId = latestCompletedCard.id
-      ttsHelper.speak(latestCompletedCard.text)
+      ttsHelper.speak(spokenCoachingText(latestCompletedCard.text), calm = true)
     }
   }
 
