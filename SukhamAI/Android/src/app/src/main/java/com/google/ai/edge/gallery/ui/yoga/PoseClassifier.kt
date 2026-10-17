@@ -328,12 +328,12 @@ object PoseClassifier {
   fun formDeviations(result: PoseLandmarkerResult, poseName: String, limit: Int = 2): List<String> {
     val f = extractFeatures(result) ?: return emptyList()
     val template = POSE_TEMPLATES[poseName] ?: return emptyList()
-    val mirroredF = mirror(f)
-    // Score against whichever side matches better, so a left-side pose is not reported as
-    // being wrong on every limb.
-    val use = if (distance(mirroredF, template) < distance(f, template)) mirroredF else f
+    // Mirror the *template* when the other side matches better, so feature indices stay on the
+    // person's actual limbs and "left knee" really is their left knee.
+    val mirroredT = mirror(template)
+    val tpl = if (distance(f, mirroredT) < distance(f, template)) mirroredT else template
     return (0 until FEATURE_COUNT)
-      .map { i -> Triple(i, use[i] - template[i], abs(use[i] - template[i])) }
+      .map { i -> Triple(i, f[i] - tpl[i], abs(f[i] - tpl[i])) }
       // Ratio features are noisier and less interpretable as a "fix", so ignore them here.
       .filter { (i, _, mag) -> i != F_STANCE && i != F_FOOT_LIFT && mag >= 22f }
       .sortedByDescending { it.third }
@@ -342,6 +342,155 @@ object PoseClassifier {
         val direction = if (signed > 0) "more open than" else "more closed than"
         "${FEATURE_LABELS[i]} is ${mag.toInt()} degrees $direction the reference"
       }
+  }
+
+  /** One joint to adjust: which angle, how far, and the geometry needed to draw the fix. */
+  private class JointSpec(
+    val feature: Int,
+    val label: String,
+    val fixed: Int,
+    val pivot: Int,
+    /** The end of the limb that swings about [pivot] to correct the angle. */
+    val moving: Int,
+    /** Gap in degrees below which the joint is considered fine. Elbows/shoulders vary more. */
+    val tolerance: Float,
+  )
+
+  private val JOINT_SPECS =
+    listOf(
+      JointSpec(F_KNEE_L, "left knee", L_HIP, L_KNEE, L_ANKLE, 20f),
+      JointSpec(F_KNEE_R, "right knee", R_HIP, R_KNEE, R_ANKLE, 20f),
+      JointSpec(F_HIP_L, "left hip", L_KNEE, L_HIP, L_SHOULDER, 25f),
+      JointSpec(F_HIP_R, "right hip", R_KNEE, R_HIP, R_SHOULDER, 25f),
+      JointSpec(F_ELBOW_L, "left elbow", L_SHOULDER, L_ELBOW, L_WRIST, 25f),
+      JointSpec(F_ELBOW_R, "right elbow", R_SHOULDER, R_ELBOW, R_WRIST, 25f),
+      JointSpec(F_SHOULDER_L, "left shoulder", L_HIP, L_SHOULDER, L_ELBOW, 30f),
+      JointSpec(F_SHOULDER_R, "right shoulder", R_HIP, R_SHOULDER, R_ELBOW, 30f),
+    )
+
+  /** Landmarks below this visibility are model guesses and are never highlighted. */
+  private const val CORRECTION_MIN_VISIBILITY = 0.6f
+
+  /** If the flat 2D limb angle strays this far from the 3D one, the limb points at the camera. */
+  private const val MAX_PROJECTION_ERROR_DEG = 30f
+
+  /**
+   * The joints that most need adjusting for [poseName], with the geometry to draw each fix.
+   *
+   * Everything here comes from measured angles, not from the language model, so a highlighted
+   * joint is one the skeleton really shows off-reference. A joint is only reported when
+   *  - its gap to the reference exceeds a per-joint tolerance,
+   *  - all three landmarks are visible and inside the frame, and
+   *  - for the hip, the reference bends the same way (a fold is never "corrected" into a backbend).
+   * The target ghost is additionally withheld when the limb is foreshortened toward the camera,
+   * because the flat image can't show which way to swing it; the joint is still highlighted.
+   */
+  fun corrections(
+    result: PoseLandmarkerResult,
+    poseName: String,
+    imageWidth: Int,
+    imageHeight: Int,
+    limit: Int = 2,
+  ): List<JointCorrection> {
+    val f = extractFeatures(result) ?: return emptyList()
+    val template = POSE_TEMPLATES[poseName] ?: return emptyList()
+    val mirroredT = mirror(template)
+    val tpl = if (distance(f, mirroredT) < distance(f, template)) mirroredT else template
+    val lms = result.landmarks().firstOrNull() ?: return emptyList()
+    val w = imageWidth.toFloat()
+    val h = imageHeight.toFloat()
+
+    fun ok(i: Int): Boolean {
+      val lm = lms[i]
+      return lm.visibility().orElse(1f) >= CORRECTION_MIN_VISIBILITY &&
+        lm.x() in -0.02f..1.02f && lm.y() in -0.02f..1.02f
+    }
+
+    return JOINT_SPECS.mapNotNull { spec ->
+        val cur = f[spec.feature]
+        val tgt = tpl[spec.feature]
+        val isHip = spec.feature == F_HIP_L || spec.feature == F_HIP_R
+        val curU: Float
+        val tgtU: Float
+        if (isHip) {
+          // Signed: >180 backbend, <180 fold. Crossing between them is not a one-joint fix.
+          if ((cur - 180f) * (tgt - 180f) < 0f && abs(cur - 180f) > 10f && abs(tgt - 180f) > 10f)
+            return@mapNotNull null
+          curU = 180f - abs(cur - 180f)
+          tgtU = 180f - abs(tgt - 180f)
+        } else {
+          curU = cur
+          tgtU = tgt
+        }
+        val delta = tgtU - curU
+        if (abs(delta) < spec.tolerance) return@mapNotNull null
+        if (!ok(spec.fixed) || !ok(spec.pivot) || !ok(spec.moving)) return@mapNotNull null
+
+        val pv = lms[spec.pivot]
+        val fx = lms[spec.fixed]
+        val mv = lms[spec.moving]
+        val ux = (fx.x() - pv.x()) * w
+        val uy = (fx.y() - pv.y()) * h
+        val vx = (mv.x() - pv.x()) * w
+        val vy = (mv.y() - pv.y()) * h
+        val theta2 = angle2d(ux, uy, vx, vy)
+
+        var rotation: Float? = null
+        if (abs(theta2 - curU) <= MAX_PROJECTION_ERROR_DEG) {
+          val want = (theta2 + delta).coerceIn(5f, 180f)
+          val mag = abs(want - theta2)
+          if (mag >= 3f) {
+            val rad = Math.toRadians(mag.toDouble()).toFloat()
+            // Try both swing directions and keep the one that lands on the wanted flat angle.
+            rotation =
+              listOf(rad, -rad).minByOrNull { r ->
+                val (rx, ry) = rotate2d(vx, vy, r)
+                abs(angle2d(ux, uy, rx, ry) - want)
+              }
+          }
+        }
+
+        val n = (Math.round(abs(delta) / 5f) * 5).coerceAtLeast(5)
+        val arm = spec.label.replace("shoulder", "arm")
+        val instruction =
+          when {
+            spec.feature == F_KNEE_L || spec.feature == F_KNEE_R ||
+              spec.feature == F_ELBOW_L || spec.feature == F_ELBOW_R ->
+              if (delta > 0) "Straighten your ${spec.label} about $n\u00B0"
+              else "Bend your ${spec.label} about $n\u00B0 more"
+            isHip ->
+              if (delta > 0) "Open your ${spec.label} about $n\u00B0 by lifting the chest"
+              else "Fold deeper at your ${spec.label} about $n\u00B0"
+            else ->
+              if (delta > 0) "Raise your $arm about $n\u00B0 away from the body"
+              else "Lower your $arm about $n\u00B0 toward the body"
+          }
+        JointCorrection(
+          label = spec.label.replaceFirstChar { it.uppercase() },
+          instruction = instruction,
+          fixedX = fx.x(), fixedY = fx.y(),
+          pivotX = pv.x(), pivotY = pv.y(),
+          movingX = mv.x(), movingY = mv.y(),
+          rotationRad = rotation,
+          deltaDeg = abs(delta),
+        )
+      }
+      .sortedByDescending { it.deltaDeg }
+      .take(limit)
+  }
+
+  private fun angle2d(ax: Float, ay: Float, bx: Float, by: Float): Float {
+    val na = hypot(ax, ay)
+    val nb = hypot(bx, by)
+    if (na < 1e-3f || nb < 1e-3f) return 180f
+    val cos = ((ax * bx + ay * by) / (na * nb)).coerceIn(-1f, 1f)
+    return Math.toDegrees(acos(cos).toDouble()).toFloat()
+  }
+
+  private fun rotate2d(x: Float, y: Float, rad: Float): Pair<Float, Float> {
+    val c = kotlin.math.cos(rad)
+    val s = kotlin.math.sin(rad)
+    return (x * c - y * s) to (x * s + y * c)
   }
 
   /** Swaps every left/right feature pair so a template can be matched against either side. */

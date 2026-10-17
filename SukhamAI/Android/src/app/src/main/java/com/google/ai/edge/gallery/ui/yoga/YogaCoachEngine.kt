@@ -68,6 +68,8 @@ internal fun buildYogaPrompt(
   geometry: List<String> = emptyList(),
   /** Where the skeleton departs from the top candidate's reference form. */
   deviations: List<String> = emptyList(),
+  /** Joints the app is highlighting on screen; the Fix must be about the first of these. */
+  corrections: List<JointCorrection> = emptyList(),
 ): String = buildString {
   append("The cyan skeleton overlay marks a person's joints while doing yoga.\n\n")
 
@@ -97,7 +99,12 @@ internal fun buildYogaPrompt(
     append("the image and it cannot — you have the final say on which pose it is.\n")
   }
 
-  if (deviations.isNotEmpty()) {
+  if (corrections.isNotEmpty()) {
+    append("\nThe app is highlighting these joints on the person's screen, most important ")
+    append("first:\n")
+    corrections.forEach { append("  - ").append(it.instruction).append("\n") }
+    append("Your Fix must be about the first one, in gentler words, using the same body part.\n")
+  } else if (deviations.isNotEmpty()) {
     append("\nCompared with a well-executed version of the closest pose:\n")
     deviations.forEach { append("  - ").append(it).append("\n") }
   } else if (candidates.isNotEmpty()) {
@@ -144,6 +151,10 @@ internal fun spokenCoachingText(raw: String): String {
   else fix.trimEnd('.') + ". Then breathe, and stay with it."
 }
 
+/** Pose must score at least this, and lead the runner-up by the margin, to highlight joints. */
+private const val CORRECTION_MIN_SCORE = 0.5f
+private const val CORRECTION_MIN_MARGIN = 0.03f
+
 /** Classifier score above which the skeleton is close enough to the template to call it good. */
 private const val STRONG_MATCH_SCORE = 0.78f
 
@@ -172,6 +183,10 @@ data class CoachingCard(
   val thumbnail: Bitmap?,
   val status: CoachingStatus,
   val text: String = "",
+  /** Joints to highlight on this frame, with where each limb should move to. */
+  val corrections: List<JointCorrection> = emptyList(),
+  /** Where the person is in the frame, for zooming in when showing [corrections]. */
+  val skeletonBounds: NormRect? = null,
 )
 
 /**
@@ -280,6 +295,20 @@ class YogaCoachEngine(
         candidates.firstOrNull()?.let { top ->
           withContext(Dispatchers.Default) { PoseClassifier.formDeviations(result, top.name) }
         } ?: emptyList()
+      // Highlight only when the pose itself is identified with confidence: if two poses are
+      // nearly tied, the "reference" being compared against may be the wrong one.
+      val top = candidates.firstOrNull()
+      val second = candidates.getOrNull(1)
+      val confident =
+        top != null && top.score >= CORRECTION_MIN_SCORE &&
+          (second == null || top.score - second.score >= CORRECTION_MIN_MARGIN)
+      val corrections =
+        if (confident && top != null) {
+          withContext(Dispatchers.Default) {
+            PoseClassifier.corrections(result, top.name, scaled.width, scaled.height)
+          }
+        } else emptyList()
+      Log.d(TAG, "Corrections (confident=$confident): " + corrections.joinToString { it.instruction })
       Log.d(
         TAG,
         "Pose candidates: " + candidates.joinToString { "${it.name}=%.2f".format(it.score) },
@@ -291,6 +320,8 @@ class YogaCoachEngine(
           timestampMs = timestampMs,
           thumbnail = annotated,
           status = CoachingStatus.ANALYZING,
+          corrections = corrections,
+          skeletonBounds = skeletonBoundsOf(result),
         )
       )
 
@@ -313,7 +344,7 @@ class YogaCoachEngine(
       val inferStart = System.currentTimeMillis()
       var firstTokenMs = -1L
       val text =
-        runGemma(model, gemmaInput, buildYogaPrompt(candidates, geometry, deviations)) { partial ->
+        runGemma(model, gemmaInput, buildYogaPrompt(candidates, geometry, deviations, corrections)) { partial ->
           if (firstTokenMs < 0) {
             firstTokenMs = System.currentTimeMillis() - inferStart
             Log.d(TAG, "TIMING first token after ${firstTokenMs}ms (prefill)")
@@ -453,4 +484,16 @@ internal fun downscaleForInference(source: Bitmap, maxEdge: Int): Bitmap {
 internal fun formatTimestamp(ms: Long): String {
   val totalSeconds = ms / 1000
   return "%d:%02d".format(totalSeconds / 60, totalSeconds % 60)
+}
+
+/** Box around the landmarks the model is reasonably sure of; null if too few are visible. */
+internal fun skeletonBoundsOf(result: com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult): NormRect? {
+  val pts = result.landmarks().firstOrNull()?.filter { it.visibility().orElse(1f) >= 0.4f } ?: return null
+  if (pts.size < 6) return null
+  return NormRect(
+    pts.minOf { it.x() }.coerceIn(0f, 1f),
+    pts.minOf { it.y() }.coerceIn(0f, 1f),
+    pts.maxOf { it.x() }.coerceIn(0f, 1f),
+    pts.maxOf { it.y() }.coerceIn(0f, 1f),
+  )
 }

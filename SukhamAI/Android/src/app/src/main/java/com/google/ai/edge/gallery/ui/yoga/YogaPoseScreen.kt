@@ -271,6 +271,9 @@ fun YogaPoseScreen(
   var holdProgress by remember { mutableStateOf(0f) }
   var detectedPose by remember { mutableStateOf<String?>(null) }
   var lastSpokenLiveCardId by remember { mutableLongStateOf(-1L) }
+  // Card whose corrections are currently frozen over the camera; null shows the live view.
+  var spotlightCard by remember { mutableStateOf<CoachingCard?>(null) }
+  var lastSpotlightId by remember { mutableLongStateOf(-1L) }
 
   // ---- Video mode state ----
   var videoUri by remember { mutableStateOf<Uri?>(null) }
@@ -322,6 +325,8 @@ fun YogaPoseScreen(
     videoJob = null
     ttsHelper.stop()
     lastSpokenLiveCardId = -1L
+    lastSpotlightId = -1L
+    spotlightCard = null
   }
 
   val galleryLauncher =
@@ -1104,6 +1109,17 @@ fun YogaPoseScreen(
                     isSpeaking = ttsHelper.isSpeaking.value,
                     modifier = Modifier.align(Alignment.TopCenter),
                   )
+                  spotlightCard?.let { card ->
+                    card.thumbnail?.let { bmp ->
+                      CorrectionSpotlight(
+                        bitmap = bmp,
+                        corrections = card.corrections,
+                        bounds = card.skeletonBounds,
+                        onDone = { spotlightCard = null },
+                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+                      )
+                    }
+                  }
                   IconButton(
                     onClick = { useFrontCamera = !useFrontCamera },
                     modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp),
@@ -1533,6 +1549,20 @@ fun YogaPoseScreen(
     while (isActive) {
       delay(1_000)
       elapsedMs = System.currentTimeMillis() - sessionStartMs
+    }
+  }
+
+  // Freeze and zoom on each new set of corrections for a few seconds, then return to camera.
+  LaunchedEffect(cards, sessionActive, mode) {
+    if (!sessionActive || mode != YogaMode.LIVE) {
+      spotlightCard = null
+      return@LaunchedEffect
+    }
+    val fresh =
+      cards.lastOrNull { it.corrections.isNotEmpty() && it.thumbnail != null && it.id > lastSpotlightId }
+    if (fresh != null) {
+      lastSpotlightId = fresh.id
+      spotlightCard = fresh
     }
   }
 
