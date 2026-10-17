@@ -227,8 +227,8 @@ internal fun spokenCoachingText(raw: String): String {
 }
 
 /** Pose must score at least this, and lead the runner-up by the margin, to highlight joints. */
-private const val CORRECTION_MIN_SCORE = 0.5f
-private const val CORRECTION_MIN_MARGIN = 0.03f
+internal const val CORRECTION_MIN_SCORE = 0.5f
+internal const val CORRECTION_MIN_MARGIN = 0.03f
 
 /** Classifier score above which the skeleton is close enough to the template to call it good. */
 private const val STRONG_MATCH_SCORE = 0.78f

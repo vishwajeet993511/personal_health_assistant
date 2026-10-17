@@ -245,6 +245,26 @@ fun YogaPoseScreen(
   var originalBitmap by remember { mutableStateOf<Bitmap?>(null) }
   var annotatedBitmap by remember { mutableStateOf<Bitmap?>(null) }
   var poseResult by remember { mutableStateOf<PoseLandmarkerResult?>(null) }
+  // Measured fixes for the photo, same source as the live coach's freeze animation.
+  val photoCorrections =
+    remember(poseResult, annotatedBitmap) {
+      val result = poseResult
+      val bmp = annotatedBitmap
+      if (result == null || bmp == null) {
+        emptyList()
+      } else {
+        val candidates = PoseClassifier.classify(result)
+        val top = candidates.firstOrNull()
+        val second = candidates.getOrNull(1)
+        val confident =
+          top != null && top.score >= CORRECTION_MIN_SCORE &&
+            (second == null || top.score - second.score >= CORRECTION_MIN_MARGIN)
+        if (confident && top != null) {
+          PoseClassifier.corrections(result, top.name, bmp.width, bmp.height)
+        } else emptyList()
+      }
+    }
+  var showPhotoAnimation by remember { mutableStateOf(false) }
   var isDetecting by remember { mutableStateOf(false) }
   var detectionError by remember { mutableStateOf<String?>(null) }
   var aiResponse by remember { mutableStateOf("") }
@@ -775,11 +795,36 @@ fun YogaPoseScreen(
                       }
                     }
                   }
+                  val animBmp = annotatedBitmap
+                  if (showPhotoAnimation && animBmp != null && photoCorrections.isNotEmpty()) {
+                    CorrectionSpotlight(
+                      bitmap = animBmp,
+                      corrections = photoCorrections,
+                      bounds = poseResult?.let { skeletonBoundsOf(it) },
+                      onDone = { showPhotoAnimation = false },
+                      modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
+                    )
+                  }
                 }
               }
             }
 
             detectionError?.let { err -> item { Text(err, color = MaterialTheme.colorScheme.error) } }
+
+            if (annotatedBitmap != null && photoCorrections.isNotEmpty() && !isDetecting) {
+              item {
+                Button(
+                  modifier = Modifier.fillMaxWidth().height(50.dp),
+                  shape = RoundedCornerShape(percent = 50),
+                  colors = ButtonDefaults.buttonColors(containerColor = YogaThemeColors.SagePrimary),
+                  onClick = { showPhotoAnimation = true },
+                ) {
+                  Icon(Icons.Outlined.PlayArrow, contentDescription = null, tint = Color.White)
+                  Spacer(Modifier.width(6.dp))
+                  Text("Show correction animation", color = Color.White, fontWeight = FontWeight.Bold)
+                }
+              }
+            }
 
             if (annotatedBitmap != null) {
               item {
@@ -817,6 +862,7 @@ fun YogaPoseScreen(
                       originalBitmap = null
                       annotatedBitmap = null
                       poseResult = null
+                      showPhotoAnimation = false
                       aiResponse = ""
                       savedUri = null
                     },

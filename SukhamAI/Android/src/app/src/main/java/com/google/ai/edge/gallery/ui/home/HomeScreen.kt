@@ -19,7 +19,12 @@ package com.google.ai.edge.gallery.ui.home
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,7 +50,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.CameraAlt
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Icon
@@ -314,7 +319,7 @@ fun SukhamBottomNav(
         verticalAlignment = Alignment.CenterVertically,
       ) {
         NavIcon(Icons.Outlined.Home, "Home", currentTab == SukhamNavTab.HOME, onHomeClick)
-        NavIcon(Icons.Outlined.CameraAlt, "Live coach", currentTab == SukhamNavTab.LIVE, onLiveClick)
+        AiLiveButton(selected = currentTab == SukhamNavTab.LIVE, onClick = onLiveClick)
         NavIcon(Icons.Outlined.Person, "Profile", currentTab == SukhamNavTab.PROFILE, onProfileClick)
       }
     }
@@ -341,6 +346,64 @@ private fun NavIcon(icon: ImageVector, description: String, selected: Boolean, o
     Box(
       modifier =
         Modifier.size(4.dp).clip(CircleShape).background(if (selected) SukhamColors.TitleBlack else Color.Transparent)
+    )
+  }
+}
+
+/** The centre "Live coach" button: an AI-branded orb with a slowly rotating gradient halo. */
+@Composable
+private fun AiLiveButton(selected: Boolean, onClick: () -> Unit) {
+  val transition = rememberInfiniteTransition(label = "aiOrb")
+  val angle by
+    transition.animateFloat(0f, 360f, infiniteRepeatable(tween(4500, easing = LinearEasing)), label = "angle")
+  val glow by
+    transition.animateFloat(
+      0.35f, 0.75f,
+      infiniteRepeatable(tween(1800), RepeatMode.Reverse),
+      label = "glow",
+    )
+  val violet = Color(0xFF8E6CF0)
+  val teal = Color(0xFF2EC4B6)
+  val pink = Color(0xFFE56BB0)
+  Column(
+    modifier =
+      Modifier.clip(CircleShape)
+        .clickable(enabled = !selected, onClick = onClick)
+        .padding(horizontal = 10.dp, vertical = 2.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)) {
+      // Soft pulsing aura.
+      Box(
+        Modifier.size(50.dp)
+          .graphicsLayer { alpha = glow }
+          .background(Brush.radialGradient(listOf(violet.copy(alpha = 0.55f), Color.Transparent)), CircleShape)
+      )
+      // Rotating sweep ring.
+      Box(
+        Modifier.size(42.dp)
+          .graphicsLayer { rotationZ = angle }
+          .background(Brush.sweepGradient(listOf(violet, teal, pink, violet)), CircleShape)
+      )
+      // Dark core with the sparkle.
+      Box(
+        Modifier.size(37.dp).background(Color(0xFF14111F), CircleShape),
+        contentAlignment = Alignment.Center,
+      ) {
+        Icon(
+          Icons.Outlined.AutoAwesome,
+          contentDescription = "Live coach, powered by AI",
+          tint = Color.White,
+          modifier = Modifier.size(20.dp),
+        )
+      }
+    }
+    Text(
+      "AI",
+      fontSize = 9.sp,
+      fontWeight = FontWeight.ExtraBold,
+      color = if (selected) SukhamColors.TitleBlack else SukhamColors.MutedGray,
+      modifier = Modifier.padding(top = 1.dp),
     )
   }
 }
