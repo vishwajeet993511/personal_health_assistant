@@ -83,14 +83,11 @@ import com.google.ai.edge.gallery.ui.common.ModelPageAppBar
 import com.google.ai.edge.gallery.ui.common.chat.ModelDownloadStatusInfoPanel
 import com.google.ai.edge.gallery.ui.home.HomeScreen
 import com.google.ai.edge.gallery.ui.home.PromoScreenGm4
-import com.google.ai.edge.gallery.ui.insights.InsightsScreen
 import com.google.ai.edge.gallery.ui.modelmanager.GlobalModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelInitializationStatusType
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
 import com.google.ai.edge.gallery.ui.profile.ProfileScreen
-import com.google.ai.edge.gallery.ui.programs.ProgramsScreen
-import com.google.ai.edge.gallery.ui.wearables.WearablesAnalysisScreen
 import com.google.ai.edge.gallery.ui.yoga.YogaPoseScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -103,9 +100,6 @@ private const val ROUTE_MODEL = "route_model"
 private const val ROUTE_BENCHMARK = "benchmark"
 private const val ROUTE_MODEL_MANAGER = "model_manager"
 private const val ROUTE_YOGA = "yoga_coach"
-private const val ROUTE_WEARABLES = "wearables_insights"
-private const val ROUTE_INSIGHTS = "insights"
-private const val ROUTE_PROGRAMS = "programs"
 private const val ROUTE_PROFILE = "profile"
 private const val ENTER_ANIMATION_DURATION_MS = 500
 private val ENTER_ANIMATION_EASING = EaseOutExpo
@@ -203,20 +197,6 @@ fun GalleryNavHost(
     }
   }
 
-  fun openCentralImageChat() {
-    val imageTask =
-      modelManagerViewModel.getTaskById(com.google.ai.edge.gallery.data.BuiltInTaskId.LLM_ASK_IMAGE)
-    val model = imageTask?.let { modelManagerViewModel.resolveModelForTask(it) }
-    if (imageTask == null) return
-    // Downloading lives in Profile only; never start one from a feature shortcut.
-    if (model == null || !modelManagerViewModel.isModelDownloaded(model)) {
-      navigateToTab(ROUTE_PROFILE)
-      return
-    }
-    modelManagerViewModel.selectModel(model)
-    navController.navigate("$ROUTE_MODEL/${imageTask.id}/${model.name}")
-  }
-
   NavHost(
     navController = navController,
     startDestination = ROUTE_HOMESCREEN,
@@ -226,31 +206,11 @@ fun GalleryNavHost(
     // Home screen.
     composable(route = ROUTE_HOMESCREEN) {
       HomeScreen(
-        modelManagerViewModel = modelManagerViewModel,
         tosViewModel = hiltViewModel(),
-        enableAnimation = enableHomeScreenAnimation,
-        navigateToTaskScreen = { task ->
-          pickedTask = task
-          enableModelListAnimation = true
-          navController.navigate(ROUTE_MODEL_LIST)
-          firebaseAnalytics?.logEvent(
-            GalleryEvent.CAPABILITY_SELECT.id,
-            Bundle().apply { putString("capability_name", task.id) },
-          )
-        },
-        navigateToModelScreen = { task, model ->
-          pickedTask = task
-          modelManagerViewModel.selectModel(model)
-          navController.navigate("$ROUTE_MODEL/${task.id}/${model.name}")
-        },
-        onLiveExerciseClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
-        onVideoAnalysisClicked = { navController.navigate("$ROUTE_YOGA?mode=video") },
-        onYogaClicked = { navController.navigate(ROUTE_YOGA) },
-        onWearablesClicked = { navController.navigate(ROUTE_WEARABLES) },
-        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
-        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onLiveClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
+        onVideoClicked = { navController.navigate("$ROUTE_YOGA?mode=video") },
+        onPhotoClicked = { navController.navigate("$ROUTE_YOGA?mode=photo") },
         onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
-        gm4 = false,
       )
     }
 
@@ -272,50 +232,7 @@ fun GalleryNavHost(
         modelManagerViewModel = modelManagerViewModel,
         initialMode = initialMode,
         onNavigateUp = { navController.navigateUp() },
-      )
-    }
-
-    // Wearables analysis screen.
-    composable(
-      route = ROUTE_WEARABLES,
-      enterTransition = { slideEnter() },
-      exitTransition = { slideExit() },
-    ) {
-      WearablesAnalysisScreen(
-        modelManagerViewModel = modelManagerViewModel,
-        onNavigateUp = { navController.navigateUp() },
-      )
-    }
-
-    // Insights aggregation screen (bottom-nav · Insights).
-    composable(
-      route = ROUTE_INSIGHTS,
-      enterTransition = { slideEnter() },
-      exitTransition = { slideExit() },
-    ) {
-      InsightsScreen(
-        onNavigateUp = { navController.navigateUp() },
-        onOpenWearablesAnalysis = { navController.navigate(ROUTE_WEARABLES) },
-        onOpenImageChat = { openCentralImageChat() },
-        onOpenYogaCoach = { navController.navigate(ROUTE_YOGA) },
-        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
-        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
-        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
-      )
-    }
-
-    // Programs screen (bottom-nav · Programs).
-    composable(
-      route = ROUTE_PROGRAMS,
-      enterTransition = { slideEnter() },
-      exitTransition = { slideExit() },
-    ) {
-      ProgramsScreen(
-        onNavigateUp = { navController.navigateUp() },
-        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
-        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
-        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
-        onCentralClick = { openCentralImageChat() },
+        onOpenProfile = { navigateToTab(ROUTE_PROFILE) },
       )
     }
 
@@ -328,9 +245,7 @@ fun GalleryNavHost(
       ProfileScreen(
         onNavigateUp = { navController.navigateUp() },
         onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
-        onInsightsClicked = { navigateToTab(ROUTE_INSIGHTS) },
-        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
-        onCentralClick = { openCentralImageChat() },
+        onLiveClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
         modelManagerViewModel = modelManagerViewModel,
       )
     }

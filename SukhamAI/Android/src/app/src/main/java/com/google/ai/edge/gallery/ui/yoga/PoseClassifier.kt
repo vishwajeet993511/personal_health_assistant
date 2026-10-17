@@ -479,6 +479,40 @@ object PoseClassifier {
       .take(limit)
   }
 
+  /**
+   * The joints already sitting on the reference for [poseName] — what is working, best first.
+   *
+   * The mirror of [corrections]: same templates, same visibility rules, but a joint qualifies
+   * when its gap is under half its tolerance. Measured, so the voice coach can honestly say what
+   * is right instead of inventing a compliment.
+   */
+  fun alignedJoints(result: PoseLandmarkerResult, poseName: String, limit: Int = 3): List<String> {
+    val f = extractFeatures(result) ?: return emptyList()
+    val template = POSE_TEMPLATES[poseName] ?: return emptyList()
+    val mirroredT = mirror(template)
+    val tpl = if (distance(f, mirroredT) < distance(f, template)) mirroredT else template
+    val lms = result.landmarks().firstOrNull() ?: return emptyList()
+
+    fun visible(i: Int): Boolean {
+      val lm = lms[i]
+      return lm.visibility().orElse(1f) >= CORRECTION_MIN_VISIBILITY &&
+        lm.x() in -0.02f..1.02f && lm.y() in -0.02f..1.02f
+    }
+
+    return JOINT_SPECS
+      .filter { visible(it.fixed) && visible(it.pivot) && visible(it.moving) }
+      .mapNotNull { spec ->
+        val isHip = spec.feature == F_HIP_L || spec.feature == F_HIP_R
+        val cur = if (isHip) 180f - abs(f[spec.feature] - 180f) else f[spec.feature]
+        val tgt = if (isHip) 180f - abs(tpl[spec.feature] - 180f) else tpl[spec.feature]
+        val gap = abs(tgt - cur)
+        if (gap < spec.tolerance * 0.5f) spec.label to gap else null
+      }
+      .sortedBy { it.second }
+      .take(limit)
+      .map { it.first }
+  }
+
   private fun angle2d(ax: Float, ay: Float, bx: Float, by: Float): Float {
     val na = hypot(ax, ay)
     val nb = hypot(bx, by)

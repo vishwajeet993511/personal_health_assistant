@@ -93,6 +93,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableLongStateOf
+import androidx.activity.compose.BackHandler
+import kotlin.math.roundToInt
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -186,6 +188,9 @@ private fun AuditFeatureRow(text: String) {
 }
 
 /** Which frame source is feeding the coach. */
+/** Below this classifier score the pose is unrecognised and the ring shows nothing. */
+private const val LIVE_RING_MIN_SCORE = 0.45f
+
 private enum class YogaMode(val label: String) {
   PHOTO("Photo"),
   LIVE("Live session"),
@@ -198,6 +203,7 @@ fun YogaPoseScreen(
   modelManagerViewModel: ModelManagerViewModel,
   initialMode: String = "photo",
   onNavigateUp: () -> Unit,
+  onOpenProfile: () -> Unit = {},
   profileViewModel: ProfileViewModel = hiltViewModel(),
 ) {
   val context = LocalContext.current
@@ -275,6 +281,16 @@ fun YogaPoseScreen(
   var spotlightCard by remember { mutableStateOf<CoachingCard?>(null) }
   var lastSpotlightId by remember { mutableLongStateOf(-1L) }
 
+  // ---- Full-screen live coach ----
+  // Voice is on by default here: hearing what is working and what to change is the point of the
+  // live coach. The speaker button on screen mutes it.
+  var voiceOn by remember { mutableStateOf(true) }
+  // What the ring shows: closeness to the reference pose, smoothed so it doesn't flicker.
+  var ringPercent by remember { mutableStateOf<Int?>(null) }
+  var ringPose by remember { mutableStateOf<String?>(null) }
+  // Session-clock second at which the newest coaching finished, to let it fade from the banner.
+  var coachingDoneAtMs by remember { mutableLongStateOf(0L) }
+
   // ---- Video mode state ----
   var videoUri by remember { mutableStateOf<Uri?>(null) }
   var videoDurationMs by remember { mutableStateOf(0L) }
@@ -327,6 +343,58 @@ fun YogaPoseScreen(
     lastSpokenLiveCardId = -1L
     lastSpotlightId = -1L
     spotlightCard = null
+  }
+
+  /** Closes the live coach: silence the voice, write the debug record, leave. */
+  fun closeLiveCoach() {
+    stopSession()
+    LiveCoachDebug.logDump()
+    onNavigateUp()
+  }
+
+  /** One preview detection: feeds the hold gate, updates the ring, and records for debugging. */
+  fun onLivePose(result: PoseLandmarkerResult?) {
+    val decision =
+      holdDetector.onFrame(
+        result = result,
+        nowMs = System.currentTimeMillis(),
+        engineBusy = engineBusy,
+      )
+    holdState = decision.state
+    holdProgress = decision.holdProgress
+    detectedPose = decision.topPoseName
+
+    // The ring tracks closeness to the nearest known pose on every detection, so it moves as the
+    // person adjusts instead of only updating once per hold.
+    val top =
+      if (decision.state == PoseHoldDetector.State.NO_PERSON) null
+      else result?.let { PoseClassifier.classify(it, 1).firstOrNull() }
+    if (top != null && top.score >= LIVE_RING_MIN_SCORE) {
+      val pct = matchPercent(top.score)
+      ringPercent = ringPercent?.let { (it * 0.6f + pct * 0.4f).roundToInt() } ?: pct
+      ringPose = top.name.substringBefore(" (")
+    } else {
+      ringPercent = null
+      ringPose = null
+    }
+    LiveCoachDebug.recordFrame(
+      LiveCoachDebug.Frame(
+        atMs = System.currentTimeMillis(),
+        holdState = decision.state.name,
+        holdProgress = decision.holdProgress,
+        topPose = top?.name,
+        matchScore = top?.score,
+        shownPercent = ringPercent,
+      )
+    )
+
+    val candidates = decision.trigger
+    val model = imageModel
+    val frame = latestFrame.get()
+    if (candidates != null && model != null && frame != null) {
+      val stamp = System.currentTimeMillis() - sessionStartMs
+      scope.launch { engine.offerFrame(model, stamp, frame, candidates) }
+    }
   }
 
   val galleryLauncher =
@@ -398,13 +466,80 @@ fun YogaPoseScreen(
       }
     }
 
-  Scaffold(
+  if (isLiveScreen) {
+    val downloadStatus = imageModel?.let { uiState.modelDownloadStatus[it.name] }
+    val readiness: LiveReadiness =
+      when {
+        imageModel == null -> LiveReadiness.NeedsModel
+        modelDownloaded && initStatus == ModelInitializationStatusType.ERROR ->
+          LiveReadiness.Failed(
+            uiState.modelInitializationStatus[imageModel.name]?.error?.ifBlank { null }
+              ?: "Please try again."
+          )
+        modelDownloaded -> if (sessionActive) LiveReadiness.Ready else LiveReadiness.WarmingUp
+        downloadStatus?.status == ModelDownloadStatusType.IN_PROGRESS ||
+          downloadStatus?.status == ModelDownloadStatusType.PARTIALLY_DOWNLOADED ||
+          downloadStatus?.status == ModelDownloadStatusType.UNZIPPING -> {
+          val total = maxOf(downloadStatus.totalBytes, imageModel.totalBytes, 1L)
+          LiveReadiness.Downloading(
+            fraction = downloadStatus.receivedBytes.toFloat() / total,
+            receivedMb = (downloadStatus.receivedBytes / (1024 * 1024)).toInt(),
+            totalMb = (total / (1024 * 1024)).toInt(),
+          )
+        }
+        else -> LiveReadiness.NeedsModel
+      }
+
+    val latestDone = cards.lastOrNull { it.status == CoachingStatus.DONE && it.text.isNotBlank() }
+    val banner =
+      liveBanner(
+        holdState = holdState,
+        holdProgress = holdProgress,
+        analysing = engineBusy,
+        spotlightFix = spotlightCard?.corrections?.firstOrNull()?.instruction,
+        coaching = latestDone?.let { parseCoaching(it.text) },
+        coachingAgeMs = if (latestDone != null) elapsedMs - coachingDoneAtMs else Long.MAX_VALUE,
+      )
+
+    BackHandler {
+      if (spotlightCard != null) spotlightCard = null else closeLiveCoach()
+    }
+    LiveCoachScreen(
+      readiness = readiness,
+      useFrontCamera = useFrontCamera,
+      onFlipCamera = { useFrontCamera = !useFrontCamera },
+      voiceOn = voiceOn,
+      onToggleVoice = {
+        voiceOn = !voiceOn
+        if (!voiceOn) ttsHelper.stop()
+      },
+      holdState = holdState,
+      holdProgress = holdProgress,
+      matchPercent = ringPercent,
+      poseName = ringPose,
+      banner = banner,
+      spotlight = spotlightCard,
+      onSpotlightDone = { spotlightCard = null },
+      onFrame = { bitmap -> latestFrame.set(bitmap) },
+      onPose = { result -> onLivePose(result) },
+      onClose = { closeLiveCoach() },
+      onOpenProfile = {
+        stopSession()
+        onOpenProfile()
+      },
+      onRetry = {
+        if (ensureModelOrToast()) pendingSessionStart = true
+      },
+    )
+  }
+
+  if (!isLiveScreen) Scaffold(
     containerColor = YogaThemeColors.ScreenBg,
     topBar = {
       TopAppBar(
         title = {
           Text(
-            text = if (isLiveScreen) "Live AI Coach" else "Upload & Analyse",
+            text = if (initialYogaMode == YogaMode.VIDEO) "Video Review" else "Photo Review",
             style = MaterialTheme.typography.titleMedium.copy(
               fontWeight = FontWeight.Bold,
               color = YogaThemeColors.TitleBlack,
@@ -441,162 +576,6 @@ fun YogaPoseScreen(
       verticalArrangement = Arrangement.spacedBy(16.dp),
       contentPadding = PaddingValues(vertical = 12.dp),
     ) {
-      // 1. Header block
-      item {
-        Column(modifier = Modifier.fillMaxWidth()) {
-          if (isLiveScreen) {
-            Surface(
-              color = YogaThemeColors.SageContainer,
-              shape = RoundedCornerShape(percent = 50),
-            ) {
-              Row(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Box(
-                  modifier = Modifier
-                    .size(6.dp)
-                    .background(YogaThemeColors.SagePrimary, CircleShape)
-                )
-                Spacer(modifier = Modifier.width(5.dp))
-                Text(
-                  text = "((•)) REAL-TIME MOTION COACH",
-                  style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.ExtraBold,
-                    color = YogaThemeColors.SageDark,
-                    fontSize = 10.5.sp,
-                    letterSpacing = 0.5.sp
-                  )
-                )
-              }
-            }
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-              text = "Live Form & Posture Coach",
-              style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = YogaThemeColors.TitleBlack,
-                fontSize = 22.sp
-              )
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            Text(
-              text = "Position your phone with full body in view. Sukham AI tracks joints in real time and delivers instant audio-visual guidance as you exercise.",
-              style = MaterialTheme.typography.bodySmall.copy(
-                color = YogaThemeColors.BodyGray,
-                fontSize = 12.5.sp,
-                lineHeight = 17.sp
-              )
-            )
-          } else {
-            Surface(
-              color = YogaThemeColors.LavenderSoft,
-              shape = RoundedCornerShape(percent = 50),
-            ) {
-              Row(
-                modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Icon(
-                  imageVector = Icons.Outlined.Videocam,
-                  contentDescription = null,
-                  tint = YogaThemeColors.LavenderPrimary,
-                  modifier = Modifier.size(13.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                  text = "ASYNC BIOMECHANICAL AUDIT",
-                  style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = YogaThemeColors.LavenderPrimary,
-                    fontSize = 10.5.sp,
-                    letterSpacing = 0.5.sp
-                  )
-                )
-              }
-            }
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-              text = "Upload & Analyse Form",
-              style = MaterialTheme.typography.headlineSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = YogaThemeColors.TitleBlack,
-                fontSize = 22.sp
-              )
-            )
-            Spacer(modifier = Modifier.height(3.dp))
-            Text(
-              text = "Select a recorded video or pose photo for on-device AI movement analysis, spine angle tracking, and joint feedback.",
-              style = MaterialTheme.typography.bodySmall.copy(
-                color = YogaThemeColors.BodyGray,
-                fontSize = 12.5.sp,
-                lineHeight = 17.sp
-              )
-            )
-          }
-        }
-      }
-
-      // 2. Mode Selector: Only shown for Upload screen (Video & Photo)
-      if (!isLiveScreen) {
-        item {
-          Surface(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(14.dp),
-            color = YogaThemeColors.ChipBg,
-            border = BorderStroke(1.dp, YogaThemeColors.CardBorder)
-          ) {
-            Row(
-              modifier = Modifier.padding(4.dp),
-              horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-              uploadModes.forEach { entry ->
-                val isSelected = mode == entry
-                Surface(
-                  modifier = Modifier
-                    .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .clickable {
-                      if (mode != entry) {
-                        ttsHelper.stop()
-                        stopSession()
-                        mode = entry
-                      }
-                    },
-                  shape = RoundedCornerShape(10.dp),
-                  color = if (isSelected) YogaThemeColors.SagePrimary else Color.Transparent,
-                  shadowElevation = if (isSelected) 1.dp else 0.dp
-                ) {
-                  Row(
-                    modifier = Modifier
-                      .fillMaxWidth()
-                      .padding(vertical = 10.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                  ) {
-                    Icon(
-                      imageVector = if (entry == YogaMode.VIDEO) Icons.Outlined.Videocam else Icons.Outlined.PhotoCamera,
-                      contentDescription = null,
-                      tint = if (isSelected) Color.White else YogaThemeColors.BodyGray,
-                      modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                      text = if (entry == YogaMode.VIDEO) "Video Upload" else "Photo Upload",
-                      style = MaterialTheme.typography.labelMedium.copy(
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else YogaThemeColors.TitleBlack,
-                        fontSize = 13.sp
-                      )
-                    )
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
       when (mode) {
         YogaMode.PHOTO -> {
           val hasPhoto = (annotatedBitmap != null || originalBitmap != null)
@@ -628,7 +607,7 @@ fun YogaPoseScreen(
                   Spacer(modifier = Modifier.height(14.dp))
 
                   Text(
-                    text = "Pose Form & Alignment Critique",
+                    text = "Check your pose",
                     style = MaterialTheme.typography.titleMedium.copy(
                       fontWeight = FontWeight.Bold,
                       color = YogaThemeColors.TitleBlack,
@@ -639,7 +618,7 @@ fun YogaPoseScreen(
                   Spacer(modifier = Modifier.height(6.dp))
 
                   Text(
-                    text = "Capture or select a photo in any posture. Sukham AI maps your skeleton, identifies the closest asana, and provides immediate biomechanical coaching.",
+                    text = "Take a photo or choose one from your gallery, and get feedback on your form.",
                     style = MaterialTheme.typography.bodySmall.copy(
                       color = YogaThemeColors.BodyGray,
                       fontSize = 12.sp,
@@ -651,14 +630,7 @@ fun YogaPoseScreen(
 
                   Spacer(modifier = Modifier.height(14.dp))
 
-                  Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                  ) {
-                    AuditFeatureRow("Real-time landmark skeleton overlay")
-                    AuditFeatureRow("Asana match & form accuracy score")
-                    AuditFeatureRow("Personalized coaching cues from Gemma")
-                  }
+
 
                   Spacer(modifier = Modifier.height(16.dp))
 
@@ -896,281 +868,8 @@ fun YogaPoseScreen(
           }
         }
 
-        YogaMode.LIVE -> {
-          if (!sessionActive) {
-            item {
-              Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = YogaThemeColors.CardBg),
-                border = BorderStroke(1.dp, YogaThemeColors.CardBorder),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-              ) {
-                Column(
-                  modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                  horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                  Image(
-                    painter = painterResource(R.drawable.live_ai_coach_hero),
-                    contentDescription = "Live AI Coach",
-                    modifier = Modifier
-                      .fillMaxWidth()
-                      .height(185.dp)
-                      .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                  )
-
-                  Spacer(modifier = Modifier.height(14.dp))
-
-                  Text(
-                    text = "Real-Time Movement Guidance",
-                    style = MaterialTheme.typography.titleMedium.copy(
-                      fontWeight = FontWeight.Bold,
-                      color = YogaThemeColors.TitleBlack,
-                      fontSize = 17.sp
-                    )
-                  )
-
-                  Spacer(modifier = Modifier.height(6.dp))
-
-                  Text(
-                    text = "Position your phone 5–8 ft away on a stable surface. Sukham AI tracks 33 skeletal landmarks in real-time, detecting repetitions, hold stability, and postural deviations with instant audio feedback.",
-                    style = MaterialTheme.typography.bodySmall.copy(
-                      color = YogaThemeColors.BodyGray,
-                      fontSize = 12.sp,
-                      textAlign = TextAlign.Center,
-                      lineHeight = 16.5.sp
-                    ),
-                    modifier = Modifier.padding(horizontal = 8.dp)
-                  )
-
-                  Spacer(modifier = Modifier.height(14.dp))
-
-                  Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                  ) {
-                    AuditFeatureRow("33-Point skeletal landmark tracking at 30+ FPS")
-                    AuditFeatureRow("Instant audio & visual posture correction cues")
-                    AuditFeatureRow("Supports Gym reps, Yoga poses, and Dance flow")
-                    AuditFeatureRow("100% Private — processed on-device with Gemma")
-                  }
-
-                  Spacer(modifier = Modifier.height(16.dp))
-
-                  // Camera Choice Toggle (Front / Back camera)
-                  Surface(
-                    shape = RoundedCornerShape(percent = 50),
-                    color = YogaThemeColors.ChipBg,
-                    border = BorderStroke(1.dp, YogaThemeColors.CardBorder),
-                    modifier = Modifier.fillMaxWidth()
-                  ) {
-                    Row(
-                      modifier = Modifier.padding(3.dp),
-                      horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                      Surface(
-                        modifier = Modifier
-                          .weight(1f)
-                          .clip(RoundedCornerShape(percent = 50))
-                          .clickable { useFrontCamera = true },
-                        shape = RoundedCornerShape(percent = 50),
-                        color = if (useFrontCamera) YogaThemeColors.SagePrimary else Color.Transparent
-                      ) {
-                        Text(
-                          text = "Front Camera (Selfie)",
-                          style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = if (useFrontCamera) FontWeight.Bold else FontWeight.Medium,
-                            color = if (useFrontCamera) Color.White else YogaThemeColors.BodyGray,
-                            fontSize = 11.5.sp
-                          ),
-                          textAlign = TextAlign.Center,
-                          modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                      }
-
-                      Surface(
-                        modifier = Modifier
-                          .weight(1f)
-                          .clip(RoundedCornerShape(percent = 50))
-                          .clickable { useFrontCamera = false },
-                        shape = RoundedCornerShape(percent = 50),
-                        color = if (!useFrontCamera) YogaThemeColors.SagePrimary else Color.Transparent
-                      ) {
-                        Text(
-                          text = "Rear Camera (Main)",
-                          style = MaterialTheme.typography.labelSmall.copy(
-                            fontWeight = if (!useFrontCamera) FontWeight.Bold else FontWeight.Medium,
-                            color = if (!useFrontCamera) Color.White else YogaThemeColors.BodyGray,
-                            fontSize = 11.5.sp
-                          ),
-                          textAlign = TextAlign.Center,
-                          modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                      }
-                    }
-                  }
-
-                  Spacer(modifier = Modifier.height(16.dp))
-
-                  Button(
-                    modifier = Modifier
-                      .fillMaxWidth()
-                      .height(50.dp),
-                    shape = RoundedCornerShape(percent = 50),
-                    colors = ButtonDefaults.buttonColors(containerColor = YogaThemeColors.SagePrimary),
-                    onClick = {
-                      if (!ensureModelOrToast()) return@Button
-                      engine.reset()
-                      holdDetector.reset()
-                      latestFrame.set(null)
-                      pendingSessionStart = true
-                    }
-                  ) {
-                    if (pendingSessionStart) {
-                      CircularProgressIndicator(
-                        modifier = Modifier.size(20.dp),
-                        color = Color.White,
-                        strokeWidth = 2.dp,
-                      )
-                      Spacer(Modifier.size(10.dp))
-                      Text("Warming up Gemma…", color = Color.White, fontWeight = FontWeight.Bold)
-                    } else {
-                      Icon(
-                        imageVector = Icons.Outlined.PlayArrow,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                      )
-                      Spacer(Modifier.width(8.dp))
-                      Text(
-                        text = "Start Live Session",
-                        style = MaterialTheme.typography.labelLarge.copy(
-                          fontWeight = FontWeight.Bold,
-                          color = Color.White,
-                          fontSize = 14.5.sp
-                        )
-                      )
-                    }
-                  }
-                }
-              }
-            }
-          } else {
-            // Live Session is active! Full camera view
-            item {
-              Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.Black),
-                border = BorderStroke(1.dp, YogaThemeColors.CardBorder),
-              ) {
-                Box(
-                  modifier = Modifier.fillMaxWidth().aspectRatio(3f / 4f),
-                  contentAlignment = Alignment.Center,
-                ) {
-                  val selector =
-                    if (useFrontCamera) CameraSelector.DEFAULT_FRONT_CAMERA
-                    else CameraSelector.DEFAULT_BACK_CAMERA
-                  key(selector) {
-                    LivePosePreview(
-                      cameraSelector = selector,
-                      onFrame = { bitmap -> latestFrame.set(bitmap) },
-                      modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
-                      onPose = { result ->
-                        val decision =
-                          holdDetector.onFrame(
-                            result = result,
-                            nowMs = System.currentTimeMillis(),
-                            engineBusy = engineBusy,
-                          )
-                        holdState = decision.state
-                        holdProgress = decision.holdProgress
-                        detectedPose = decision.topPoseName
-                        val candidates = decision.trigger
-                        val model = imageModel
-                        val frame = latestFrame.get()
-                        if (candidates != null && model != null && frame != null) {
-                          val stamp = System.currentTimeMillis() - sessionStartMs
-                          scope.launch { engine.offerFrame(model, stamp, frame, candidates) }
-                        }
-                      },
-                    )
-                  }
-                  SessionOverlay(
-                    elapsedMs = elapsedMs,
-                    analyzing = engineBusy,
-                    holdState = holdState,
-                    holdProgress = holdProgress,
-                    detectedPose = detectedPose,
-                    isVoiceCoachEnabled = isReadAloudEnabled,
-                    isSpeaking = ttsHelper.isSpeaking.value,
-                    modifier = Modifier.align(Alignment.TopCenter),
-                  )
-                  spotlightCard?.let { card ->
-                    card.thumbnail?.let { bmp ->
-                      CorrectionSpotlight(
-                        bitmap = bmp,
-                        corrections = card.corrections,
-                        bounds = card.skeletonBounds,
-                        onDone = { spotlightCard = null },
-                        modifier = Modifier.fillMaxSize().clip(RoundedCornerShape(20.dp)),
-                      )
-                    }
-                  }
-                  IconButton(
-                    onClick = { useFrontCamera = !useFrontCamera },
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp),
-                  ) {
-                    Icon(
-                      Icons.Outlined.Cameraswitch,
-                      contentDescription = "Switch camera",
-                      tint = Color.White,
-                    )
-                  }
-                }
-              }
-            }
-
-            item {
-              Button(
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(percent = 50),
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                onClick = { stopSession() }
-              ) {
-                Icon(
-                  imageVector = Icons.Outlined.Stop,
-                  contentDescription = null,
-                  tint = Color.White
-                )
-                Spacer(Modifier.size(8.dp))
-                Text(
-                  text = "Stop Session",
-                  color = Color.White,
-                  fontWeight = FontWeight.Bold,
-                  fontSize = 14.sp
-                )
-              }
-            }
-
-            timelineItems(
-              cards = cards,
-              skippedTicks = skippedTicks,
-              newestFirst = true,
-              onSpeak = { text ->
-                if (ttsHelper.isSpeaking.value) {
-                  ttsHelper.stop()
-                } else {
-                  ttsHelper.speak(spokenCoachingText(text), calm = true)
-                }
-              },
-              isSpeaking = ttsHelper.isSpeaking.value,
-            )
-          }
-        }
+        // The live coach is its own full-screen screen (LiveCoachScreen), not a page here.
+        YogaMode.LIVE -> Unit
 
         YogaMode.VIDEO -> {
           if (videoUri == null) {
@@ -1201,7 +900,7 @@ fun YogaPoseScreen(
                   Spacer(modifier = Modifier.height(14.dp))
 
                   Text(
-                    text = "Frame-by-Frame Motion Audit",
+                    text = "Review your recording",
                     style = MaterialTheme.typography.titleMedium.copy(
                       fontWeight = FontWeight.Bold,
                       color = YogaThemeColors.TitleBlack,
@@ -1212,7 +911,7 @@ fun YogaPoseScreen(
                   Spacer(modifier = Modifier.height(6.dp))
 
                   Text(
-                    text = "Select any recorded workout, yoga flow, or gym set. Sukham AI breaks the video down into kinetic keyframes, detects deviations, and builds an on-device posture timeline.",
+                    text = "Choose a video and get feedback on your form, moment by moment.",
                     style = MaterialTheme.typography.bodySmall.copy(
                       color = YogaThemeColors.BodyGray,
                       fontSize = 12.sp,
@@ -1224,14 +923,7 @@ fun YogaPoseScreen(
 
                   Spacer(modifier = Modifier.height(14.dp))
 
-                  Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(6.dp)
-                  ) {
-                    AuditFeatureRow("33-Point skeletal joint angle tracking")
-                    AuditFeatureRow("Spine alignment & kinetic deviation scoring")
-                    AuditFeatureRow("100% Private — processed on-device with Gemma")
-                  }
+
 
                   Spacer(modifier = Modifier.height(16.dp))
 
@@ -1531,12 +1223,47 @@ fun YogaPoseScreen(
     }
   }
 
+  // The live coach has no start page: the session begins the moment the model is on disk, so a
+  // download still in progress simply carries on into the camera when it finishes.
+  LaunchedEffect(isLiveScreen, modelDownloaded, imageModel?.name) {
+    if (isLiveScreen && modelDownloaded && !sessionActive && !pendingSessionStart) {
+      if (ensureModelOrToast()) {
+        engine.reset()
+        holdDetector.reset()
+        latestFrame.set(null)
+        pendingSessionStart = true
+      }
+    }
+  }
+
+  // Remember when the newest coaching landed so the banner can let it go after a while.
+  LaunchedEffect(cards.lastOrNull { it.status == CoachingStatus.DONE }?.id) {
+    coachingDoneAtMs = elapsedMs
+  }
+
+  // Whenever the live screen goes away, whichever way, leave the debug record in logcat.
+  DisposableEffect(isLiveScreen) {
+    onDispose {
+      if (isLiveScreen) {
+        ttsHelper.stop()
+        LiveCoachDebug.logDump()
+      }
+    }
+  }
+
   // Session starter: flips pendingSessionStart into a running session once Gemma is ready.
   LaunchedEffect(pendingSessionStart, initStatus) {
+    // Don't spin forever on "Warming up Gemma" if loading actually failed.
+    if (pendingSessionStart && initStatus == ModelInitializationStatusType.ERROR) {
+      pendingSessionStart = false
+      val reason = imageModel?.let { uiState.modelInitializationStatus[it.name]?.error }.orEmpty()
+      Toast.makeText(context, "Gemma failed to load. $reason".trim(), Toast.LENGTH_LONG).show()
+    }
     if (pendingSessionStart && initStatus == ModelInitializationStatusType.INITIALIZED) {
       pendingSessionStart = false
       sessionStartMs = System.currentTimeMillis()
       elapsedMs = 0L
+      if (isLiveScreen) LiveCoachDebug.startSession(imageModel?.name ?: "")
       sessionActive = true
     }
   }
@@ -1568,7 +1295,7 @@ fun YogaPoseScreen(
 
   // Live session voice coach: automatically speaks posture analysis aloud when a pose frame
   // finishes coaching inference, honoring the Read Aloud toggle from Profile Settings.
-  LaunchedEffect(cards, isReadAloudEnabled, sessionActive, mode) {
+  LaunchedEffect(cards, isReadAloudEnabled, voiceOn, sessionActive, mode) {
     if (!sessionActive || mode != YogaMode.LIVE) {
       if (!sessionActive) {
         lastSpokenLiveCardId = -1L
@@ -1576,9 +1303,22 @@ fun YogaPoseScreen(
       return@LaunchedEffect
     }
 
-    if (!isReadAloudEnabled) {
+    // The live screen has its own speaker button; Profile's Read Aloud governs the other modes.
+    val speakEnabled = if (isLiveScreen) voiceOn else isReadAloudEnabled
+    if (!speakEnabled) {
       if (ttsHelper.isSpeaking.value) {
         ttsHelper.stop()
+      }
+      return@LaunchedEffect
+    }
+
+    // Live: the measured narration starts with the freeze animation, not ~10 s later when the
+    // model finishes. The model's wording then only refreshes the banner, so nothing is said twice.
+    val narrated = if (isLiveScreen) cards.lastOrNull { it.narration.isNotBlank() } else null
+    if (narrated != null) {
+      if (narrated.id != lastSpokenLiveCardId) {
+        lastSpokenLiveCardId = narrated.id
+        ttsHelper.speak(narrated.narration, calm = true)
       }
       return@LaunchedEffect
     }

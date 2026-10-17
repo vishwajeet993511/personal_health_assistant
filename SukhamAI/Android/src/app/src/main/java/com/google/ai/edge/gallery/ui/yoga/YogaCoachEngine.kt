@@ -70,6 +70,8 @@ internal fun buildYogaPrompt(
   deviations: List<String> = emptyList(),
   /** Joints the app is highlighting on screen; the Fix must be about the first of these. */
   corrections: List<JointCorrection> = emptyList(),
+  /** Joints measured as already on the reference — the honest basis for the "Good" line. */
+  aligned: List<String> = emptyList(),
 ): String = buildString {
   append("The cyan skeleton overlay marks a person's joints while doing yoga.\n\n")
 
@@ -112,43 +114,116 @@ internal fun buildYogaPrompt(
     append("the form is probably good.\n")
   }
 
+  if (aligned.isNotEmpty()) {
+    append("\nThese joints already match the reference well: ")
+    append(aligned.joinToString(", ")).append(".\n")
+  }
+
   append("\nOnly give a correction if something is genuinely wrong. If the alignment looks ")
   append("good, write exactly \"Fix: None, hold it\" and do not invent a problem. ")
   append("When you do correct something, name a specific body part and the direction to move ")
   append("it (for example \"drop the left hip down and back\"). Never give generic advice ")
   append("like \"engage your core\" or \"breathe deeply\". Speak gently, like a calm yoga ")
   append("teacher, and never score or grade the person.\n\n")
-  append("Reply in exactly two lines, under 40 words total. Plain text only, no markdown, ")
+  append("Reply in exactly three lines, under 50 words total. Plain text only, no markdown, ")
   append("no dashes as separators:\n")
   append("Pose: <name>\n")
+  append("Good: <one short, warm sentence on what is working")
+  if (aligned.isNotEmpty()) {
+    append(", naming a body part from the matching list above and saying it is well placed; ")
+    append("never describe it as bent or straight")
+  }
+  append(">\n")
   append("Fix: <one specific, gently phrased correction, or \"None, hold it\">")
 }
 
-/**
- * What the voice coach says for a finished card: the correction only.
- *
- * The pose name and any score are for the screen; reading "Pose: Tree, Fix: ..." aloud sounds
- * like a form being filled in. A pose that needs nothing gets a quiet reassurance instead of
- * the literal "None, hold it".
- */
-internal fun spokenCoachingText(raw: String): String {
-  val fix =
+/** The model's three lines, split. Any part the model left out is an empty string. */
+internal data class Coaching(val pose: String, val good: String, val fix: String) {
+  /** True when the model said nothing needs correcting. */
+  val fixIsNone: Boolean get() = fix.isEmpty() || fix.startsWith("none", ignoreCase = true)
+}
+
+internal fun parseCoaching(raw: String): Coaching {
+  fun field(name: String) =
     raw.lineSequence()
       .map { it.trim() }
-      .firstOrNull { it.startsWith("Fix:", ignoreCase = true) }
+      .firstOrNull { it.startsWith("$name:", ignoreCase = true) }
       ?.substringAfter(':')
       ?.trim()
       .orEmpty()
-  if (fix.isEmpty()) {
-    // Unstructured text: drop pose and score lines, keep whatever is left.
+  return Coaching(pose = field("Pose"), good = field("Good"), fix = field("Fix"))
+}
+
+/**
+ * The spoken walk-through of the frozen frame: what is working, then the one thing to change.
+ *
+ * Built only from measurements, so it can start with the animation instead of waiting ~10 s for
+ * the language model. The sentences mirror what the animation shows: the joints already on the
+ * reference, then the first highlighted joint and how far to move it.
+ */
+internal fun measuredNarration(aligned: List<String>, corrections: List<JointCorrection>): String {
+  // One joint, not two: the voice is slow and calm, and the whole line has to fit inside the
+  // eight seconds the animation plays.
+  val good = aligned.take(1)
+  val parts = mutableListOf<String>()
+  if (good.isNotEmpty()) {
+    parts += "Your ${good.joinToString(" and ")} ${if (good.size > 1) "are" else "is"} well placed."
+  }
+  val fix = corrections.firstOrNull()
+  if (fix != null) {
+    parts += fix.instruction.replace("\u00B0", " degrees") + "."
+  } else if (good.isNotEmpty()) {
+    parts += "Lovely. Stay here, and keep breathing."
+  }
+  return parts.joinToString(" ")
+}
+
+/**
+ * Makes the spoken fix agree with the fix drawn on screen.
+ *
+ * The highlighted joint comes from measured angles; the model only phrases it. A small model
+ * sometimes ignores the instruction and talks about another joint, so the voice would say "lower
+ * the hip" while the screen shows the arms. When the model's Fix does not mention the measured
+ * joint, or says nothing needs fixing although a joint measured off, the measured instruction
+ * replaces it. The model's pose and "Good" lines are kept.
+ */
+internal fun reconcileFix(cleaned: String, corrections: List<JointCorrection>): String {
+  val first = corrections.firstOrNull() ?: return cleaned
+  val c = parseCoaching(cleaned)
+  val label = first.label.lowercase()
+  val instruction = first.instruction.lowercase()
+  val wanted = listOf("knee", "elbow", "hip", "shoulder", "arm").filter {
+    label.contains(it) || instruction.contains(it)
+  }
+  val fix = c.fix.lowercase()
+  if (!c.fixIsNone && wanted.any { fix.contains(it) }) return cleaned
+  return buildString {
+    if (c.pose.isNotEmpty()) appendLine("Pose: ${c.pose}")
+    if (c.good.isNotEmpty()) appendLine("Good: ${c.good}")
+    append("Fix: ").append(first.instruction.replace("\u00B0", " degrees"))
+  }
+}
+
+/**
+ * What the voice coach says for a finished card: what is working, then what to change.
+ *
+ * The pose name is for the screen; reading "Pose: Tree, Fix: ..." aloud sounds like a form being
+ * filled in. A pose that needs nothing gets a quiet reassurance instead of the literal "None,
+ * hold it".
+ */
+internal fun spokenCoachingText(raw: String): String {
+  val c = parseCoaching(raw)
+  if (c.fix.isEmpty() && c.good.isEmpty()) {
+    // Unstructured text: drop the pose line, keep whatever is left.
     return raw.lineSequence()
       .map { it.trim() }
       .filterNot { it.startsWith("Pose:", true) || it.startsWith("Form:", true) }
       .joinToString(" ")
       .trim()
   }
-  return if (fix.startsWith("none", ignoreCase = true)) "Lovely. Stay here, and keep breathing."
-  else fix.trimEnd('.') + ". Then breathe, and stay with it."
+  val good = c.good.trimEnd('.').let { if (it.isEmpty()) "" else "$it. " }
+  return if (c.fixIsNone) good + "Lovely. Stay here, and keep breathing."
+  else good + c.fix.trimEnd('.') + ". Then breathe, and stay with it."
 }
 
 /** Pose must score at least this, and lead the runner-up by the margin, to highlight joints. */
@@ -187,6 +262,12 @@ data class CoachingCard(
   val corrections: List<JointCorrection> = emptyList(),
   /** Where the person is in the frame, for zooming in when showing [corrections]. */
   val skeletonBounds: NormRect? = null,
+  /**
+   * What the voice says while this frame's animation plays, built from the measured joints so it
+   * is ready the instant the frame is frozen. Empty when the pose was not recognised confidently,
+   * in which case the model's own wording is spoken once it arrives.
+   */
+  val narration: String = "",
 )
 
 /**
@@ -308,6 +389,10 @@ class YogaCoachEngine(
             PoseClassifier.corrections(result, top.name, scaled.width, scaled.height)
           }
         } else emptyList()
+      val aligned =
+        if (confident && top != null) {
+          withContext(Dispatchers.Default) { PoseClassifier.alignedJoints(result, top.name) }
+        } else emptyList()
       Log.d(TAG, "Corrections (confident=$confident): " + corrections.joinToString { it.instruction })
       Log.d(
         TAG,
@@ -322,6 +407,7 @@ class YogaCoachEngine(
           status = CoachingStatus.ANALYZING,
           corrections = corrections,
           skeletonBounds = skeletonBoundsOf(result),
+          narration = measuredNarration(aligned, corrections),
         )
       )
 
@@ -343,8 +429,9 @@ class YogaCoachEngine(
       val gemmaInput = withContext(Dispatchers.Default) { downscaleForInference(annotated, GEMMA_INPUT_MAX_EDGE) }
       val inferStart = System.currentTimeMillis()
       var firstTokenMs = -1L
+      val prompt = buildYogaPrompt(candidates, geometry, deviations, corrections, aligned)
       val text =
-        runGemma(model, gemmaInput, buildYogaPrompt(candidates, geometry, deviations, corrections)) { partial ->
+        runGemma(model, gemmaInput, prompt) { partial ->
           if (firstTokenMs < 0) {
             firstTokenMs = System.currentTimeMillis() - inferStart
             Log.d(TAG, "TIMING first token after ${firstTokenMs}ms (prefill)")
@@ -356,7 +443,27 @@ class YogaCoachEngine(
         "TIMING frame done: reset=${resetMs}ms prefill=${firstTokenMs}ms" +
           " total=${System.currentTimeMillis() - resetStart}ms chars=${text.length}",
       )
-      updateCard(id) { it.copy(status = CoachingStatus.DONE, text = cleanCoachingText(text)) }
+      val cleaned = reconcileFix(cleanCoachingText(text), corrections)
+      updateCard(id) { it.copy(status = CoachingStatus.DONE, text = cleaned) }
+      LiveCoachDebug.recordAnalysis(
+        LiveCoachDebug.Analysis(
+          cardId = id,
+          atMs = System.currentTimeMillis(),
+          candidates = candidates.map { "${it.name}=%.2f".format(it.score) },
+          confident = confident,
+          geometry = geometry,
+          deviations = deviations,
+          corrections = corrections.map { it.instruction },
+          aligned = aligned,
+          prompt = prompt,
+          gemmaRaw = text,
+          spoken = _cards.value.firstOrNull { it.id == id }?.narration?.ifBlank { null }
+            ?: spokenCoachingText(cleaned),
+          resetMs = resetMs,
+          firstTokenMs = firstTokenMs,
+          totalMs = System.currentTimeMillis() - resetStart,
+        )
+      )
     } catch (t: Throwable) {
       Log.e(TAG, "Analysis failed for frame at ${timestampMs}ms", t)
       val message = t.message ?: "Unknown error"

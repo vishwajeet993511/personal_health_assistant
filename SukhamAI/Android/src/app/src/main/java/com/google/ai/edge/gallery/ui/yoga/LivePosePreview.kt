@@ -26,16 +26,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import com.google.ai.edge.gallery.ui.common.LiveCameraView
+import com.google.mediapipe.tasks.components.containers.NormalizedLandmark
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
 import java.util.concurrent.atomic.AtomicReference
@@ -47,6 +51,9 @@ import kotlinx.coroutines.withContext
 /** Preview-only pose refresh rate. Fast enough to track a person, slow enough to leave the CPU
  * to Gemma, which is doing the actual coaching in parallel. */
 private const val PREVIEW_POSE_INTERVAL_MS = 400L
+
+/** How often the drawn skeleton is refreshed; independent of the slower hold-gate cadence. */
+private const val SKELETON_INTERVAL_MS = 100L
 
 /**
  * Live camera preview with the skeleton drawn over it.
@@ -74,6 +81,9 @@ fun LivePosePreview(
 ) {
   val context = LocalContext.current
   val previewHelper = remember { PoseLandmarkerHelper(context.applicationContext) }
+  // The detection loop below outlives recompositions; without this it would keep calling the
+  // handler from the first composition, with whatever state that one had captured.
+  val currentOnPose by rememberUpdatedState(onPose)
   DisposableEffect(Unit) { onDispose { previewHelper.close() } }
 
   // Latest frame lives outside Compose state so the 30fps camera callback doesn't drive
@@ -86,6 +96,9 @@ fun LivePosePreview(
   LiveCameraView(
     onBitmap = { bitmap, imageProxy ->
       pending.set(bitmap)
+      // The picture follows the camera frame by frame; only the skeleton waits on detection.
+      shown = bitmap.asImageBitmap()
+      shownSize = IntSize(bitmap.width, bitmap.height)
       onFrame(bitmap)
       imageProxy.close()
     },
@@ -95,6 +108,7 @@ fun LivePosePreview(
   )
 
   LaunchedEffect(cameraSelector) {
+    var lastGateMs = 0L
     while (isActive) {
       val frame = pending.get()
       if (frame == null) {
@@ -106,11 +120,15 @@ fun LivePosePreview(
           previewHelper.setup()
           runCatching { previewHelper.detect(frame) }.getOrNull()
         }
-      shown = frame.asImageBitmap()
-      shownSize = IntSize(frame.width, frame.height)
       landmarks = result
-      onPose(result)
-      delay(PREVIEW_POSE_INTERVAL_MS)
+      // The hold gate was tuned against detections ~400 ms apart, so it still gets them at that
+      // pace even though the skeleton now refreshes faster.
+      val now = System.currentTimeMillis()
+      if (now - lastGateMs >= PREVIEW_POSE_INTERVAL_MS) {
+        lastGateMs = now
+        currentOnPose(result)
+      }
+      delay(SKELETON_INTERVAL_MS)
     }
   }
 
@@ -140,18 +158,61 @@ fun LivePosePreview(
     fun toCanvas(nx: Float, ny: Float) =
       Offset((nx * bw - srcLeft) * scale, (ny * bh - srcTop) * scale)
 
-    val stroke = maxOf(4f, minOf(cw, ch) * 0.006f)
-    val dot = maxOf(6f, minOf(cw, ch) * 0.009f)
-    PoseLandmarker.POSE_LANDMARKS.forEach { connection ->
-      val a = pose[connection.start()]
-      val b = pose[connection.end()]
-      drawLine(
-        color = Color(0xFF00E5FF),
-        start = toCanvas(a.x(), a.y()),
-        end = toCanvas(b.x(), b.y()),
-        strokeWidth = stroke,
-      )
+    drawGlowingSkeleton(pose, ::toCanvas, base = maxOf(2f, minOf(cw, ch) * 0.003f))
+  }
+}
+
+/** The joints that make up the body figure; face, fingers and toes are left out as clutter. */
+private val BODY_JOINTS = setOf(11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28)
+
+/** Hand and foot tips, so limbs end in a point instead of stopping dead at the wrist/ankle. */
+private val EXTRA_SEGMENTS = listOf(15 to 19, 16 to 20, 27 to 31, 28 to 32)
+
+private val GlowGreen = Color(0xFF3DFF8A)
+private val CoreGreen = Color(0xFFC8FFDD)
+
+/**
+ * Draws the figure as a soft green neon: a wide faint halo, a brighter band, then a thin bright
+ * core. Three strokes of the same line is what reads as "glowing" without any blur filter.
+ */
+private fun DrawScope.drawGlowingSkeleton(
+  pose: List<NormalizedLandmark>,
+  toCanvas: (Float, Float) -> Offset,
+  base: Float,
+) {
+  fun seen(i: Int) = pose.getOrNull(i)?.let { it.visibility().orElse(1f) >= 0.4f } == true
+  fun pt(i: Int) = toCanvas(pose[i].x(), pose[i].y())
+
+  val segments = mutableListOf<Pair<Int, Int>>()
+  PoseLandmarker.POSE_LANDMARKS.forEach { c ->
+    if (c.start() in BODY_JOINTS && c.end() in BODY_JOINTS) segments += c.start() to c.end()
+  }
+  segments += EXTRA_SEGMENTS
+  val drawn = segments.filter { (a, b) -> seen(a) && seen(b) }
+
+  // Neck: shoulder midpoint up to the nose, which stands in for the head.
+  val neck =
+    if (seen(0) && seen(11) && seen(12)) {
+      val sm = Offset((pt(11).x + pt(12).x) / 2f, (pt(11).y + pt(12).y) / 2f)
+      sm to pt(0)
+    } else null
+
+  fun pass(widthMul: Float, color: Color) {
+    drawn.forEach { (a, b) ->
+      drawLine(color, pt(a), pt(b), strokeWidth = base * widthMul, cap = StrokeCap.Round)
     }
-    pose.forEach { lm -> drawCircle(color = Color(0xFFFFD740), radius = dot, center = toCanvas(lm.x(), lm.y())) }
+    neck?.let { (from, to) ->
+      drawLine(color, from, to, strokeWidth = base * widthMul, cap = StrokeCap.Round)
+    }
+  }
+  pass(3.4f, GlowGreen.copy(alpha = 0.12f))
+  pass(1.8f, GlowGreen.copy(alpha = 0.36f))
+  pass(0.8f, CoreGreen)
+
+  // Joint dots: a halo and a white centre.
+  (BODY_JOINTS + 0).filter { seen(it) }.forEach { i ->
+    val c = pt(i)
+    drawCircle(GlowGreen.copy(alpha = 0.45f), radius = base * 1.9f, center = c)
+    drawCircle(Color.White, radius = base * 0.95f, center = c)
   }
 }

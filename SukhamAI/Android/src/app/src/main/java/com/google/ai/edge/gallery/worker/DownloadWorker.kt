@@ -55,7 +55,11 @@ import java.net.URL
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import java.util.concurrent.ConcurrentHashMap
 
 private const val TAG = "AGDownloadWorker"
 
@@ -63,6 +67,15 @@ data class UrlAndFileName(val url: String, val fileName: String)
 
 private const val FOREGROUND_NOTIFICATION_CHANNEL_ID = "model_download_channel_foreground"
 private var channelCreated = false
+
+/**
+ * One lock per output file, so two workers can never append to the same partial download.
+ *
+ * When the app restarts mid-download WorkManager revives the old worker while the app also queues
+ * a fresh one. Both resumed from the same offset and both appended, which corrupted the model
+ * (the file came out 368,640 bytes too long and failed its SHA-256 check).
+ */
+private val fileLocks = ConcurrentHashMap<String, Mutex>()
 
 class DownloadWorker(context: Context, params: WorkerParameters) :
   CoroutineWorker(context, params) {
@@ -153,6 +166,7 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
                 listOf(modelDir, version, "${file.fileName}.$TMP_FILE_EXT")
                   .joinToString(separator = File.separator),
               )
+            fileLocks.getOrPut(outputTmpFile.absolutePath) { Mutex() }.withLock {
             val outputFileBytes = outputTmpFile.length()
             if (outputFileBytes > 0) {
               Log.d(
@@ -166,11 +180,21 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
             connection.connect()
             Log.d(TAG, "response code: ${connection.responseCode}")
 
+            var expectedFileBytes = -1L
+            var restartFromZero = false
             if (
               connection.responseCode == HttpURLConnection.HTTP_OK ||
                 connection.responseCode == HttpURLConnection.HTTP_PARTIAL
             ) {
               val contentRange = connection.getHeaderField("Content-Range")
+              expectedFileBytes = connection.contentLengthLong.takeIf { it > 0 } ?: -1L
+              if (outputFileBytes > 0 && connection.responseCode == HttpURLConnection.HTTP_OK) {
+                // Asked to resume but the server sent the whole file. Appending that to the
+                // partial would corrupt it, so start the file over.
+                Log.w(TAG, "Server ignored Range; restarting '${outputTmpFile.name}' from zero.")
+                restartFromZero = true
+                if (expectedFileBytes > 0 && outputFileBytes > 0) downloadedBytes = 0L
+              }
 
               if (contentRange != null) {
                 // Parse the Content-Range header
@@ -185,6 +209,7 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
                 )
 
                 downloadedBytes += startByte
+                contentRange.substringAfter('/').toLongOrNull()?.let { expectedFileBytes = it }
               } else {
                 Log.d(TAG, "Download starts from beginning.")
               }
@@ -193,13 +218,15 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
             }
 
             val inputStream = connection.inputStream
-            val outputStream = FileOutputStream(outputTmpFile, true /* append */)
+            val outputStream = FileOutputStream(outputTmpFile, !restartFromZero /* append */)
 
             val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
             var bytesRead: Int
             var lastSetProgressTs: Long = 0
             var deltaBytes = 0L
             while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+              // A cancelled worker must stop writing at once, not after its next progress update.
+              ensureActive()
               outputStream.write(buffer, 0, bytesRead)
               downloadedBytes += bytesRead
               deltaBytes += bytesRead
@@ -249,6 +276,16 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
             outputStream.close()
             inputStream.close()
 
+            // Never promote a file of the wrong length to "downloaded". A mismatch means the data
+            // is corrupt, so throw the partial away and let the next attempt start clean.
+            if (expectedFileBytes > 0 && outputTmpFile.length() != expectedFileBytes) {
+              val got = outputTmpFile.length()
+              outputTmpFile.delete()
+              throw IOException(
+                "Download was corrupted (got $got bytes, expected $expectedFileBytes). Please try again."
+              )
+            }
+
             // Rename the tmp file to the original file name by removing the tmp file ext.
             val originalFilePath = outputTmpFile.absolutePath.replace(".$TMP_FILE_EXT", "")
             val originalFile = File(originalFilePath)
@@ -257,6 +294,7 @@ class DownloadWorker(context: Context, params: WorkerParameters) :
             }
             outputTmpFile.renameTo(originalFile)
             Log.d(TAG, "Download done")
+            }
 
             // Unzip if the downloaded file is a zip.
             if (isZip && unzippedDir != null) {

@@ -246,7 +246,7 @@ constructor(
     }
 
     val requiresImage =
-      task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS
+      task.id == BuiltInTaskId.LLM_ASK_IMAGE
 
     fun isDownloaded(m: Model): Boolean {
       return uiState.value.modelDownloadStatus[m.name]?.status == ModelDownloadStatusType.SUCCEEDED ||
@@ -626,7 +626,7 @@ constructor(
         val task = customTask.task
         val canAdd =
           (curModel.llmSupportImage &&
-            (task.id == BuiltInTaskId.LLM_ASK_IMAGE || task.id == BuiltInTaskId.SCAN_DOCS)) ||
+            (task.id == BuiltInTaskId.LLM_ASK_IMAGE)) ||
             (curModel.isLlm &&
               (task.id == BuiltInTaskId.LLM_CHAT ||
                 task.id == BuiltInTaskId.LLM_PROMPT_LAB ||
@@ -1159,9 +1159,6 @@ constructor(
             curTasks.find { it.id == BuiltInTaskId.LLM_ASK_IMAGE }?.let { task ->
               if (!task.models.any { it.name == model.name }) task.models.add(model)
             }
-            curTasks.find { it.id == BuiltInTaskId.SCAN_DOCS }?.let { task ->
-              if (!task.models.any { it.name == model.name }) task.models.add(model)
-            }
           }
           if (model.isLlm) {
             curTasks.find { it.id == BuiltInTaskId.LLM_CHAT }?.let { task ->
@@ -1309,7 +1306,6 @@ constructor(
       if (isDownloaded) {
         if (model.llmSupportImage) {
           tasks[BuiltInTaskId.LLM_ASK_IMAGE]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
-          tasks[BuiltInTaskId.SCAN_DOCS]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
         }
         if (model.isLlm) {
           tasks[BuiltInTaskId.LLM_CHAT]?.let { if (!it.models.any { m -> m.name == model.name }) it.models.add(0, model) }
@@ -1631,8 +1627,36 @@ constructor(
     _uiState.update { newUiState }
   }
 
+  /**
+   * Throws away a model file that is longer than its published size.
+   *
+   * That can only be a corrupt download: before the worker was fixed, a resumed download could be
+   * written twice and come out too long, and the model then failed to load. Sizes in the
+   * allowlist are exact for the models Sukham offers, and only a file that is too *long* is
+   * touched, so an intact model is never at risk. The first-launch download is re-armed so the
+   * app fetches a clean copy by itself.
+   */
+  private fun deleteIfCorrupt(model: Model): Boolean {
+    if (model.sizeInBytes <= 0 || model.imported || model.isZip) return false
+    if (model.localModelFilePathOverride.isNotEmpty()) return false
+    val file = model.findDownloadedModelFile(context) ?: return false
+    if (file.length() <= model.sizeInBytes) return false
+    Log.w(
+      TAG,
+      "'${model.name}' is ${file.length()} bytes but should be ${model.sizeInBytes}; " +
+        "deleting the corrupt download.",
+    )
+    deleteDirFromExternalFilesDir(model.normalizedName)
+    if (model.name == DEFAULT_MODEL_NAME) {
+      context.getSharedPreferences(SUKHAM_PREFS, Context.MODE_PRIVATE)
+        .edit().putBoolean(KEY_AUTO_DOWNLOAD_DONE, false).apply()
+    }
+    return true
+  }
+
   @androidx.annotation.VisibleForTesting
   fun isModelDownloaded(model: Model): Boolean {
+    if (deleteIfCorrupt(model)) return false
     model.updatable = false
     // First, check if the model with the current (latest) version has been downloaded.
     if (checkIfModelDownloaded(model, model.version)) return true

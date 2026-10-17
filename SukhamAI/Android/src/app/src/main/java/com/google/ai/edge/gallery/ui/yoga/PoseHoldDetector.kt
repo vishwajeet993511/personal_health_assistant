@@ -70,7 +70,7 @@ private const val HOLD_MS = 2_000L
 private const val MIN_CONFIDENCE = 0.45f
 
 /** Rate ceiling — never analyse more often than this, however much they move around. */
-private const val MIN_GAP_MS = 15_000L
+private const val MIN_GAP_MS = 10_000L
 
 /** Allow re-coaching the *same* pose after this long, so a long hold isn't ignored forever. */
 private const val SAME_POSE_REPEAT_MS = 90_000L
@@ -144,6 +144,16 @@ class PoseHoldDetector {
   private var lastAnalysedScore = 0f
   private var lastAnalysedAtMs = 0L
 
+  /**
+   * True once the person has moved (or left the frame) since the last analysis.
+   *
+   * A second attempt at the same pose must count as new. The old rule compared only the pose name
+   * and score, and re-settling into the same pose scores almost the same, so the attempt was
+   * discarded as a repeat for 90 seconds and the correction animation never appeared. Moving and
+   * settling again is what an attempt is; holding perfectly still the whole time is not.
+   */
+  private var movedSinceTrigger = true
+
   fun reset() {
     heldFeatures.clear()
     previous = null
@@ -152,6 +162,7 @@ class PoseHoldDetector {
     lastAnalysedPose = null
     lastAnalysedScore = 0f
     lastAnalysedAtMs = 0L
+    movedSinceTrigger = true
   }
 
   /**
@@ -172,6 +183,7 @@ class PoseHoldDetector {
       previous = null
       disturbedSinceMs = 0L
       stillSinceMs = 0L
+      movedSinceTrigger = true
       heldFeatures.clear()
       return Decision(State.NO_PERSON, 0f, null, null)
     }
@@ -217,6 +229,7 @@ class PoseHoldDetector {
       rideOutDisturbance(nowMs)?.let { return it }
       stillSinceMs = 0L
       disturbedSinceMs = 0L
+      movedSinceTrigger = true
       heldFeatures.clear()
       return Decision(State.MOVING, 0f, null, null)
     }
@@ -254,14 +267,16 @@ class PoseHoldDetector {
       return Decision(State.COOLDOWN, 1f, null, topName)
     }
     val samePose = topName == lastAnalysedPose
+    val wasMoved = movedSinceTrigger
     val formChanged = abs(top.score - lastAnalysedScore) >= FORM_CHANGE_DELTA
-    if (samePose && !formChanged && sinceLast < SAME_POSE_REPEAT_MS) {
+    if (samePose && !formChanged && !movedSinceTrigger && sinceLast < SAME_POSE_REPEAT_MS) {
       return Decision(State.COOLDOWN, 1f, null, topName)
     }
 
     lastAnalysedPose = topName
     lastAnalysedScore = top.score
     lastAnalysedAtMs = nowMs
+    movedSinceTrigger = false
     Log.d(TAG, "Pooled ${heldFeatures.size} frames for classification.")
     heldFeatures.clear()
     // Require a fresh settle before the next trigger, so one long hold fires exactly once.
@@ -269,7 +284,7 @@ class PoseHoldDetector {
     Log.d(
       TAG,
       "TRIGGER pose=$topName score=${top.score} movement=$movement" +
-        " samePose=$samePose formChanged=$formChanged",
+        " samePose=$samePose formChanged=$formChanged moved=$wasMoved",
     )
     return Decision(State.READY, 1f, candidates, topName)
   }

@@ -66,7 +66,7 @@ data class SukhamPalette(
 
 val LightSukhamPalette = SukhamPalette(
   isDark = false,
-  screenBg = Color(0xFFF7EFD8),           // User reference color #F7EFD8
+  screenBg = Color(0xFFFAF7F0),           // Soft warm white, lighter than the old #F7EFD8
   cardBg = Color(0xFFFFFFFF),
   cardBorder = Color(0xFFE5DEC8),
   cardGlassBg = Color(0xEBFFFFFF),

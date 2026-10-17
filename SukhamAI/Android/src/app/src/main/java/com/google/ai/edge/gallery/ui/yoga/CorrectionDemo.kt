@@ -104,7 +104,7 @@ private val WrongDark = Color(0xFF8E1B1B)
 private val Target = Color(0xFF69F0AE)
 private val TargetDark = Color(0xFF1B7A4A)
 
-private const val SPOTLIGHT_MS = 5_000
+private const val SPOTLIGHT_MS = 8_000
 
 /**
  * Freezes the camera on the moment of analysis, zooms to the skeleton, and shows — with a
