@@ -52,6 +52,7 @@ fun ProgressScreen(onNavigateUp: () -> Unit, onHomeClicked: () -> Unit, onProgra
   val through = when(period) { "Week" -> from.plusDays(6); "Month" -> from.plusMonths(1).minusDays(1); else -> today }
   val summary = remember(sessions, from, through) { summarizeProgress(sessions, from, through) }
   var detail by remember { mutableStateOf<ActivitySession?>(null) }
+  var showShareCard by remember { mutableStateOf(false) }
   var typeDetail by remember { mutableStateOf<ActivityType?>(null) }
 
   Scaffold(containerColor = SukhamColors.ScreenBg,
@@ -95,6 +96,7 @@ fun ProgressScreen(onNavigateUp: () -> Unit, onHomeClicked: () -> Unit, onProgra
         Stat(summary.completedSessions.toString(), "Sessions", Modifier.weight(1f))
       }
       PracticeChart(summary, from, through, period)
+      SharePracticeEntry(enabled = !loading && error == null, onClick = { showShareCard = true })
       val completed = summary.activities.filter { it.status == ActivityStatus.COMPLETED }
       listOf(listOf(ActivityType.PROGRAM, ActivityType.LIVE), listOf(ActivityType.PHOTO, ActivityType.VIDEO)).forEach { pair ->
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -138,6 +140,11 @@ fun ProgressScreen(onNavigateUp: () -> Unit, onHomeClicked: () -> Unit, onProgra
       Spacer(Modifier.height(12.dp))
     }
   }
+  if (showShareCard) PracticeShareSheet(
+    sessions = sessions,
+    weekStart = if (period == "Week") from else today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)),
+    onDismiss = { showShareCard = false },
+  )
   typeDetail?.let { type ->
     val records = summary.activities.filter { it.type == type && it.status == ActivityStatus.COMPLETED }
     val highlights = records.flatMap { it.poseCounts.entries }.groupBy { it.key }.mapValues { it.value.sumOf { entry -> entry.value } }.toList().sortedByDescending { it.second }

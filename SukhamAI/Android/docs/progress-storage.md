@@ -47,3 +47,11 @@ not copied into this DB; only text feedback and pose labels are retained.
 Verification: JVM clock/aggregation/date-boundary tests plus isolated Android
 SQLite tests for checkpoint idempotence, terminal-state protection, reopen
 persistence, and separation of reviews from practice time.
+
+## Shareable practice cards
+
+Progress includes a card creator beneath the activity chart. My week uses the displayed week when the Week filter is selected; otherwise it uses the current calendar week. Today uses the current local date. Cards derive minutes and days from saved daily practice segments. Completed photo/video reviews can produce a learning card, and are never treated as practice minutes. Partial practice contributes actual time but does not become a completed activity. Empty periods cannot be exported.
+
+The creator offers cream, sage and forest designs, Story (1080 × 1920) and Post (1080 × 1350), an editable caption and an optional user-entered name. Preview and export use the same bitmap. No profile biometrics, coaching notes or user media are exported.
+
+Download publishes a PNG to `Pictures/Sukham` through MediaStore, using pending writes and deleting failed inserts. Share writes a temporary PNG under the existing FileProvider `images/` cache path, grants read access to the content URI, and opens the Android share sheet. Sharing does not automatically publish to Instagram or save a duplicate in the gallery. Cached share images older than seven days are removed when a new share is created.

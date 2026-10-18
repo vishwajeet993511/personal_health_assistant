@@ -27,7 +27,7 @@
   <string name="aichat_initializing_title" translatable="false">Initializing model</string>
   <string name="aichat_initializing_content" translatable="false">Initialising...will take few seconds.</string>
   <string name="app_intro" translatable="false">Your AI-powered wellness companion</string>
-  <string name="app_name" translatable="false">SUKHAM AI</string>
+  <string name="app_name" translatable="false">SUKHAM</string>
   <string name="app_name_first_part" translatable="false">SUKHAM</string>
   <string name="app_name_second_part" translatable="false">AI</string>
   <string name="askimage_emptystate_title" translatable="false">Ask Image</string>
