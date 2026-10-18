@@ -322,9 +322,11 @@ fun ChatPanel(
               horizontalAlignment = hAlign,
             ) messageColumn@{
               // Sender row.
-              var agentName = stringResource(task.agentNameRes)
-              if (message.accelerator.isNotEmpty()) {
-                agentName = "$agentName on ${message.accelerator}"
+              val agentName = if (task.id == BuiltInTaskId.LLM_CHAT) {
+                if (message is ChatMessageLoading) "Preparing your answer…" else "SHUKAM AI"
+              } else {
+                val name = stringResource(task.agentNameRes)
+                if (message.accelerator.isNotEmpty()) "$name on ${message.accelerator}" else name
               }
               if (!message.hideSenderLabel) {
                 MessageSender(

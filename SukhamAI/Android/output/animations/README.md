@@ -1,0 +1,11 @@
+# Video Review animation
+
+`video-review-transition.gif` is a generated, illustrative movement sequence from standing to Warrior II, with pose-guide dots and connecting lines. It is also bundled as `src/app/src/main/res/raw/video_review_transition.gif` and played on the home Video Review card.
+
+Created using the built-in imagegen tool, using the existing Video Review photograph as the character, clothing and studio reference. This is an eight-pose frame animation with a reverse return, not recorded footage or actual model analysis. It holds the final pose before returning to standing. The card pauses playback when offscreen or the app is backgrounded.
+
+Generation prompt:
+
+Create an animation SPRITE SHEET based on this reference photo, preserving the same woman, face, sage clothing, cream sunlit studio and mat. EXACT layout: 4 equal columns by 2 equal rows, eight equally sized SQUARE frames, no gutters, no margins, no borders, no text. Overall aspect ratio 2:1, ideally 2048x1024. Each frame same locked camera front view with full woman and mat visible, feet at same ground level, identical lighting and background. Read frames left to right then next row. Show EIGHT successive stages of a calm continuous transition from standing to reference Warrior II: frame1 feet together arms down; frame2 step feet slightly apart arms down; frame3 feet wider arms lifted 20 degrees; frame4 wide stance arms 40 degrees; frame5 wide stance arms 65 degrees right foot turned outward; frame6 arms almost shoulder height bend right knee slightly; frame7 arms horizontal bend right knee further; frame8 final Warrior II exactly like reference facing right with right knee bent and left leg straight. Add delicate bright sage joint dots and thin connecting pose-analysis lines accurately following both shoulders elbows wrists hips knees ankles IN EVERY FRAME, moving with the person. Photorealistic calm premium editorial aesthetic. No device screens, no playback controls, no writing, no numbers. This is a precision animation sprite sheet: exactly eight complete separate frames, consistent background and body scale.
+
+The eight equal sheet cells were extracted, normalized to 448 × 448, encoded with a shared GIF palette, and assembled in forward/reverse order. The joint overlays were generated within each image frame.

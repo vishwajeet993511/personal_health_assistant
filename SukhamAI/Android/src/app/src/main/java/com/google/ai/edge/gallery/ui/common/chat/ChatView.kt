@@ -40,6 +40,12 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Close
+import androidx.compose.material.icons.outlined.AddComment
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.Text
+import com.google.ai.edge.gallery.ui.theme.SukhamColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -86,6 +92,7 @@ data class SendMessageTrigger(val model: Model, val messages: List<ChatMessage>)
  * manages model initialization, cleanup, and download status, and handles navigation and system
  * back gestures.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatView(
   task: Task,
@@ -110,6 +117,7 @@ fun ChatView(
   onSystemPromptChanged: (String) -> Unit = {},
   sendMessageTrigger: SendMessageTrigger? = null,
   autoSendPromptOnImagePick: String? = null,
+  headerTitle: String? = null,
 ) {
   val uiState by viewModel.uiState.collectAsState()
   val modelManagerUiState by modelManagerViewModel.uiState.collectAsState()
@@ -165,7 +173,20 @@ fun ChatView(
   Scaffold(
     modifier = modifier,
     topBar = {
-      ModelPageAppBar(
+      if (headerTitle != null) {
+        TopAppBar(
+          title = { Text(headerTitle, color = SukhamColors.SagePrimary) },
+          colors = TopAppBarDefaults.topAppBarColors(containerColor = SukhamColors.ScreenBg),
+          actions = {
+            IconButton(
+              onClick = { onResetSessionClicked(selectedModel) },
+              enabled = !uiState.inProgress && !uiState.preparing && !uiState.isResettingSession && selectedModel.instance != null,
+            ) {
+              Icon(Icons.Outlined.AddComment, contentDescription = "New chat")
+            }
+          },
+        )
+      } else ModelPageAppBar(
         task = task,
         model = selectedModel,
         modelManagerViewModel = modelManagerViewModel,
@@ -208,7 +229,7 @@ fun ChatView(
 
       composableBelowMessageList(selectedModel)
 
-      Column(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surface)) {
+      Column(modifier = Modifier.fillMaxSize().background(SukhamColors.ScreenBg)) {
         AnimatedContent(
           targetState = curModelDownloadStatus?.status == ModelDownloadStatusType.SUCCEEDED
         ) { targetState ->

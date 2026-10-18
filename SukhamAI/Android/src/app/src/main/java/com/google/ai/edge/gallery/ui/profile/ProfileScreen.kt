@@ -17,21 +17,14 @@
 package com.google.ai.edge.gallery.ui.profile
 
 import android.content.Intent
-import android.widget.Toast
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.Spring
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,52 +34,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.ArrowDropDown
-import androidx.compose.material.icons.outlined.ArrowDropUp
-import androidx.compose.material.icons.outlined.CameraAlt
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.Description
-import androidx.compose.material.icons.outlined.DirectionsRun
+import androidx.compose.material.icons.automirrored.outlined.DirectionsRun
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.FitnessCenter
 import androidx.compose.material.icons.outlined.LightMode
-import androidx.compose.material.icons.outlined.Remove
 import androidx.compose.material.icons.outlined.Security
 import androidx.compose.material.icons.outlined.SelfImprovement
 import androidx.compose.material.icons.outlined.SettingsBrightness
 import androidx.compose.material.icons.outlined.Spa
 import androidx.compose.material.icons.outlined.Straighten
 import androidx.compose.material.icons.automirrored.outlined.VolumeUp
-import androidx.compose.material.icons.outlined.Watch
-import androidx.compose.material.icons.outlined.AutoAwesome
-import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.SmartToy
-import androidx.compose.material.icons.outlined.SwapHoriz
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -99,23 +76,26 @@ import androidx.compose.material3.Text
 import com.google.ai.edge.gallery.ui.home.SukhamBottomNav
 import com.google.ai.edge.gallery.ui.home.SukhamNavTab
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
@@ -133,31 +113,14 @@ import com.google.ai.edge.gallery.ui.common.tos.TosViewModel
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
 
 import com.google.ai.edge.gallery.ui.theme.SukhamColors
-import com.google.ai.edge.gallery.ui.theme.isSukhamDarkTheme
-
-/** Sukham dynamic colors connected with SukhamTheme. */
-private object ProfileColors {
-  val ScreenBg: Color @Composable get() = SukhamColors.ScreenBg
-  val CardBg: Color @Composable get() = SukhamColors.CardBg
-  val CardBorder: Color @Composable get() = SukhamColors.CardBorder
-  val SagePrimary: Color @Composable get() = SukhamColors.SagePrimary
-  val SageContainer: Color @Composable get() = SukhamColors.SageContainer
-  val SageDark: Color @Composable get() = SukhamColors.SageDark
-  val LavenderPrimary: Color @Composable get() = SukhamColors.LavenderPrimary
-  val LavenderSoft: Color @Composable get() = SukhamColors.LavenderSoft
-  val StreakAmber: Color @Composable get() = SukhamColors.StreakAmber
-  val StreakGlow: Color @Composable get() = SukhamColors.StreakGlow
-  val TitleBlack: Color @Composable get() = SukhamColors.TitleBlack
-  val BodyGray: Color @Composable get() = SukhamColors.BodyGray
-  val ChipBg: Color @Composable get() = SukhamColors.ChipBg
-  val ChipBorder: Color @Composable get() = SukhamColors.ChipBorder
-}
 
 @Composable
 fun ProfileScreen(
   onNavigateUp: () -> Unit,
   onHomeClicked: () -> Unit = onNavigateUp,
   onLiveClicked: () -> Unit = {},
+  onProgressClicked: () -> Unit = {},
+  onProgramsClicked: () -> Unit = {},
   viewModel: ProfileViewModel = hiltViewModel(),
   tosViewModel: TosViewModel = hiltViewModel(),
   modelManagerViewModel: ModelManagerViewModel = hiltViewModel(),
@@ -219,7 +182,7 @@ fun ProfileScreen(
   }
 
   Scaffold(
-    containerColor = ProfileColors.ScreenBg,
+    containerColor = SukhamColors.ScreenBg,
     snackbarHost = { SnackbarHost(snackbarHostState) },
     topBar = {
       ProfileTopBar(
@@ -250,7 +213,9 @@ fun ProfileScreen(
       SukhamBottomNav(
         currentTab = SukhamNavTab.PROFILE,
         onHomeClick = onHomeClicked,
+        onProgramsClick = onProgramsClicked,
         onLiveClick = onLiveClicked,
+        onProgressClick = onProgressClicked,
       )
     },
   ) { innerPadding ->
@@ -259,23 +224,20 @@ fun ProfileScreen(
         .fillMaxSize()
         .padding(innerPadding)
         .verticalScroll(rememberScrollState())
-        .padding(horizontal = 16.dp),
+        .padding(horizontal = 24.dp),
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(14.dp)
+      verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
-      // 1. User Identity Hero Card
+      // Open identity header.
       ProfileHeroCard(
         isEditing = uiState.isEditing,
         name = editName,
         tagline = editTagline,
         onNameChange = { editName = it },
         onTaglineChange = { editTagline = it },
-        onAvatarClick = {
-          Toast.makeText(context, "Avatar updated", Toast.LENGTH_SHORT).show()
-        }
       )
 
-      // 2. Biometrics & Physical Dimensions Card
+      // Personal details and practice focus.
       BiometricsSection(
         isEditing = uiState.isEditing,
         heightText = editHeightText,
@@ -288,7 +250,7 @@ fun ProfileScreen(
         onFocusChange = { editTargetFocus = it }
       )
 
-      // 4. Settings & Preferences Section (Theme, Audio TTS, Local LLM Model, Privacy, TOS, Export)
+      // Preferences, on-device model, and profile actions.
       SettingsSection(
         currentTheme = uiState.currentTheme,
         onThemeSelected = { newTheme ->
@@ -350,181 +312,71 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun ProfileTopBar(
-  isEditing: Boolean,
-  onBackClick: () -> Unit,
-  onToggleEdit: () -> Unit,
-) {
+private fun ProfileTopBar(isEditing: Boolean, onBackClick: () -> Unit, onToggleEdit: () -> Unit) {
   Row(
-    modifier = Modifier
-      .fillMaxWidth()
-      .statusBarsPadding()
-      .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 6.dp),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
+    Modifier.fillMaxWidth().statusBarsPadding().padding(horizontal = 12.dp, vertical = 4.dp),
+    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween,
   ) {
-    // Back navigation chip button
-    Box(
-      modifier = Modifier
-        .size(38.dp)
-        .background(ProfileColors.ChipBg, CircleShape)
-        .border(1.dp, ProfileColors.CardBorder, CircleShape)
-        .clickable(onClick = onBackClick),
-      contentAlignment = Alignment.Center
-    ) {
-      Icon(
-        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-        contentDescription = "Back",
-        tint = ProfileColors.TitleBlack,
-        modifier = Modifier.size(20.dp)
-      )
+    IconButton(onClick = onBackClick) {
+      Icon(Icons.AutoMirrored.Rounded.ArrowBack, "Back", tint = SukhamColors.TitleBlack)
     }
-
-    Text(
-      text = if (isEditing) "Edit Profile" else "My Profile",
-      style = MaterialTheme.typography.titleMedium.copy(
-        fontWeight = FontWeight.Bold,
-        color = ProfileColors.TitleBlack,
-        fontSize = 18.sp
-      )
-    )
-
-    // Edit / Save toggle button
-    Surface(
-      color = if (isEditing) ProfileColors.SagePrimary else ProfileColors.SageContainer,
-      shape = RoundedCornerShape(percent = 50),
-      modifier = Modifier.clickable(onClick = onToggleEdit)
-    ) {
-      Row(
-        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Icon(
-          imageVector = if (isEditing) Icons.Outlined.Check else Icons.Outlined.Edit,
-          contentDescription = if (isEditing) "Save" else "Edit",
-          tint = if (isEditing) Color.White else ProfileColors.SageDark,
-          modifier = Modifier.size(14.dp)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-          text = if (isEditing) "Save" else "Edit",
-          style = MaterialTheme.typography.labelSmall.copy(
-            fontWeight = FontWeight.Bold,
-            color = if (isEditing) Color.White else ProfileColors.SageDark,
-            fontSize = 11.5.sp
-          )
-        )
-      }
+    Text(if (isEditing) "Edit profile" else "Your profile", color = SukhamColors.TitleBlack, fontSize = 17.sp)
+    TextButton(onClick = onToggleEdit) {
+      Icon(if (isEditing) Icons.Outlined.Check else Icons.Outlined.Edit, null,
+        tint = SukhamColors.SagePrimary, modifier = Modifier.size(16.dp))
+      Spacer(Modifier.width(6.dp))
+      Text(if (isEditing) "Save" else "Edit", color = SukhamColors.SagePrimary, fontSize = 13.sp)
     }
   }
 }
 
 @Composable
 private fun ProfileHeroCard(
-  isEditing: Boolean,
-  name: String,
-  tagline: String,
-  onNameChange: (String) -> Unit,
-  onTaglineChange: (String) -> Unit,
-  onAvatarClick: () -> Unit,
+  isEditing: Boolean, name: String, tagline: String,
+  onNameChange: (String) -> Unit, onTaglineChange: (String) -> Unit,
 ) {
-  Card(
-    modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(22.dp),
-    colors = CardDefaults.cardColors(containerColor = ProfileColors.CardBg),
-    border = BorderStroke(1.dp, ProfileColors.CardBorder),
-    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp),
-      horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-      // Circular Avatar with Camera edit badge
-      Box(
-        modifier = Modifier.size(92.dp),
-        contentAlignment = Alignment.BottomEnd
-      ) {
-        Image(
-          painter = painterResource(R.drawable.user_avatar_alex),
-          contentDescription = "User Avatar",
-          modifier = Modifier
-            .size(92.dp)
-            .clip(CircleShape)
-            .border(2.dp, ProfileColors.CardBorder, CircleShape)
-            .clickable(onClick = onAvatarClick),
-          contentScale = ContentScale.Crop
-        )
-
-        Box(
-          modifier = Modifier
-            .size(28.dp)
-            .background(ProfileColors.LavenderSoft, CircleShape)
-            .border(1.5.dp, ProfileColors.LavenderPrimary, CircleShape)
-            .clickable(onClick = onAvatarClick),
-          contentAlignment = Alignment.Center
-        ) {
-          Icon(
-            imageVector = Icons.Outlined.CameraAlt,
-            contentDescription = "Change Photo",
-            tint = ProfileColors.LavenderPrimary,
-            modifier = Modifier.size(15.dp)
-          )
-        }
-      }
-
-      Spacer(modifier = Modifier.height(10.dp))
-
-      if (isEditing) {
-        OutlinedTextField(
-          value = name,
-          onValueChange = onNameChange,
-          label = { Text("Full Name", fontSize = 12.sp) },
-          singleLine = true,
-          modifier = Modifier.fillMaxWidth(0.92f),
-          colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = ProfileColors.TitleBlack,
-            unfocusedTextColor = ProfileColors.TitleBlack,
-            focusedBorderColor = ProfileColors.SagePrimary,
-            unfocusedBorderColor = ProfileColors.CardBorder
-          )
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        OutlinedTextField(
-          value = tagline,
-          onValueChange = onTaglineChange,
-          label = { Text("Wellness Focus / Bio", fontSize = 12.sp) },
-          singleLine = true,
-          modifier = Modifier.fillMaxWidth(0.92f),
-          colors = OutlinedTextFieldDefaults.colors(
-            focusedTextColor = ProfileColors.TitleBlack,
-            unfocusedTextColor = ProfileColors.TitleBlack,
-            focusedBorderColor = ProfileColors.SagePrimary,
-            unfocusedBorderColor = ProfileColors.CardBorder
-          )
-        )
-      } else {
-        Text(
-          text = name,
-          style = MaterialTheme.typography.titleLarge.copy(
-            fontWeight = FontWeight.Bold,
-            color = ProfileColors.TitleBlack,
-            fontSize = 20.sp
-          )
-        )
-        Text(
-          text = tagline,
-          style = MaterialTheme.typography.bodySmall.copy(
-            color = ProfileColors.BodyGray,
-            fontSize = 12.5.sp
-          ),
-          modifier = Modifier.padding(top = 2.dp)
-        )
-      }
-
+  Column(Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 6.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+    Box(Modifier.size(108.dp).background(SukhamColors.SageContainer.copy(alpha = 0.5f), CircleShape), contentAlignment = Alignment.Center) {
+      Image(painterResource(R.drawable.user_avatar_alex), "Profile photo", contentScale = ContentScale.Crop,
+        modifier = Modifier.size(88.dp).clip(CircleShape))
+    }
+    Spacer(Modifier.height(18.dp))
+    Text("YOUR SPACE, YOUR PACE", color = SukhamColors.SagePrimary, fontSize = 10.sp, letterSpacing = 2.sp)
+    Spacer(Modifier.height(8.dp))
+    if (isEditing) {
+      ProfileTextField(name, onNameChange, "Full name")
+      Spacer(Modifier.height(10.dp))
+      ProfileTextField(tagline, onTaglineChange, "About you")
+    } else {
+      Text(name, color = SukhamColors.TitleBlack, fontFamily = FontFamily.Serif, fontSize = 32.sp,
+        lineHeight = 38.sp, textAlign = TextAlign.Center)
+      if (tagline.isNotBlank()) Text(tagline, color = SukhamColors.BodyGray, fontSize = 14.sp,
+        lineHeight = 21.sp, textAlign = TextAlign.Center, modifier = Modifier.padding(top = 6.dp))
     }
   }
+}
+
+@Composable
+private fun ProfileTextField(value: String, onChange: (String) -> Unit, label: String, numeric: Boolean = false, modifier: Modifier = Modifier) {
+  OutlinedTextField(value = value, onValueChange = onChange, label = { Text(label, fontSize = 12.sp) },
+    singleLine = true, modifier = modifier.fillMaxWidth(), shape = RoundedCornerShape(14.dp),
+    keyboardOptions = KeyboardOptions(keyboardType = if (numeric) KeyboardType.Number else KeyboardType.Text),
+    colors = OutlinedTextFieldDefaults.colors(
+      focusedTextColor = SukhamColors.TitleBlack, unfocusedTextColor = SukhamColors.TitleBlack,
+      focusedBorderColor = SukhamColors.SagePrimary, unfocusedBorderColor = SukhamColors.CardBorder,
+      cursorColor = SukhamColors.SagePrimary,
+    ))
+}
+
+@Composable
+private fun ProfileSectionLabel(text: String) {
+  Text(text.uppercase(), color = SukhamColors.BodyGray, fontSize = 10.sp,
+    letterSpacing = 1.8.sp, fontWeight = FontWeight.Medium)
+}
+
+@Composable
+private fun ProfileDivider() {
+  HorizontalDivider(color = SukhamColors.CardBorder.copy(alpha = 0.65f), thickness = 0.5.dp)
 }
 
 private data class TargetFocusOption(
@@ -557,7 +409,7 @@ private val TARGET_FOCUS_OPTIONS = listOf(
   TargetFocusOption(
     title = "Cardio & Calorie Burn",
     subtitle = "High tempo agility, dance cardio & aerobic fitness",
-    icon = Icons.Outlined.DirectionsRun,
+    icon = Icons.AutoMirrored.Outlined.DirectionsRun,
   ),
   TargetFocusOption(
     title = "Stress Relief & Breathing",
@@ -568,1221 +420,204 @@ private val TARGET_FOCUS_OPTIONS = listOf(
 
 @Composable
 private fun BiometricsSection(
-  isEditing: Boolean,
-  heightText: String,
-  weightText: String,
-  gender: String,
-  targetFocus: String,
-  onHeightTextChange: (String) -> Unit,
-  onWeightTextChange: (String) -> Unit,
-  onGenderChange: (String) -> Unit,
-  onFocusChange: (String) -> Unit,
+  isEditing: Boolean, heightText: String, weightText: String, gender: String, targetFocus: String,
+  onHeightTextChange: (String) -> Unit, onWeightTextChange: (String) -> Unit,
+  onGenderChange: (String) -> Unit, onFocusChange: (String) -> Unit,
 ) {
   var showFocusDialog by remember { mutableStateOf(false) }
-
-  Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-    // Row of Height and Weight
-    Row(
-      modifier = Modifier.fillMaxWidth(),
-      horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-      BiometricEditableCard(
-        label = "Height",
-        unit = "cm",
-        valueText = heightText,
-        isEditing = isEditing,
-        onValueTextChange = onHeightTextChange,
-        onIncrement = {
-          val cur = heightText.toIntOrNull() ?: 178
-          onHeightTextChange((cur + 1).coerceIn(100, 250).toString())
-        },
-        onDecrement = {
-          val cur = heightText.toIntOrNull() ?: 178
-          onHeightTextChange((cur - 1).coerceIn(100, 250).toString())
-        },
-        modifier = Modifier.weight(1f)
-      )
-
-      BiometricEditableCard(
-        label = "Weight",
-        unit = "kg",
-        valueText = weightText,
-        isEditing = isEditing,
-        onValueTextChange = onWeightTextChange,
-        onIncrement = {
-          val cur = weightText.toIntOrNull() ?: 72
-          onWeightTextChange((cur + 1).coerceIn(30, 300).toString())
-        },
-        onDecrement = {
-          val cur = weightText.toIntOrNull() ?: 72
-          onWeightTextChange((cur - 1).coerceIn(30, 300).toString())
-        },
-        modifier = Modifier.weight(1f)
-      )
-    }
-
-    // Gender Selection Card (Male / Female / Other)
-    GenderSelectionCard(
-      isEditing = isEditing,
-      selectedGender = gender,
-      onGenderChange = onGenderChange
-    )
-
-    // Target Focus Full Card with Clickable Dialog Picker
-    Card(
-      modifier = Modifier
-        .fillMaxWidth()
-        .clickable(enabled = isEditing, onClick = { showFocusDialog = true }),
-      shape = RoundedCornerShape(18.dp),
-      colors = CardDefaults.cardColors(containerColor = ProfileColors.CardBg),
-      border = BorderStroke(1.dp, ProfileColors.CardBorder),
-      elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(14.dp)
-      ) {
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Column(modifier = Modifier.weight(1f)) {
-            Text(
-              text = if (isEditing) "Target Focus (Tap to Choose)" else "Target Focus",
-              style = MaterialTheme.typography.labelSmall.copy(
-                color = ProfileColors.BodyGray,
-                fontSize = 11.sp
-              )
-            )
-            Text(
-              text = targetFocus,
-              style = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = ProfileColors.TitleBlack,
-                fontSize = 15.sp
-              ),
-              modifier = Modifier.padding(top = 2.dp)
-            )
-          }
-
-          if (isEditing) {
-            Surface(
-              color = ProfileColors.SageContainer,
-              shape = RoundedCornerShape(8.dp),
-              border = BorderStroke(1.dp, ProfileColors.CardBorder),
-              modifier = Modifier.clickable { showFocusDialog = true }
-            ) {
-              Row(
-                modifier = Modifier.padding(horizontal = 9.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Text(
-                  text = "Choose Goal",
-                  style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = ProfileColors.SageDark,
-                    fontSize = 11.sp
-                  )
-                )
-                Spacer(modifier = Modifier.width(3.dp))
-                Icon(
-                  imageVector = Icons.Outlined.ArrowDropDown,
-                  contentDescription = "Open chooser",
-                  tint = ProfileColors.SageDark,
-                  modifier = Modifier.size(18.dp)
-                )
-              }
+  var showGenderMenu by remember { mutableStateOf(false) }
+  Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(18.dp)) {
+    ProfileSectionLabel("Personal details")
+    if (isEditing) {
+      Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        ProfileTextField(heightText, { onHeightTextChange(it.filter(Char::isDigit).take(3)) }, "Height · cm", true, Modifier.weight(1f))
+        ProfileTextField(weightText, { onWeightTextChange(it.filter(Char::isDigit).take(3)) }, "Weight · kg", true, Modifier.weight(1f))
+      }
+      Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Text("Gender", color = SukhamColors.BodyGray, fontSize = 13.sp)
+        Box {
+          TextButton(onClick = { showGenderMenu = true }) { Text("$gender ▾", color = SukhamColors.SagePrimary) }
+          DropdownMenu(expanded = showGenderMenu, onDismissRequest = { showGenderMenu = false }) {
+            listOf("Male", "Female", "Other").forEach { option ->
+              DropdownMenuItem(text = { Text(option) }, onClick = { onGenderChange(option); showGenderMenu = false })
             }
           }
         }
       }
+    } else {
+      Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+        PersonalDetail("Height", heightText, "cm", Modifier.weight(1f))
+        Box(Modifier.width(0.5.dp).height(36.dp).background(SukhamColors.CardBorder))
+        PersonalDetail("Weight", weightText, "kg", Modifier.weight(1f))
+        Box(Modifier.width(0.5.dp).height(36.dp).background(SukhamColors.CardBorder))
+        PersonalDetail("Gender", gender, "", Modifier.weight(1f))
+      }
     }
+    ProfileDivider()
+    Row(Modifier.fillMaxWidth().clickable(enabled = isEditing) { showFocusDialog = true }.padding(vertical = 4.dp),
+      verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+      Icon(Icons.Outlined.SelfImprovement, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(24.dp))
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text("Your practice focus", color = SukhamColors.BodyGray, fontSize = 12.sp)
+        Text(targetFocus, color = SukhamColors.TitleBlack, fontFamily = FontFamily.Serif, fontSize = 19.sp, lineHeight = 24.sp)
+      }
+      if (isEditing) Icon(Icons.Outlined.ChevronRight, "Choose practice focus", tint = SukhamColors.SagePrimary)
+    }
+    ProfileDivider()
   }
-
-  // Interactive Target Focus Selection Dialog
   if (showFocusDialog) {
-    AlertDialog(
-      onDismissRequest = { showFocusDialog = false },
-      containerColor = ProfileColors.CardBg,
-      shape = RoundedCornerShape(22.dp),
-      title = {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-          Icon(
-            imageVector = Icons.Outlined.Straighten,
-            contentDescription = null,
-            tint = ProfileColors.SagePrimary,
-            modifier = Modifier.size(20.dp)
-          )
-          Spacer(modifier = Modifier.width(8.dp))
-          Text(
-            text = "Select Health Focus",
-            style = MaterialTheme.typography.titleMedium.copy(
-              fontWeight = FontWeight.Bold,
-              color = ProfileColors.TitleBlack,
-              fontSize = 17.sp
-            )
-          )
-        }
-      },
+    AlertDialog(onDismissRequest = { showFocusDialog = false }, containerColor = SukhamColors.CardBg,
+      title = { Text("Your practice focus", fontFamily = FontFamily.Serif, color = SukhamColors.TitleBlack) },
       text = {
-        Column(
-          modifier = Modifier.verticalScroll(rememberScrollState()),
-          verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
+        Column(Modifier.verticalScroll(rememberScrollState())) {
           TARGET_FOCUS_OPTIONS.forEach { option ->
-            val isSelected = option.title.equals(targetFocus, ignoreCase = true)
-            Surface(
-              color = if (isSelected) ProfileColors.SageContainer else ProfileColors.ChipBg,
-              shape = RoundedCornerShape(14.dp),
-              border = BorderStroke(
-                1.dp,
-                if (isSelected) ProfileColors.SagePrimary else ProfileColors.ChipBorder
-              ),
-              modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                  onFocusChange(option.title)
-                  showFocusDialog = false
-                }
-            ) {
-              Row(
-                modifier = Modifier.padding(11.dp),
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                Box(
-                  modifier = Modifier
-                    .size(32.dp)
-                    .background(
-                      if (isSelected) Color.White else Color(0xFFE2E0D8),
-                      CircleShape
-                    ),
-                  contentAlignment = Alignment.Center
-                ) {
-                  Icon(
-                    imageVector = option.icon,
-                    contentDescription = null,
-                    tint = if (isSelected) ProfileColors.SagePrimary else ProfileColors.TitleBlack,
-                    modifier = Modifier.size(16.dp)
-                  )
-                }
-
-                Spacer(modifier = Modifier.width(10.dp))
-
-                Column(modifier = Modifier.weight(1f)) {
-                  Text(
-                    text = option.title,
-                    style = MaterialTheme.typography.titleSmall.copy(
-                      fontWeight = FontWeight.Bold,
-                      color = if (isSelected) ProfileColors.SageDark else ProfileColors.TitleBlack,
-                      fontSize = 13.5.sp
-                    )
-                  )
-                  Text(
-                    text = option.subtitle,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                      color = ProfileColors.BodyGray,
-                      fontSize = 10.5.sp
-                    ),
-                    modifier = Modifier.padding(top = 1.dp)
-                  )
-                }
-
-                if (isSelected) {
-                  Spacer(modifier = Modifier.width(6.dp))
-                  Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = "Selected",
-                    tint = ProfileColors.SagePrimary,
-                    modifier = Modifier.size(18.dp)
-                  )
-                }
+            Row(Modifier.fillMaxWidth().clickable { onFocusChange(option.title); showFocusDialog = false }.padding(vertical = 14.dp),
+              verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+              Icon(option.icon, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+              Column(Modifier.weight(1f)) {
+                Text(option.title, color = SukhamColors.TitleBlack, fontSize = 14.sp)
+                Text(option.subtitle, color = SukhamColors.BodyGray, fontSize = 12.sp, lineHeight = 17.sp)
               }
+              if (option.title.equals(targetFocus, true)) Icon(Icons.Outlined.Check, "Selected", tint = SukhamColors.SagePrimary, modifier = Modifier.size(18.dp))
             }
+            ProfileDivider()
           }
         }
-      },
-      confirmButton = {
-        TextButton(onClick = { showFocusDialog = false }) {
-          Text("Cancel", color = ProfileColors.BodyGray, fontWeight = FontWeight.SemiBold)
-        }
-      }
-    )
+      }, confirmButton = { TextButton(onClick = { showFocusDialog = false }) { Text("Done", color = SukhamColors.SagePrimary) } })
   }
 }
 
 @Composable
-private fun BiometricEditableCard(
-  label: String,
-  unit: String,
-  valueText: String,
-  isEditing: Boolean,
-  onValueTextChange: (String) -> Unit,
-  onIncrement: () -> Unit,
-  onDecrement: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  Card(
-    modifier = modifier,
-    shape = RoundedCornerShape(18.dp),
-    colors = CardDefaults.cardColors(containerColor = ProfileColors.CardBg),
-    border = BorderStroke(1.dp, ProfileColors.CardBorder),
-    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(12.dp)
-    ) {
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Text(
-          text = label,
-          style = MaterialTheme.typography.labelSmall.copy(
-            color = ProfileColors.BodyGray,
-            fontSize = 11.5.sp
-          )
-        )
-
-        Surface(
-          color = ProfileColors.ChipBg,
-          shape = RoundedCornerShape(4.dp)
-        ) {
-          Text(
-            text = unit.uppercase(),
-            style = MaterialTheme.typography.labelSmall.copy(
-              fontWeight = FontWeight.Bold,
-              color = ProfileColors.BodyGray,
-              fontSize = 9.sp
-            ),
-            modifier = Modifier.padding(horizontal = 4.dp, vertical = 1.5.dp)
-          )
-        }
-      }
-
-      Spacer(modifier = Modifier.height(6.dp))
-
-      if (isEditing) {
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          // Decrement button (-)
-          Box(
-            modifier = Modifier
-              .size(30.dp)
-              .background(ProfileColors.ChipBg, CircleShape)
-              .border(1.dp, ProfileColors.CardBorder, CircleShape)
-              .clickable(onClick = onDecrement),
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.Remove,
-              contentDescription = "Decrease $label",
-              tint = ProfileColors.TitleBlack,
-              modifier = Modifier.size(14.dp)
-            )
-          }
-
-          // Editable numeric input field with zero clipping
-          Box(
-            modifier = Modifier
-              .weight(1f)
-              .height(38.dp)
-              .padding(horizontal = 4.dp)
-              .background(ProfileColors.CardBg, RoundedCornerShape(8.dp))
-              .border(1.dp, ProfileColors.CardBorder, RoundedCornerShape(8.dp)),
-            contentAlignment = Alignment.Center
-          ) {
-            BasicTextField(
-              value = valueText,
-              onValueChange = { input ->
-                val filtered = input.filter { it.isDigit() }.take(3)
-                onValueTextChange(filtered)
-              },
-              singleLine = true,
-              textStyle = MaterialTheme.typography.titleMedium.copy(
-                fontWeight = FontWeight.ExtraBold,
-                color = ProfileColors.TitleBlack,
-                fontSize = 16.sp,
-                textAlign = TextAlign.Center
-              ),
-              keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-              cursorBrush = SolidColor(ProfileColors.SagePrimary),
-              modifier = Modifier.fillMaxWidth()
-            )
-          }
-
-          // Increment button (+)
-          Box(
-            modifier = Modifier
-              .size(30.dp)
-              .background(ProfileColors.SageContainer, CircleShape)
-              .border(1.dp, ProfileColors.SagePrimary.copy(alpha = 0.5f), CircleShape)
-              .clickable(onClick = onIncrement),
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.Add,
-              contentDescription = "Increase $label",
-              tint = ProfileColors.SageDark,
-              modifier = Modifier.size(14.dp)
-            )
-          }
-        }
-      } else {
-        Text(
-          text = "$valueText $unit",
-          style = MaterialTheme.typography.titleMedium.copy(
-            fontWeight = FontWeight.Bold,
-            color = ProfileColors.TitleBlack,
-            fontSize = 17.sp
-          )
-        )
-      }
+private fun PersonalDetail(label: String, value: String, unit: String, modifier: Modifier = Modifier) {
+  Column(modifier.padding(horizontal = 10.dp), horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.spacedBy(5.dp)) {
+    Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+      Text(value, color = SukhamColors.TitleBlack, fontSize = 22.sp, fontFamily = FontFamily.Serif)
+      if (unit.isNotEmpty()) Text(unit, color = SukhamColors.BodyGray, fontSize = 11.sp, modifier = Modifier.padding(bottom = 3.dp))
     }
-  }
-}
-
-@Composable
-private fun GenderSelectionCard(
-  isEditing: Boolean,
-  selectedGender: String,
-  onGenderChange: (String) -> Unit,
-) {
-  val genderOptions = listOf("Male", "Female", "Other")
-
-  Card(
-    modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(18.dp),
-    colors = CardDefaults.cardColors(containerColor = ProfileColors.CardBg),
-    border = BorderStroke(1.dp, ProfileColors.CardBorder),
-    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(14.dp)
-    ) {
-      Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-      ) {
-        Text(
-          text = if (isEditing) "Gender (Select Option)" else "Gender",
-          style = MaterialTheme.typography.labelSmall.copy(
-            color = ProfileColors.BodyGray,
-            fontSize = 11.5.sp,
-            fontWeight = FontWeight.Medium
-          )
-        )
-
-        if (!isEditing) {
-          Surface(
-            color = ProfileColors.SageContainer,
-            shape = RoundedCornerShape(percent = 50)
-          ) {
-            Text(
-              text = selectedGender,
-              style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = ProfileColors.SageDark,
-                fontSize = 11.5.sp
-              ),
-              modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.5.dp)
-            )
-          }
-        }
-      }
-
-      if (isEditing) {
-        Spacer(modifier = Modifier.height(10.dp))
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-          genderOptions.forEach { option ->
-            val isSelected = selectedGender.equals(option, ignoreCase = true)
-            Surface(
-              modifier = Modifier
-                .weight(1f)
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { onGenderChange(option) },
-              shape = RoundedCornerShape(12.dp),
-              color = if (isSelected) ProfileColors.SagePrimary else ProfileColors.ScreenBg,
-              border = BorderStroke(
-                1.dp,
-                if (isSelected) ProfileColors.SagePrimary else ProfileColors.CardBorder
-              )
-            ) {
-              Row(
-                modifier = Modifier
-                  .fillMaxWidth()
-                  .padding(vertical = 9.dp),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-              ) {
-                if (isSelected) {
-                  Icon(
-                    imageVector = Icons.Outlined.Check,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                      .size(14.dp)
-                      .padding(end = 4.dp)
-                  )
-                }
-                Text(
-                  text = option,
-                  style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                    color = if (isSelected) Color.White else ProfileColors.TitleBlack,
-                    fontSize = 13.sp
-                  )
-                )
-              }
-            }
-          }
-        }
-      } else {
-        Spacer(modifier = Modifier.height(2.dp))
-        Text(
-          text = selectedGender,
-          style = MaterialTheme.typography.titleMedium.copy(
-            fontWeight = FontWeight.Bold,
-            color = ProfileColors.TitleBlack,
-            fontSize = 16.sp
-          )
-        )
-      }
-    }
+    Text(label, color = SukhamColors.BodyGray, fontSize = 12.sp)
   }
 }
 
 @Composable
 private fun SettingsSection(
-  currentTheme: Theme,
-  onThemeSelected: (Theme) -> Unit,
-  isReadAloudEnabled: Boolean,
-  onToggleReadAloud: (Boolean) -> Unit,
-  activeModel: Model?,
-  hasDownloadedModel: Boolean,
-  downloadingModel: Model?,
-  downloadingStatus: ModelDownloadStatus?,
-  onOpenModelSelection: () -> Unit,
-  onTosClick: () -> Unit,
-  onExportClick: () -> Unit,
+  currentTheme: Theme, onThemeSelected: (Theme) -> Unit,
+  isReadAloudEnabled: Boolean, onToggleReadAloud: (Boolean) -> Unit,
+  activeModel: Model?, hasDownloadedModel: Boolean,
+  downloadingModel: Model?, downloadingStatus: ModelDownloadStatus?,
+  onOpenModelSelection: () -> Unit, onTosClick: () -> Unit, onExportClick: () -> Unit,
 ) {
-  Card(
-    modifier = Modifier.fillMaxWidth(),
-    shape = RoundedCornerShape(20.dp),
-    colors = CardDefaults.cardColors(containerColor = ProfileColors.CardBg),
-    border = BorderStroke(1.dp, ProfileColors.CardBorder),
-    elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-  ) {
-    Column(
-      modifier = Modifier
-        .fillMaxWidth()
-        .padding(14.dp),
-      verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-      Text(
-        text = "Preferences & Privacy",
-        style = MaterialTheme.typography.titleSmall.copy(
-          fontWeight = FontWeight.Bold,
-          color = ProfileColors.TitleBlack,
-          fontSize = 14.sp
-        )
-      )
-
-      // Local On-Device AI Model in use / Download prompt card
-      LocalLlmSettingCard(
-        activeModel = activeModel,
-        hasDownloadedModel = hasDownloadedModel,
-        downloadingModel = downloadingModel,
-        downloadingStatus = downloadingStatus,
-        onSelectModelClick = onOpenModelSelection,
-      )
-
-      // Theme Mode Segmented Switch
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .background(ProfileColors.ChipBg, RoundedCornerShape(14.dp))
-          .padding(10.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-      ) {
-        Text(
-          text = "App Theme Mode",
-          style = MaterialTheme.typography.bodySmall.copy(
-            fontWeight = FontWeight.SemiBold,
-            color = ProfileColors.TitleBlack,
-            fontSize = 12.5.sp
-          )
-        )
-
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.spacedBy(6.dp)
-        ) {
-          ThemePill(
-            label = "System",
-            icon = Icons.Outlined.SettingsBrightness,
-            selected = currentTheme == Theme.THEME_AUTO,
-            onClick = { onThemeSelected(Theme.THEME_AUTO) },
-            modifier = Modifier.weight(1f)
-          )
-          ThemePill(
-            label = "Light",
-            icon = Icons.Outlined.LightMode,
-            selected = currentTheme == Theme.THEME_LIGHT,
-            onClick = { onThemeSelected(Theme.THEME_LIGHT) },
-            modifier = Modifier.weight(1f)
-          )
-          ThemePill(
-            label = "Dark",
-            icon = Icons.Outlined.DarkMode,
-            selected = currentTheme == Theme.THEME_DARK,
-            onClick = { onThemeSelected(Theme.THEME_DARK) },
-            modifier = Modifier.weight(1f)
-          )
-        }
+  Column(Modifier.fillMaxWidth()) {
+    ProfileSectionLabel("Make it yours")
+    Spacer(Modifier.height(18.dp))
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+      Icon(Icons.Outlined.SettingsBrightness, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+      Text("Appearance", color = SukhamColors.TitleBlack, fontSize = 15.sp)
+    }
+    Spacer(Modifier.height(12.dp))
+    Row(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(SukhamColors.CardBg).padding(4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+      ThemePill("System", Icons.Outlined.SettingsBrightness, currentTheme == Theme.THEME_AUTO, { onThemeSelected(Theme.THEME_AUTO) }, Modifier.weight(1f))
+      ThemePill("Light", Icons.Outlined.LightMode, currentTheme == Theme.THEME_LIGHT, { onThemeSelected(Theme.THEME_LIGHT) }, Modifier.weight(1f))
+      ThemePill("Dark", Icons.Outlined.DarkMode, currentTheme == Theme.THEME_DARK, { onThemeSelected(Theme.THEME_DARK) }, Modifier.weight(1f))
+    }
+    Spacer(Modifier.height(12.dp))
+    ProfileDivider()
+    Row(Modifier.fillMaxWidth().padding(vertical = 16.dp), verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+      Icon(Icons.AutoMirrored.Outlined.VolumeUp, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text("Spoken guidance", color = SukhamColors.TitleBlack, fontSize = 15.sp)
+        Text("Hear your analysis and coaching", color = SukhamColors.BodyGray, fontSize = 12.sp, lineHeight = 17.sp)
       }
-
-      // Audio Read Aloud Setting Toggle
-      Surface(
-        color = ProfileColors.ChipBg,
-        shape = RoundedCornerShape(14.dp),
-        border = BorderStroke(1.dp, ProfileColors.CardBorder),
-        modifier = Modifier.fillMaxWidth()
-      ) {
-        Row(
-          modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 14.dp, vertical = 12.dp),
-          verticalAlignment = Alignment.CenterVertically,
-          horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-          Row(
-            modifier = Modifier.weight(1f),
-            verticalAlignment = Alignment.CenterVertically
-          ) {
-            Box(
-              modifier = Modifier
-                .size(36.dp)
-                .background(
-                  if (isReadAloudEnabled) ProfileColors.SageContainer else ProfileColors.CardBg,
-                  RoundedCornerShape(10.dp)
-                ),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.AutoMirrored.Outlined.VolumeUp,
-                contentDescription = null,
-                tint = if (isReadAloudEnabled) ProfileColors.SagePrimary else ProfileColors.BodyGray,
-                modifier = Modifier.size(20.dp)
-              )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-              Text(
-                text = "Read Aloud Sukham's Analysis",
-                style = MaterialTheme.typography.bodyMedium.copy(
-                  fontWeight = FontWeight.SemiBold,
-                  color = ProfileColors.TitleBlack,
-                  fontSize = 13.5.sp
-                )
-              )
-              Text(
-                text = "Speak posture analysis and coaching guidance out loud using voice TTS",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  color = ProfileColors.BodyGray,
-                  fontSize = 10.5.sp,
-                  lineHeight = 14.sp
-                )
-              )
-            }
-          }
-          Spacer(modifier = Modifier.width(8.dp))
-          Switch(
-            checked = isReadAloudEnabled,
-            onCheckedChange = onToggleReadAloud,
-            colors = SwitchDefaults.colors(
-              checkedThumbColor = Color.White,
-              checkedTrackColor = ProfileColors.SagePrimary,
-              uncheckedThumbColor = ProfileColors.BodyGray,
-              uncheckedTrackColor = ProfileColors.CardBg
-            )
-          )
-        }
+      Switch(checked = isReadAloudEnabled, onCheckedChange = onToggleReadAloud,
+        modifier = Modifier.semantics { contentDescription = "Spoken guidance" },
+        colors = SwitchDefaults.colors(checkedTrackColor = SukhamColors.SagePrimary, checkedThumbColor = SukhamColors.ScreenBg,
+          uncheckedTrackColor = SukhamColors.CardBg, uncheckedThumbColor = SukhamColors.BodyGray, uncheckedBorderColor = SukhamColors.CardBorder))
+    }
+    ProfileDivider()
+    Spacer(Modifier.height(24.dp))
+    ProfileSectionLabel("Intelligence & privacy")
+    Spacer(Modifier.height(8.dp))
+    LocalLlmSettingCard(activeModel, hasDownloadedModel, downloadingModel, downloadingStatus, onOpenModelSelection)
+    ProfileDivider()
+    Row(Modifier.fillMaxWidth().padding(vertical = 16.dp), verticalAlignment = Alignment.Top,
+      horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+      Icon(Icons.Outlined.Security, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+      Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text("On-device intelligence", color = SukhamColors.TitleBlack, fontSize = 15.sp)
+        Text("Your AI analysis runs on your device.", color = SukhamColors.BodyGray, fontSize = 12.sp, lineHeight = 18.sp)
       }
+    }
+    ProfileDivider()
+    Spacer(Modifier.height(24.dp))
+    ProfileSectionLabel("Your information")
+    Spacer(Modifier.height(8.dp))
+    SettingActionRow(Icons.Outlined.Description, "Terms & conditions", onTosClick)
+    ProfileDivider()
+    SettingActionRow(Icons.Outlined.Download, "Export health profile", onExportClick)
+    ProfileDivider()
+    Spacer(Modifier.height(24.dp))
+    Text("SUKHAM", color = SukhamColors.SagePrimary, fontSize = 11.sp, letterSpacing = 3.sp,
+      modifier = Modifier.align(Alignment.CenterHorizontally))
+  }
+}
 
-      // 100% On-Device AI Security Trust Badge
-      Surface(
-        color = ProfileColors.SageContainer,
-        shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, ProfileColors.CardBorder),
-        modifier = Modifier.fillMaxWidth()
-      ) {
-        Row(
-          modifier = Modifier.padding(10.dp),
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Icon(
-            imageVector = Icons.Outlined.Security,
-            contentDescription = null,
-            tint = ProfileColors.SagePrimary,
-            modifier = Modifier.size(18.dp)
-          )
-          Spacer(modifier = Modifier.width(8.dp))
-          Column {
-            Text(
-              text = "On-Device AI Security",
-              style = MaterialTheme.typography.labelSmall.copy(
-                fontWeight = FontWeight.Bold,
-                color = ProfileColors.SageDark,
-                fontSize = 11.5.sp
-              )
-            )
-            Text(
-              text = "Camera motion tracking and biometrics stay 100% private on your phone.",
-              style = MaterialTheme.typography.bodySmall.copy(
-                color = ProfileColors.BodyGray,
-                fontSize = 10.sp
-              )
-            )
-          }
-        }
-      }
-
-      // Terms & Conditions row
-      SettingActionRow(
-        icon = Icons.Outlined.Description,
-        title = "Terms & Conditions (T&C)",
-        onClick = onTosClick
-      )
-
-      // Export Data row
-      SettingActionRow(
-        icon = Icons.Outlined.Download,
-        title = "Export Health Profile",
-        onClick = onExportClick
-      )
+@Composable
+private fun ThemePill(label: String, icon: ImageVector, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val background by animateColorAsState(if (selected) SukhamColors.SageContainer else SukhamColors.CardBg, tween(220), label = "appearance")
+  Surface(onClick = onClick, modifier = modifier.semantics { this.selected = selected; role = Role.RadioButton }, shape = RoundedCornerShape(12.dp), color = background) {
+    Row(Modifier.padding(horizontal = 6.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically,
+      horizontalArrangement = Arrangement.Center) {
+      Icon(icon, null, tint = if (selected) SukhamColors.SagePrimary else SukhamColors.BodyGray, modifier = Modifier.size(17.dp))
+      Spacer(Modifier.width(6.dp))
+      Text(label, color = if (selected) SukhamColors.SagePrimary else SukhamColors.BodyGray, fontSize = 12.sp,
+        fontWeight = if (selected) FontWeight.Medium else FontWeight.Normal)
     }
   }
 }
 
 @Composable
-private fun ThemePill(
-  label: String,
-  icon: ImageVector,
-  selected: Boolean,
-  onClick: () -> Unit,
-  modifier: Modifier = Modifier,
-) {
-  val animatedBg by animateColorAsState(
-    targetValue = if (selected) ProfileColors.SagePrimary else ProfileColors.CardBg,
-    animationSpec = tween(durationMillis = 220),
-    label = "themePillBg"
-  )
-  val animatedContentColor by animateColorAsState(
-    targetValue = if (selected) {
-      if (isSukhamDarkTheme()) Color(0xFF080908) else Color.White
-    } else ProfileColors.BodyGray,
-    animationSpec = tween(durationMillis = 220),
-    label = "themePillText"
-  )
-  val pillScale by animateFloatAsState(
-    targetValue = if (selected) 1.04f else 1.0f,
-    animationSpec = spring(
-      dampingRatio = Spring.DampingRatioMediumBouncy,
-      stiffness = Spring.StiffnessMedium
-    ),
-    label = "themePillScale"
-  )
-
-  Surface(
-    color = animatedBg,
-    shape = RoundedCornerShape(8.dp),
-    border = BorderStroke(
-      0.8.dp,
-      if (selected) ProfileColors.SagePrimary else ProfileColors.ChipBorder
-    ),
-    modifier = modifier
-      .graphicsLayer {
-        scaleX = pillScale
-        scaleY = pillScale
-      }
-      .clickable(onClick = onClick)
-  ) {
-    Row(
-      modifier = Modifier.padding(horizontal = 6.dp, vertical = 7.dp),
-      verticalAlignment = Alignment.CenterVertically,
-      horizontalArrangement = Arrangement.Center
-    ) {
-      Icon(
-        imageVector = icon,
-        contentDescription = label,
-        tint = animatedContentColor,
-        modifier = Modifier.size(13.dp)
-      )
-      Spacer(modifier = Modifier.width(4.dp))
-      Text(
-        text = label,
-        style = MaterialTheme.typography.labelSmall.copy(
-          fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-          color = animatedContentColor,
-          fontSize = 11.sp
-        )
-      )
-    }
+private fun SettingActionRow(icon: ImageVector, title: String, onClick: () -> Unit) {
+  Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(vertical = 18.dp),
+    verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+    Icon(icon, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+    Text(title, color = SukhamColors.TitleBlack, fontSize = 15.sp, modifier = Modifier.weight(1f))
+    Icon(Icons.Outlined.ChevronRight, null, tint = SukhamColors.BodyGray, modifier = Modifier.size(18.dp))
   }
 }
 
-@Composable
-private fun SettingActionRow(
-  icon: ImageVector,
-  title: String,
-  onClick: () -> Unit,
-) {
-  Row(
-    modifier = Modifier
-      .fillMaxWidth()
-      .clickable(onClick = onClick)
-      .padding(vertical = 4.dp),
-    horizontalArrangement = Arrangement.SpaceBetween,
-    verticalAlignment = Alignment.CenterVertically
-  ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
-      Icon(
-        imageVector = icon,
-        contentDescription = null,
-        tint = ProfileColors.BodyGray,
-        modifier = Modifier.size(18.dp)
-      )
-      Spacer(modifier = Modifier.width(10.dp))
-      Text(
-        text = title,
-        style = MaterialTheme.typography.bodySmall.copy(
-          fontWeight = FontWeight.Medium,
-          color = ProfileColors.TitleBlack,
-          fontSize = 13.sp
-        )
-      )
-    }
-
-    Icon(
-      imageVector = Icons.Outlined.ChevronRight,
-      contentDescription = null,
-      tint = ProfileColors.BodyGray,
-      modifier = Modifier.size(16.dp)
-    )
-  }
-}
-
-/**
- * Card displaying the active on-device LLM model in use, or an amber attention banner
- * prompting the user to select and download a model if none is currently downloaded.
- */
 @Composable
 private fun LocalLlmSettingCard(
-  activeModel: Model?,
-  hasDownloadedModel: Boolean,
-  downloadingModel: Model?,
-  downloadingStatus: ModelDownloadStatus?,
-  onSelectModelClick: () -> Unit,
+  activeModel: Model?, hasDownloadedModel: Boolean, downloadingModel: Model?,
+  downloadingStatus: ModelDownloadStatus?, onSelectModelClick: () -> Unit,
 ) {
-  val context = LocalContext.current
-  val ramGb = remember { getDeviceTotalRamInGb(context) }
-
-  if (hasDownloadedModel && activeModel != null) {
-    // Model in use card
-    Surface(
-      color = ProfileColors.ChipBg,
-      shape = RoundedCornerShape(16.dp),
-      border = BorderStroke(1.dp, ProfileColors.CardBorder),
-      modifier = Modifier
-        .fillMaxWidth()
-        .clickable(onClick = onSelectModelClick)
-    ) {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-      ) {
-        // Top header row
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          horizontalArrangement = Arrangement.SpaceBetween,
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-          ) {
-            Box(
-              modifier = Modifier
-                .size(34.dp)
-                .background(ProfileColors.SageContainer, RoundedCornerShape(10.dp)),
-              contentAlignment = Alignment.Center
-            ) {
-              Icon(
-                imageVector = Icons.Outlined.SmartToy,
-                contentDescription = null,
-                tint = ProfileColors.SagePrimary,
-                modifier = Modifier.size(19.dp)
-              )
-            }
-            Column {
-              Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(6.dp)
-              ) {
-                Text(
-                  text = "Local LLM in Use",
-                  style = MaterialTheme.typography.bodyMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = ProfileColors.TitleBlack,
-                    fontSize = 13.5.sp
-                  )
-                )
-                // "IN USE" badge
-                Surface(
-                  color = ProfileColors.SageContainer,
-                  shape = RoundedCornerShape(percent = 50),
-                  border = BorderStroke(0.6.dp, ProfileColors.SagePrimary.copy(alpha = 0.4f))
-                ) {
-                  Row(
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                  ) {
-                    Box(
-                      modifier = Modifier
-                        .size(6.dp)
-                        .background(ProfileColors.SagePrimary, CircleShape)
-                    )
-                    Spacer(Modifier.width(4.dp))
-                    Text(
-                      text = "ACTIVE",
-                      style = MaterialTheme.typography.labelSmall.copy(
-                        fontWeight = FontWeight.ExtraBold,
-                        fontSize = 9.sp,
-                        color = ProfileColors.SageDark
-                      )
-                    )
-                  }
-                }
-              }
-              Text(
-                text = "Hardware accelerated · ${ramGb} GB RAM detected",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  color = ProfileColors.BodyGray,
-                  fontSize = 10.5.sp
-                )
-              )
-            }
-          }
-
-          // Switch / Change button
-          Surface(
-            color = ProfileColors.CardBg,
-            shape = RoundedCornerShape(percent = 50),
-            border = BorderStroke(0.8.dp, ProfileColors.CardBorder),
-            modifier = Modifier.clickable(onClick = onSelectModelClick)
-          ) {
-            Row(
-              modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              Text(
-                text = "Switch",
-                style = MaterialTheme.typography.labelSmall.copy(
-                  fontWeight = FontWeight.SemiBold,
-                  fontSize = 11.sp,
-                  color = ProfileColors.SagePrimary
-                )
-              )
-              Spacer(Modifier.width(2.dp))
-              Icon(
-                imageVector = Icons.Outlined.SwapHoriz,
-                contentDescription = null,
-                tint = ProfileColors.SagePrimary,
-                modifier = Modifier.size(13.dp)
-              )
-            }
-          }
-        }
-
-        // Active Model Name & Details Box
-        Surface(
-          color = ProfileColors.CardBg,
-          shape = RoundedCornerShape(12.dp),
-          border = BorderStroke(0.8.dp, ProfileColors.CardBorder),
-          modifier = Modifier.fillMaxWidth()
-        ) {
-          Column(
-            modifier = Modifier.padding(10.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
-          ) {
-            Text(
-              text = activeModel.displayName.ifEmpty { activeModel.name },
-              style = MaterialTheme.typography.bodyMedium.copy(
-                fontWeight = FontWeight.Bold,
-                color = ProfileColors.TitleBlack,
-                fontSize = 14.sp
-              )
-            )
-
-            Row(
-              horizontalArrangement = Arrangement.spacedBy(6.dp),
-              verticalAlignment = Alignment.CenterVertically
-            ) {
-              if (activeModel.llmSupportImage) {
-                Surface(
-                  color = ProfileColors.ChipBg,
-                  shape = RoundedCornerShape(6.dp)
-                ) {
-                  Row(
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                  ) {
-                    Icon(
-                      imageVector = Icons.Outlined.Image,
-                      contentDescription = null,
-                      tint = ProfileColors.SagePrimary,
-                      modifier = Modifier.size(11.dp)
-                    )
-                    Spacer(Modifier.width(3.dp))
-                    Text(
-                      text = "Vision AI",
-                      fontSize = 10.sp,
-                      color = ProfileColors.TitleBlack,
-                      fontWeight = FontWeight.Medium
-                    )
-                  }
-                }
-              }
-
-              Surface(
-                color = ProfileColors.ChipBg,
-                shape = RoundedCornerShape(6.dp)
-              ) {
-                Row(
-                  modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                  verticalAlignment = Alignment.CenterVertically
-                ) {
-                  Icon(
-                    imageVector = Icons.Outlined.Security,
-                    contentDescription = null,
-                    tint = ProfileColors.SagePrimary,
-                    modifier = Modifier.size(11.dp)
-                  )
-                  Spacer(Modifier.width(3.dp))
-                  Text(
-                    text = "100% Offline",
-                    fontSize = 10.sp,
-                    color = ProfileColors.TitleBlack,
-                    fontWeight = FontWeight.Medium
-                  )
-                }
-              }
-
-              if (activeModel.sizeInBytes > 0) {
-                Surface(
-                  color = ProfileColors.ChipBg,
-                  shape = RoundedCornerShape(6.dp)
-                ) {
-                  Text(
-                    text = activeModel.sizeInBytes.humanReadableSize(),
-                    fontSize = 10.sp,
-                    color = ProfileColors.BodyGray,
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
-                  )
-                }
-              }
-            }
-          }
-        }
-
-        // Active download progress bar if any other model is downloading in background
-        if (downloadingModel != null && downloadingStatus != null) {
-          val total = downloadingStatus.totalBytes
-          val received = downloadingStatus.receivedBytes
-          val percent = if (total > 0) (received.toFloat() / total.toFloat()).coerceIn(0f, 1f) else 0f
-          Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-              Text(
-                text = "Downloading ${downloadingModel.displayName}… ${(percent * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  fontSize = 10.5.sp,
-                  fontWeight = FontWeight.SemiBold,
-                  color = ProfileColors.SagePrimary
-                )
-              )
-              Text(
-                text = "${received.humanReadableSize()} / ${total.humanReadableSize()}",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  fontSize = 10.5.sp,
-                  color = ProfileColors.BodyGray
-                )
-              )
-            }
-            LinearProgressIndicator(
-              progress = { percent },
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(3.dp)),
-              color = ProfileColors.SagePrimary,
-              trackColor = ProfileColors.SageContainer
-            )
-          }
+  Column(Modifier.fillMaxWidth().clickable(onClick = onSelectModelClick).padding(vertical = 16.dp)) {
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+      Icon(Icons.Outlined.SmartToy, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(22.dp))
+      Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text("AI model", color = SukhamColors.TitleBlack, fontSize = 15.sp)
+        Text(if (hasDownloadedModel && activeModel != null) activeModel.displayName.ifEmpty { activeModel.name }
+          else if (downloadingModel != null) "Preparing your on-device coach" else "Choose a model to enable AI coaching",
+          color = SukhamColors.BodyGray, fontSize = 12.sp, lineHeight = 18.sp)
+        if (hasDownloadedModel && activeModel != null) {
+          Text(listOfNotNull(if (activeModel.llmSupportImage) "Vision enabled" else null,
+            activeModel.sizeInBytes.takeIf { it > 0 }?.humanReadableSize()).joinToString(" · "),
+            color = SukhamColors.SagePrimary, fontSize = 11.sp)
         }
       }
+      Icon(Icons.Outlined.ChevronRight, "Choose AI model", tint = SukhamColors.BodyGray, modifier = Modifier.size(18.dp))
     }
-  } else {
-    // No model downloaded yet card -> Alert / Prompt to select
-    Surface(
-      color = Color(0xFFFFFBEB),
-      shape = RoundedCornerShape(16.dp),
-      border = BorderStroke(1.dp, Color(0xFFFDE68A)),
-      modifier = Modifier
-        .fillMaxWidth()
-        .clickable(onClick = onSelectModelClick)
-    ) {
-      Column(
-        modifier = Modifier
-          .fillMaxWidth()
-          .padding(14.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-      ) {
-        Row(
-          modifier = Modifier.fillMaxWidth(),
-          verticalAlignment = Alignment.CenterVertically
-        ) {
-          Box(
-            modifier = Modifier
-              .size(38.dp)
-              .background(Color(0xFFFEF3C7), RoundedCornerShape(10.dp)),
-            contentAlignment = Alignment.Center
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.SmartToy,
-              contentDescription = null,
-              tint = Color(0xFFD97706),
-              modifier = Modifier.size(22.dp)
-            )
-          }
-          Spacer(Modifier.width(10.dp))
-          Column(modifier = Modifier.weight(1f)) {
-            Row(
-              verticalAlignment = Alignment.CenterVertically,
-              horizontalArrangement = Arrangement.spacedBy(6.dp)
-            ) {
-              Text(
-                text = "No Model Downloaded",
-                style = MaterialTheme.typography.titleSmall.copy(
-                  fontWeight = FontWeight.Bold,
-                  color = Color(0xFF92400E),
-                  fontSize = 13.5.sp
-                )
-              )
-              Surface(
-                color = Color(0xFFFEE2E2),
-                shape = RoundedCornerShape(percent = 50)
-              ) {
-                Text(
-                  text = "ACTION REQUIRED",
-                  style = MaterialTheme.typography.labelSmall.copy(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 8.5.sp,
-                    color = Color(0xFFB91C1C)
-                  ),
-                  modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp)
-                )
-              }
-            }
-            Text(
-              text = "Sukham needs a local AI model for private posture coaching and health insights.",
-              style = MaterialTheme.typography.bodySmall.copy(
-                color = Color(0xFF78350F),
-                fontSize = 10.5.sp,
-                lineHeight = 14.sp
-              )
-            )
-          }
-        }
-
-        // If a model is currently downloading
-        if (downloadingModel != null && downloadingStatus != null) {
-          val total = downloadingStatus.totalBytes
-          val received = downloadingStatus.receivedBytes
-          val percent = if (total > 0) (received.toFloat() / total.toFloat()).coerceIn(0f, 1f) else 0f
-          Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Row(
-              modifier = Modifier.fillMaxWidth(),
-              horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-              Text(
-                text = "Downloading ${downloadingModel.displayName}… ${(percent * 100).toInt()}%",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  fontSize = 10.5.sp,
-                  fontWeight = FontWeight.SemiBold,
-                  color = Color(0xFFB45309)
-                )
-              )
-              Text(
-                text = "${received.humanReadableSize()} / ${total.humanReadableSize()}",
-                style = MaterialTheme.typography.bodySmall.copy(
-                  fontSize = 10.5.sp,
-                  color = Color(0xFF92400E)
-                )
-              )
-            }
-            LinearProgressIndicator(
-              progress = { percent },
-              modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(3.dp)),
-              color = Color(0xFFD97706),
-              trackColor = Color(0xFFFEF3C7)
-            )
-          }
-        } else {
-          Button(
-            onClick = onSelectModelClick,
-            shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(
-              containerColor = Color(0xFFD97706),
-              contentColor = Color.White
-            ),
-            modifier = Modifier.fillMaxWidth()
-          ) {
-            Icon(
-              imageVector = Icons.Outlined.AutoAwesome,
-              contentDescription = null,
-              modifier = Modifier.size(14.dp)
-            )
-            Spacer(Modifier.width(6.dp))
-            Text(
-              text = "Select & Download Recommended Model",
-              fontSize = 12.sp,
-              fontWeight = FontWeight.Bold
-            )
-          }
-        }
+    if (downloadingModel != null && downloadingStatus != null) {
+      val total = downloadingStatus.totalBytes
+      val received = downloadingStatus.receivedBytes
+      val progress = if (total > 0) (received.toFloat() / total).coerceIn(0f, 1f) else 0f
+      Column(Modifier.padding(start = 36.dp, top = 12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text("Downloading ${downloadingModel.displayName.ifEmpty { downloadingModel.name }}", color = SukhamColors.BodyGray, fontSize = 12.sp)
+        if (total > 0) LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth(), color = SukhamColors.SagePrimary, trackColor = SukhamColors.SageContainer)
+        else LinearProgressIndicator(modifier = Modifier.fillMaxWidth(), color = SukhamColors.SagePrimary, trackColor = SukhamColors.SageContainer)
+        Text(if (total > 0) "${(progress * 100).toInt()}% · ${received.humanReadableSize()} of ${total.humanReadableSize()}" else "${received.humanReadableSize()} downloaded",
+          color = SukhamColors.BodyGray, fontSize = 11.sp)
       }
     }
   }
 }
-

@@ -16,6 +16,16 @@
 
 package com.google.ai.edge.gallery.ui.yoga
 
+import android.os.SystemClock
+import androidx.activity.compose.LocalActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.google.ai.edge.gallery.ui.progress.ActivitySession
+import com.google.ai.edge.gallery.ui.progress.ActivityStatus
+import com.google.ai.edge.gallery.ui.progress.ActivityType
+import com.google.ai.edge.gallery.ui.progress.PracticeClock
+import com.google.ai.edge.gallery.ui.progress.ProgressRepository
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
@@ -112,6 +122,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
+import com.google.ai.edge.gallery.ui.home.AnimatedReviewImage
 import com.google.ai.edge.gallery.R
 import com.google.ai.edge.gallery.data.BuiltInTaskId
 import com.google.ai.edge.gallery.data.Model
@@ -208,6 +219,13 @@ fun YogaPoseScreen(
 ) {
   val context = LocalContext.current
   val scope = rememberCoroutineScope()
+  val historyRepository = remember { ProgressRepository.get(context) }
+  val historyLifecycle = LocalLifecycleOwner.current
+  val historyActivity = LocalActivity.current
+  val practiceClock = remember { PracticeClock() }
+  var historySession by remember { mutableStateOf<ActivitySession?>(null) }
+  var historyFinished by remember { mutableStateOf(false) }
+  var historyForeground by remember { mutableStateOf(true) }
   val uiState by modelManagerViewModel.uiState.collectAsState()
   val profileUiState by profileViewModel.uiState.collectAsState()
   val isReadAloudEnabled = profileUiState.profile.isReadAloudEnabled
@@ -354,7 +372,51 @@ fun YogaPoseScreen(
     return true
   }
 
+  fun saveSessionHistory(status: ActivityStatus) {
+    val record = historySession ?: return
+    if (historyFinished) return
+    val snapshot = engine.cards.value
+    val done = snapshot.filter { it.status == CoachingStatus.DONE }
+    val poses = done.map { parseCoaching(it.text).pose }.filter { it.isNotBlank() }.groupingBy { it }.eachCount()
+    val videoCoverage = if (record.type == ActivityType.VIDEO) snapshot.filter {
+      it.status == CoachingStatus.DONE || it.status == CoachingStatus.NO_POSE
+    }.sumOf { card ->
+      val index = samplePositions.indexOf(card.timestampMs)
+      val end = samplePositions.getOrNull(index + 1) ?: videoDurationMs
+      (end - card.timestampMs).coerceAtLeast(0)
+    }.coerceAtMost(videoDurationMs) else 0L
+    val terminal = status in listOf(ActivityStatus.COMPLETED, ActivityStatus.ENDED_EARLY, ActivityStatus.INTERRUPTED, ActivityStatus.FAILED)
+    if (terminal) { practiceClock.pause(SystemClock.elapsedRealtime()); historyFinished = true }
+    historyRepository.save(record.copy(updatedAt = System.currentTimeMillis(), status = status,
+      activeMs = if (record.type == ActivityType.LIVE) practiceClock.elapsed(SystemClock.elapsedRealtime()) else 0L,
+      analyzedMs = videoCoverage, poseCounts = poses,
+      feedback = done.joinToString("\n\n") { if (record.type == ActivityType.VIDEO) "${formatTimestamp(it.timestampMs)}\n${it.text}" else it.text }))
+  }
+
+  DisposableEffect(historyLifecycle) {
+    val observer = LifecycleEventObserver { _, event ->
+      if (event == Lifecycle.Event.ON_PAUSE) {
+        historyForeground = false
+        practiceClock.pause(SystemClock.elapsedRealtime())
+        if (mode == YogaMode.LIVE) saveSessionHistory(ActivityStatus.PAUSED)
+      } else if (event == Lifecycle.Event.ON_RESUME) {
+        historyForeground = true
+        if (sessionActive && mode == YogaMode.LIVE && !historyFinished) practiceClock.start(SystemClock.elapsedRealtime())
+      }
+    }
+    historyLifecycle.lifecycle.addObserver(observer)
+    onDispose {
+      historyLifecycle.lifecycle.removeObserver(observer)
+      saveSessionHistory(when {
+        historyActivity?.isChangingConfigurations == true -> ActivityStatus.PAUSED
+        mode == YogaMode.LIVE -> ActivityStatus.COMPLETED
+        else -> ActivityStatus.INTERRUPTED
+      })
+    }
+  }
+
   fun stopSession() {
+    saveSessionHistory(if (mode == YogaMode.LIVE) ActivityStatus.COMPLETED else ActivityStatus.ENDED_EARLY)
     sessionActive = false
     pendingSessionStart = false
     videoJob?.cancel()
@@ -615,11 +677,11 @@ fun YogaPoseScreen(
                   horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                   Image(
-                    painter = painterResource(R.drawable.live_ai_coach_hero),
-                    contentDescription = "Photo Pose Audit",
+                    painter = painterResource(R.drawable.yoga_tips),
+                    contentDescription = "Front-facing Tree Pose with illustrative pose-analysis lines",
                     modifier = Modifier
                       .fillMaxWidth()
-                      .height(180.dp)
+                      .aspectRatio(1f)
                       .clip(RoundedCornerShape(16.dp)),
                     contentScale = ContentScale.Crop
                   )
@@ -663,7 +725,8 @@ fun YogaPoseScreen(
                         .weight(1f)
                         .height(50.dp),
                       shape = RoundedCornerShape(percent = 50),
-                      border = BorderStroke(1.dp, YogaThemeColors.SagePrimary),
+                      border = BorderStroke(1.dp, SukhamColors.SagePrimary),
+                      colors = ButtonDefaults.outlinedButtonColors(contentColor = SukhamColors.SagePrimary),
                       onClick = {
                         galleryLauncher.launch(
                           androidx.activity.result.PickVisualMediaRequest(
@@ -672,9 +735,9 @@ fun YogaPoseScreen(
                         )
                       }
                     ) {
-                      Icon(Icons.Outlined.Image, contentDescription = null, tint = YogaThemeColors.SagePrimary)
+                      Icon(Icons.Outlined.Image, contentDescription = null)
                       Spacer(Modifier.width(6.dp))
-                      Text("Gallery", color = YogaThemeColors.SageDark, fontWeight = FontWeight.Bold)
+                      Text("Gallery", fontWeight = FontWeight.Bold)
                     }
 
                     Button(
@@ -682,16 +745,19 @@ fun YogaPoseScreen(
                         .weight(1f)
                         .height(50.dp),
                       shape = RoundedCornerShape(percent = 50),
-                      colors = ButtonDefaults.buttonColors(containerColor = YogaThemeColors.SagePrimary),
+                      colors = ButtonDefaults.buttonColors(
+                      containerColor = SukhamColors.SagePrimary,
+                      contentColor = SukhamColors.ScreenBg,
+                    ),
                       onClick = {
                         val uri = createCameraOutputUri(context)
                         pendingCameraUri = uri
                         cameraLauncher.launch(uri)
                       }
                     ) {
-                      Icon(Icons.Outlined.PhotoCamera, contentDescription = null, tint = Color.White)
+                      Icon(Icons.Outlined.PhotoCamera, contentDescription = null)
                       Spacer(Modifier.width(6.dp))
-                      Text("Camera", color = Color.White, fontWeight = FontWeight.Bold)
+                      Text("Camera", fontWeight = FontWeight.Bold)
                     }
                   }
                 }
@@ -816,12 +882,15 @@ fun YogaPoseScreen(
                 Button(
                   modifier = Modifier.fillMaxWidth().height(50.dp),
                   shape = RoundedCornerShape(percent = 50),
-                  colors = ButtonDefaults.buttonColors(containerColor = YogaThemeColors.SagePrimary),
+                  colors = ButtonDefaults.buttonColors(
+                      containerColor = SukhamColors.SagePrimary,
+                      contentColor = SukhamColors.ScreenBg,
+                    ),
                   onClick = { showPhotoAnimation = true },
                 ) {
-                  Icon(Icons.Outlined.PlayArrow, contentDescription = null, tint = Color.White)
+                  Icon(Icons.Outlined.PlayArrow, contentDescription = null)
                   Spacer(Modifier.width(6.dp))
-                  Text("Show correction animation", color = Color.White, fontWeight = FontWeight.Bold)
+                  Text("Show correction animation", fontWeight = FontWeight.Bold)
                 }
               }
             }
@@ -832,7 +901,8 @@ fun YogaPoseScreen(
                   OutlinedButton(
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(percent = 50),
-                    border = BorderStroke(1.dp, YogaThemeColors.SagePrimary),
+                    border = BorderStroke(1.dp, SukhamColors.SagePrimary),
+                      colors = ButtonDefaults.outlinedButtonColors(contentColor = SukhamColors.SagePrimary),
                     onClick = {
                       val bmp = annotatedBitmap ?: return@OutlinedButton
                       scope.launch(Dispatchers.IO) {
@@ -849,14 +919,15 @@ fun YogaPoseScreen(
                       }
                     },
                   ) {
-                    Icon(Icons.Outlined.Save, contentDescription = null, tint = YogaThemeColors.SagePrimary)
+                    Icon(Icons.Outlined.Save, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
-                    Text(if (savedUri == null) "Save" else "Saved", color = YogaThemeColors.SageDark, fontWeight = FontWeight.Bold)
+                    Text(if (savedUri == null) "Save" else "Saved", fontWeight = FontWeight.Bold)
                   }
                   OutlinedButton(
                     modifier = Modifier.weight(1f).height(50.dp),
                     shape = RoundedCornerShape(percent = 50),
-                    border = BorderStroke(1.dp, YogaThemeColors.CardBorder),
+                    border = BorderStroke(1.dp, SukhamColors.SagePrimary),
+                    colors = ButtonDefaults.outlinedButtonColors(contentColor = SukhamColors.SagePrimary),
                     onClick = {
                       ttsHelper.stop()
                       originalBitmap = null
@@ -867,9 +938,9 @@ fun YogaPoseScreen(
                       savedUri = null
                     },
                   ) {
-                    Icon(Icons.Outlined.Refresh, contentDescription = null, tint = YogaThemeColors.BodyGray)
+                    Icon(Icons.Outlined.Refresh, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
-                    Text("New photo", color = YogaThemeColors.BodyGray, fontWeight = FontWeight.Bold)
+                    Text("New photo", fontWeight = FontWeight.Bold)
                   }
                 }
               }
@@ -880,7 +951,10 @@ fun YogaPoseScreen(
                   shape = RoundedCornerShape(percent = 50),
                   enabled = !aiInFlight && !pendingInference && annotatedBitmap != null,
                   colors =
-                    ButtonDefaults.buttonColors(containerColor = YogaThemeColors.SagePrimary),
+                    ButtonDefaults.buttonColors(
+                      containerColor = SukhamColors.SagePrimary,
+                      contentColor = SukhamColors.ScreenBg,
+                    ),
                   onClick = {
                     if (!ensureModelOrToast()) return@Button
                     aiResponse = ""
@@ -891,7 +965,7 @@ fun YogaPoseScreen(
                   if (pendingInference || aiInFlight) {
                     CircularProgressIndicator(
                       modifier = Modifier.size(20.dp),
-                      color = Color.White,
+                      color = androidx.compose.material3.LocalContentColor.current,
                       strokeWidth = 2.dp,
                     )
                     Spacer(Modifier.size(10.dp))
@@ -902,11 +976,11 @@ fun YogaPoseScreen(
                         aiResponse.isBlank() -> "Looking at the pose…"
                         else -> "Coaching…"
                       }
-                    Text(label, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(label, fontWeight = FontWeight.Bold)
                   } else {
-                    Icon(Icons.Outlined.SelfImprovement, contentDescription = null, tint = Color.White)
+                    Icon(Icons.Outlined.SelfImprovement, contentDescription = null)
                     Spacer(Modifier.size(8.dp))
-                    Text("Get Yoga Coaching", color = Color.White, fontWeight = FontWeight.Bold)
+                    Text("Get Yoga Coaching", fontWeight = FontWeight.Bold)
                   }
                 }
               }
@@ -933,14 +1007,12 @@ fun YogaPoseScreen(
                     .padding(16.dp),
                   horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                  Image(
-                    painter = painterResource(R.drawable.video_motion_audit_hero),
-                    contentDescription = "Video Motion Audit",
+                  AnimatedReviewImage(
+                    active = true,
                     modifier = Modifier
                       .fillMaxWidth()
-                      .height(180.dp)
+                      .aspectRatio(1f)
                       .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
                   )
 
                   Spacer(modifier = Modifier.height(14.dp))
@@ -978,7 +1050,10 @@ fun YogaPoseScreen(
                       .fillMaxWidth()
                       .height(50.dp),
                     shape = RoundedCornerShape(percent = 50),
-                    colors = ButtonDefaults.buttonColors(containerColor = YogaThemeColors.LavenderPrimary),
+                    colors = ButtonDefaults.buttonColors(
+                      containerColor = SukhamColors.SagePrimary,
+                      contentColor = SukhamColors.ScreenBg,
+                    ),
                     onClick = {
                       videoPickerLauncher.launch(
                         androidx.activity.result.PickVisualMediaRequest(
@@ -987,12 +1062,11 @@ fun YogaPoseScreen(
                       )
                     }
                   ) {
-                    Icon(Icons.Outlined.Videocam, contentDescription = null, tint = Color.White)
+                    Icon(Icons.Outlined.Videocam, contentDescription = null)
                     Spacer(Modifier.width(8.dp))
                     Text(
                       "Choose Video from Gallery",
                       fontWeight = FontWeight.Bold,
-                      color = Color.White,
                       fontSize = 14.sp
                     )
                   }
@@ -1216,6 +1290,16 @@ fun YogaPoseScreen(
       )
       Log.d(TAG, "Running inference on ${gemmaInput.width}x${gemmaInput.height} bitmap")
       var firstTokenLogged = false
+      val photoHistory = ActivitySession(type = ActivityType.PHOTO, title = "Photo Review")
+      historyRepository.save(photoHistory)
+      var photoHistoryFinished = false
+      fun savePhotoHistory(status: ActivityStatus) {
+        if (photoHistoryFinished) return
+        photoHistoryFinished = true
+        val pose = parseCoaching(aiResponse).pose
+        historyRepository.save(photoHistory.copy(updatedAt = System.currentTimeMillis(), status = status,
+          feedback = aiResponse, poseCounts = if (pose.isNotBlank()) mapOf(pose to 1) else emptyMap()))
+      }
       model.runtimeHelper.runInference(
         model = model,
         input = buildYogaPrompt(candidates, geometry, deviations),
@@ -1253,16 +1337,21 @@ fun YogaPoseScreen(
             }
           }
           if (done) {
+            savePhotoHistory(if (aiResponse.isNotBlank()) ActivityStatus.COMPLETED else ActivityStatus.FAILED)
             aiInFlight = false
             if (isReadAloudEnabled && aiResponse.isNotBlank()) {
               ttsHelper.speak(spokenCoachingText(aiResponse), calm = true)
             }
           }
         },
-        cleanUpListener = { aiInFlight = false },
+        cleanUpListener = {
+          aiInFlight = false
+          savePhotoHistory(if (earlyStopFired && aiResponse.isNotBlank()) ActivityStatus.COMPLETED else ActivityStatus.INTERRUPTED)
+        },
         onError = { msg ->
           aiInFlight = false
           aiResponse = "Error: $msg"
+          savePhotoHistory(ActivityStatus.FAILED)
         },
         coroutineScope = scope,
       )
@@ -1308,6 +1397,12 @@ fun YogaPoseScreen(
     if (pendingSessionStart && initStatus == ModelInitializationStatusType.INITIALIZED) {
       pendingSessionStart = false
       sessionStartMs = System.currentTimeMillis()
+      historySession = ActivitySession(type = if (mode == YogaMode.LIVE) ActivityType.LIVE else ActivityType.VIDEO,
+        title = if (mode == YogaMode.LIVE) "Live Coach" else "Video Review")
+      historyFinished = false
+      practiceClock.reset()
+      if (mode == YogaMode.LIVE && historyForeground) practiceClock.start(SystemClock.elapsedRealtime())
+      historySession?.let(historyRepository::save)
       elapsedMs = 0L
       if (isLiveScreen) LiveCoachDebug.startSession(imageModel?.name ?: "")
       sessionActive = true
@@ -1319,9 +1414,15 @@ fun YogaPoseScreen(
   // detections. All that remains here is the session clock for the overlay.
   LaunchedEffect(sessionActive, mode) {
     if (!sessionActive || mode != YogaMode.LIVE) return@LaunchedEffect
+    var lastHistoryCheckpoint = SystemClock.elapsedRealtime()
     while (isActive) {
       delay(1_000)
       elapsedMs = System.currentTimeMillis() - sessionStartMs
+      val now = SystemClock.elapsedRealtime()
+      if (historyForeground && now - lastHistoryCheckpoint >= 5_000) {
+        saveSessionHistory(ActivityStatus.IN_PROGRESS)
+        lastHistoryCheckpoint = now
+      }
     }
   }
 
@@ -1383,24 +1484,34 @@ fun YogaPoseScreen(
     val model = imageModel ?: return@LaunchedEffect
     val uri = videoUri ?: return@LaunchedEffect
     val positions = samplePositions
+    val auditHistoryId = historySession?.id
+    fun saveVideoHistory(status: ActivityStatus) {
+      if (historySession?.id == auditHistoryId) saveSessionHistory(status)
+    }
     val job = launch {
       try {
         VideoFrameSampler.forEachFrame(
           context = context,
           uri = uri,
           positions = positions,
-          onFrame = { sampled -> engine.analyzeFrame(model, sampled.timestampMs, sampled.bitmap) },
+          onFrame = { sampled ->
+            engine.analyzeFrame(model, sampled.timestampMs, sampled.bitmap)
+            saveVideoHistory(ActivityStatus.IN_PROGRESS)
+          },
         )
+        saveVideoHistory(if (engine.cards.value.any { it.status == CoachingStatus.DONE } && engine.cards.value.none { it.status == CoachingStatus.ERROR }) ActivityStatus.COMPLETED else ActivityStatus.FAILED)
       } catch (c: CancellationException) {
+        saveVideoHistory(ActivityStatus.ENDED_EARLY)
         // The user hit Stop (or switched modes). Not an error — let it unwind quietly.
         throw c
       } catch (t: Throwable) {
+        saveVideoHistory(ActivityStatus.FAILED)
         Log.e(TAG, "Video analysis failed", t)
         Toast.makeText(context, t.message ?: "Video analysis failed", Toast.LENGTH_LONG).show()
       } finally {
         // NonCancellable so the button still flips back to "Analyze video" on the cancel path;
         // a plain state write here would be skipped once the coroutine is already cancelling.
-        withContext(NonCancellable) { sessionActive = false }
+        withContext(NonCancellable) { if (historySession?.id == auditHistoryId) sessionActive = false }
       }
     }
     videoJob = job

@@ -29,7 +29,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -50,9 +54,13 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowForward
+import androidx.compose.material.icons.outlined.Air
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.BarChart
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -71,6 +79,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -95,16 +104,19 @@ private data class HeroCard(
 )
 
 /**
- * The home screen: the live coach first, with reviewing a recording or a photo as the other two
- * ways in. Nothing else competes for attention.
+ * Coaching and reviews in a carousel, with a dedicated programs card beneath it.
  */
 @Composable
 fun HomeScreen(
   tosViewModel: TosViewModel,
   onLiveClicked: () -> Unit,
+  onAiClicked: () -> Unit,
   onVideoClicked: () -> Unit,
   onPhotoClicked: () -> Unit,
   onProfileClicked: () -> Unit,
+  onProgramsClicked: () -> Unit,
+  onBreathingClicked: () -> Unit,
+  onProgressClicked: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   var showTosDialog by remember { mutableStateOf(!tosViewModel.getIsTosAccepted()) }
@@ -147,8 +159,8 @@ fun HomeScreen(
           contentAlignment = Alignment.Center,
         ) {
           Text(
-            text = "Sukham",
-            color = SukhamColors.TitleBlack,
+            text = "SUKHAM",
+            color = SukhamColors.SagePrimary,
             fontSize = 26.sp,
             fontWeight = FontWeight.Medium,
             letterSpacing = 1.sp,
@@ -157,14 +169,16 @@ fun HomeScreen(
 
         // Leave room underneath for the floating nav so the carousel never sits behind it.
         BoxWithConstraints(
-          modifier = Modifier.weight(1f).fillMaxWidth().padding(bottom = 108.dp)
+          modifier = Modifier.weight(1f).fillMaxWidth().navigationBarsPadding().padding(bottom = 108.dp)
         ) {
           val sidePadding = 28.dp
           val dotsBlock = 44.dp
           val cardWidth = maxWidth - sidePadding * 2
-          val cardHeight = minOf(cardWidth * 1.5f, maxHeight - dotsBlock)
+          val programsBlock = 236.dp
+          val cardHeight = minOf(cardWidth * 1.5f, maxHeight - dotsBlock - programsBlock)
+            .coerceAtLeast(340.dp)
           Column(
-            modifier = Modifier.align(Alignment.Center),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
           ) {
             HorizontalPager(
@@ -180,6 +194,7 @@ fun HomeScreen(
                   .coerceIn(0f, 1f)
               HeroCardView(
                 card = cards[page],
+                animationActive = pagerState.currentPage == page,
                 modifier =
                   Modifier.fillMaxSize().graphicsLayer {
                     val scale = lerp(0.92f, 1f, 1f - distance)
@@ -191,14 +206,24 @@ fun HomeScreen(
             }
             Spacer(Modifier.height(18.dp))
             PageDots(count = cards.size, current = pagerState.currentPage)
+            Spacer(Modifier.height(22.dp))
+            BreathingCard(onClick = onBreathingClicked, modifier = Modifier.fillMaxWidth().padding(horizontal = sidePadding))
+            Spacer(Modifier.height(12.dp))
+            ProgramsCard(
+              onClick = onProgramsClicked,
+              modifier = Modifier.fillMaxWidth().padding(horizontal = sidePadding),
+            )
+            Spacer(Modifier.height(16.dp))
           }
         }
       }
 
       SukhamBottomNav(
         currentTab = SukhamNavTab.HOME,
-        onLiveClick = onLiveClicked,
+        onLiveClick = onAiClicked,
         onProfileClick = onProfileClicked,
+        onProgramsClick = onProgramsClicked,
+        onProgressClick = onProgressClicked,
         modifier = Modifier.align(Alignment.BottomCenter),
       )
     }
@@ -214,8 +239,82 @@ fun HomeScreen(
   }
 }
 
+/** A quiet, camera-free practice alongside the movement tools. */
 @Composable
-private fun HeroCardView(card: HeroCard, modifier: Modifier = Modifier) {
+private fun BreathingCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val shape = RoundedCornerShape(24.dp)
+  Row(
+    modifier = modifier.clip(shape).background(SukhamColors.CardBg)
+      .border(1.dp, SukhamColors.CardBorder, shape).clickable(onClick = onClick).padding(18.dp),
+    horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Box(Modifier.size(40.dp).background(SukhamColors.SagePrimary.copy(alpha = 0.10f), CircleShape), contentAlignment = Alignment.Center) {
+      Icon(Icons.Outlined.Air, null, tint = SukhamColors.SagePrimary, modifier = Modifier.size(24.dp))
+    }
+    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+      Text("Breathe & Relax", color = SukhamColors.TitleBlack, fontSize = 19.sp, fontWeight = FontWeight.Medium)
+      Text("A little space to slow down.", color = SukhamColors.BodyGray, fontSize = 12.sp)
+      Text("1, 2, 3 or 5 minutes", color = SukhamColors.SagePrimary, fontSize = 11.sp)
+    }
+    Icon(Icons.AutoMirrored.Outlined.ArrowForward, "Open breathing", tint = SukhamColors.SagePrimary, modifier = Modifier.size(20.dp))
+  }
+}
+
+/** A permanent entry into programs, independent of the carousel position. */
+@Composable
+private fun ProgramsCard(onClick: () -> Unit, modifier: Modifier = Modifier) {
+  val shape = RoundedCornerShape(24.dp)
+  val contentColor = if (SukhamColors.isDark) SukhamColors.TitleBlack else SukhamColors.ScreenBg
+  val arrowColor = if (SukhamColors.isDark) SukhamColors.SageContainer else SukhamColors.SagePrimary
+  Row(
+    modifier = modifier
+      .shadow(8.dp, shape, ambientColor = SukhamColors.CardBg, spotColor = SukhamColors.CardBg)
+      .clip(shape)
+      .background(SukhamColors.CardBg)
+      .border(1.dp, SukhamColors.SagePrimary.copy(alpha = 0.22f), shape)
+      .clickable(onClick = onClick)
+      .padding(20.dp),
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(14.dp),
+  ) {
+    Box(
+      modifier = Modifier.size(52.dp)
+        .background(SukhamColors.SagePrimary.copy(alpha = 0.10f), RoundedCornerShape(17.dp))
+        .border(1.dp, SukhamColors.CardBorder, RoundedCornerShape(17.dp)),
+      contentAlignment = Alignment.Center,
+    ) {
+      Icon(
+        painter = painterResource(R.drawable.lotus_logo),
+        contentDescription = null,
+        tint = SukhamColors.SagePrimary,
+        modifier = Modifier.size(30.dp),
+      )
+    }
+    Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+      Text(
+        "Programs",
+        color = SukhamColors.TitleBlack,
+        fontSize = 20.sp,
+        fontWeight = FontWeight.Medium,
+      )
+      Text(
+        "Discover your next practice",
+        color = SukhamColors.BodyGray,
+        fontSize = 12.sp,
+        lineHeight = 17.sp,
+      )
+    }
+    Icon(
+      Icons.AutoMirrored.Outlined.ArrowForward,
+      contentDescription = null,
+      tint = SukhamColors.SagePrimary,
+      modifier = Modifier.size(20.dp),
+    )
+  }
+}
+
+@Composable
+private fun HeroCardView(card: HeroCard, modifier: Modifier = Modifier, animationActive: Boolean = false) {
   val shape = RoundedCornerShape(30.dp)
   Box(
     modifier =
@@ -224,7 +323,9 @@ private fun HeroCardView(card: HeroCard, modifier: Modifier = Modifier) {
         .clip(shape)
         .clickable(onClick = card.onClick)
   ) {
-    Image(
+    if (card.image == R.drawable.video_motion_audit_hero) {
+      AnimatedReviewImage(active = animationActive, modifier = Modifier.fillMaxSize())
+    } else Image(
       painter = painterResource(card.image),
       contentDescription = card.title,
       contentScale = ContentScale.Crop,
@@ -288,16 +389,16 @@ private fun PageDots(count: Int, current: Int) {
 }
 
 enum class SukhamNavTab {
-  HOME,
-  LIVE,
-  PROFILE,
+  HOME, PROGRAMS, AI, PROGRESS, PROFILE,
 }
 
-/** The floating bottom bar: four icons, the current one marked with a dot. */
+/** Main destinations with shared selection and accessibility semantics. */
 @Composable
 fun SukhamBottomNav(
   currentTab: SukhamNavTab = SukhamNavTab.HOME,
   onHomeClick: () -> Unit = {},
+  onProgramsClick: () -> Unit = {},
+  onProgressClick: () -> Unit = {},
   onLiveClick: () -> Unit = {},
   onProfileClick: () -> Unit = {},
   modifier: Modifier = Modifier,
@@ -308,51 +409,51 @@ fun SukhamBottomNav(
   ) {
     Surface(
       modifier = Modifier.fillMaxWidth().height(66.dp),
-      shape = RoundedCornerShape(33.dp),
+      shape = RoundedCornerShape(30.dp),
       color = SukhamColors.NavDockBg,
       shadowElevation = 14.dp,
       border = androidx.compose.foundation.BorderStroke(0.8.dp, SukhamColors.CardBorder),
     ) {
       Row(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxSize().selectableGroup().padding(horizontal = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
       ) {
-        NavIcon(Icons.Outlined.Home, "Home", currentTab == SukhamNavTab.HOME, onHomeClick)
-        AiLiveButton(selected = currentTab == SukhamNavTab.LIVE, onClick = onLiveClick)
-        NavIcon(Icons.Outlined.Person, "Profile", currentTab == SukhamNavTab.PROFILE, onProfileClick)
+        NavIcon(Icons.Outlined.Home, "Home", currentTab == SukhamNavTab.HOME, onHomeClick, Modifier.weight(1f))
+        NavIcon(Icons.Outlined.Layers, "Programs", currentTab == SukhamNavTab.PROGRAMS, onProgramsClick, Modifier.weight(1f))
+        AiLiveButton(selected = currentTab == SukhamNavTab.AI, onClick = onLiveClick, modifier = Modifier.weight(1f))
+        NavIcon(Icons.Outlined.BarChart, "Progress", currentTab == SukhamNavTab.PROGRESS, onProgressClick, Modifier.weight(1f))
+        NavIcon(Icons.Outlined.Person, "Profile", currentTab == SukhamNavTab.PROFILE, onProfileClick, Modifier.weight(1f))
       }
     }
   }
 }
 
 @Composable
-private fun NavIcon(icon: ImageVector, description: String, selected: Boolean, onClick: () -> Unit) {
-  val tint by
-    animateColorAsState(
-      if (selected) SukhamColors.TitleBlack else SukhamColors.MutedGray,
-      tween(200),
-      label = "navTint",
-    )
+private fun NavIcon(
+  icon: ImageVector, description: String, selected: Boolean, onClick: () -> Unit,
+  modifier: Modifier = Modifier, enabled: Boolean = true,
+) {
+  val tint by animateColorAsState(
+    if (selected) SukhamColors.SagePrimary else SukhamColors.MutedGray,
+    tween(200), label = "navTint",
+  )
   Column(
-    modifier =
-      Modifier.clip(CircleShape)
-        .clickable(enabled = !selected, onClick = onClick)
-        .padding(horizontal = 18.dp, vertical = 8.dp),
+    modifier = modifier.height(60.dp).clip(RoundedCornerShape(18.dp))
+      .selectable(selected = selected, enabled = enabled, role = Role.Tab, onClick = { if (!selected) onClick() })
+      .padding(vertical = 4.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
   ) {
-    Icon(icon, contentDescription = description, tint = tint, modifier = Modifier.size(26.dp))
-    Spacer(Modifier.height(4.dp))
-    Box(
-      modifier =
-        Modifier.size(4.dp).clip(CircleShape).background(if (selected) SukhamColors.TitleBlack else Color.Transparent)
-    )
+    Box(Modifier.height(44.dp).fillMaxWidth(), contentAlignment = Alignment.Center) {
+      if (selected) Box(Modifier.size(38.dp).background(SukhamColors.SageContainer, CircleShape))
+      Icon(icon, description, tint = tint, modifier = Modifier.size(23.dp))
+    }
   }
 }
 
 /** The centre "Live coach" button: an AI-branded orb with a slowly rotating gradient halo. */
 @Composable
-private fun AiLiveButton(selected: Boolean, onClick: () -> Unit) {
+private fun AiLiveButton(selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
   val transition = rememberInfiniteTransition(label = "aiOrb")
   val angle by
     transition.animateFloat(0f, 360f, infiniteRepeatable(tween(4500, easing = LinearEasing)), label = "angle")
@@ -367,15 +468,16 @@ private fun AiLiveButton(selected: Boolean, onClick: () -> Unit) {
   val pink = Color(0xFFE56BB0)
   Column(
     modifier =
-      Modifier.clip(CircleShape)
-        .clickable(enabled = !selected, onClick = onClick)
-        .padding(horizontal = 10.dp, vertical = 2.dp),
+      modifier.height(60.dp).clip(RoundedCornerShape(18.dp))
+        .selectable(selected = selected, role = Role.Tab, onClick = { if (!selected) onClick() })
+        .padding(vertical = 4.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
+    verticalArrangement = Arrangement.Center,
   ) {
-    Box(contentAlignment = Alignment.Center, modifier = Modifier.size(50.dp)) {
+    Box(contentAlignment = Alignment.Center, modifier = Modifier.height(44.dp).fillMaxWidth()) {
       // Soft pulsing aura.
       Box(
-        Modifier.size(50.dp)
+        Modifier.size(44.dp)
           .graphicsLayer { alpha = glow }
           .background(Brush.radialGradient(listOf(violet.copy(alpha = 0.55f), Color.Transparent)), CircleShape)
       )
@@ -392,18 +494,11 @@ private fun AiLiveButton(selected: Boolean, onClick: () -> Unit) {
       ) {
         Icon(
           Icons.Outlined.AutoAwesome,
-          contentDescription = "Live coach, powered by AI",
+          contentDescription = "AI live coach",
           tint = Color.White,
           modifier = Modifier.size(20.dp),
         )
       }
     }
-    Text(
-      "AI",
-      fontSize = 9.sp,
-      fontWeight = FontWeight.ExtraBold,
-      color = if (selected) SukhamColors.TitleBlack else SukhamColors.MutedGray,
-      modifier = Modifier.padding(top = 1.dp),
-    )
   }
 }

@@ -75,6 +75,7 @@ fun LlmChatScreen(
   showAudioPicker: Boolean = false,
   autoSendPromptOnImagePick: String? = null,
   getActiveSkills: () -> List<String> = { emptyList() },
+  useSavedWellnessContext: Boolean = false,
 ) {
   ChatViewWrapper(
     viewModel = viewModel,
@@ -96,6 +97,7 @@ fun LlmChatScreen(
     showAudioPicker = showAudioPicker,
     autoSendPromptOnImagePick = autoSendPromptOnImagePick,
     getActiveSkills = getActiveSkills,
+    useSavedWellnessContext = useSavedWellnessContext,
   )
 }
 
@@ -195,12 +197,17 @@ fun ChatViewWrapper(
   showAudioPicker: Boolean = false,
   autoSendPromptOnImagePick: String? = null,
   getActiveSkills: () -> List<String> = { emptyList() },
+  useSavedWellnessContext: Boolean = false,
 ) {
   val context = LocalContext.current
   val task = modelManagerViewModel.getTaskById(id = taskId)!!
+  val contextProvider: (suspend () -> String)? = if (useSavedWellnessContext) {
+    { SavedWellnessContext.read(context.applicationContext, modelManagerViewModel.dataStoreRepository) }
+  } else null
 
   ChatView(
     task = task,
+    headerTitle = if (taskId == BuiltInTaskId.LLM_CHAT) "SHUKAM AI" else null,
     viewModel = viewModel,
     modelManagerViewModel = modelManagerViewModel,
     onSendMessage = { model, messages ->
@@ -247,6 +254,7 @@ fun ChatViewWrapper(
             )
           },
           allowThinking = task.allowCapability(ModelCapability.LLM_THINKING, model),
+          contextProvider = contextProvider,
         )
 
         val activeSkills = getActiveSkills()
@@ -284,6 +292,7 @@ fun ChatViewWrapper(
             )
           },
           allowThinking = task.allowCapability(ModelCapability.LLM_THINKING, model),
+          contextProvider = contextProvider,
         )
       }
     },

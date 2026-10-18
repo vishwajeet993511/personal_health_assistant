@@ -56,6 +56,7 @@ open class LlmChatViewModelBase() : ChatViewModel() {
     onDone: () -> Unit = {},
     onError: (String) -> Unit,
     allowThinking: Boolean = false,
+    contextProvider: (suspend () -> String)? = null,
   ) {
     val accelerator = model.getStringConfigValue(key = ConfigKeys.ACCELERATOR, defaultValue = "")
     viewModelScope.launch(Dispatchers.Default) {
@@ -215,9 +216,19 @@ open class LlmChatViewModelBase() : ChatViewModel() {
             model.getBooleanConfigValue(key = ConfigKeys.ENABLE_THINKING, defaultValue = false)
         val extraContext = if (enableThinking) mapOf("enable_thinking" to "true") else null
 
+        val inferenceInput = if (contextProvider != null) {
+          val savedData = try {
+            contextProvider()
+          } catch (cancelled: kotlinx.coroutines.CancellationException) {
+            throw cancelled
+          } catch (_: Exception) {
+            "{\"context_status\":\"unavailable\"}"
+          }
+          SavedWellnessContext.prompt(savedData, input)
+        } else input
         model.runtimeHelper.runInference(
           model = model,
-          input = input,
+          input = inferenceInput,
           images = images,
           audioClips = audioClips,
           resultListener = resultListener,
@@ -286,6 +297,7 @@ open class LlmChatViewModelBase() : ChatViewModel() {
     message: ChatMessageText,
     onError: (String) -> Unit,
     allowThinking: Boolean = false,
+    contextProvider: (suspend () -> String)? = null,
   ) {
     viewModelScope.launch(Dispatchers.Default) {
       // Wait for model to be initialized.
@@ -302,6 +314,7 @@ open class LlmChatViewModelBase() : ChatViewModel() {
         input = message.content,
         onError = onError,
         allowThinking = allowThinking,
+        contextProvider = contextProvider,
       )
     }
   }

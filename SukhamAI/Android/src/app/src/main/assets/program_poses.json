@@ -1,0 +1,5114 @@
+[
+  {
+    "id": "AnkleStretch",
+    "name": "Ankle Stretch",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_anklestretch",
+    "sourceUrl": "https://www.pocketyoga.com/pose/AnkleStretch"
+  },
+  {
+    "id": "Archer",
+    "name": "Archer's",
+    "sanskrit": "ākarṇa dhanurāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_archer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Archer"
+  },
+  {
+    "id": "Awkward",
+    "name": "Awkward",
+    "sanskrit": "utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_awkward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Awkward"
+  },
+  {
+    "id": "AwkwardAirplane",
+    "name": "Awkward Airplane",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_awkwardairplane",
+    "sourceUrl": "https://www.pocketyoga.com/pose/AwkwardAirplane"
+  },
+  {
+    "id": "PlankAwkward",
+    "name": "Awkward Plank",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankawkward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankAwkward"
+  },
+  {
+    "id": "BackRollMidPoint",
+    "name": "Backwards Roll",
+    "sanskrit": "cakrāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_backrollmidpoint",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BackRollMidPoint"
+  },
+  {
+    "id": "ForwardBendBind",
+    "name": "Balancing Standing Forward Bend",
+    "sanskrit": "uttānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_forwardbendbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendBind"
+  },
+  {
+    "id": "SplitsStandingBound",
+    "name": "Balancing Standing Splits",
+    "sanskrit": "ūrdhva prasārita eka pādāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_splitsstandingbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsStandingBound"
+  },
+  {
+    "id": "CatBalance",
+    "name": "Balancing Table",
+    "sanskrit": "utthita cakravākāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_catbalance",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CatBalance"
+  },
+  {
+    "id": "DownwardDogLegUpStackHipsBind",
+    "name": "Balancing Three Legged Downward-Facing Dog with Hip Opener",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwarddoglegupstackhipsbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogLegUpStackHipsBind"
+  },
+  {
+    "id": "Banana",
+    "name": "Banana",
+    "sanskrit": "supta nitambāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_banana",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Banana"
+  },
+  {
+    "id": "ForwardBendBigToe",
+    "name": "Big Toe",
+    "sanskrit": "pādāṅguṣṭhāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_forwardbendbigtoe",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendBigToe"
+  },
+  {
+    "id": "ForwardBendBigToePreparation",
+    "name": "Big Toe (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_forwardbendbigtoepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendBigToePreparation"
+  },
+  {
+    "id": "BowBigToeI",
+    "name": "Big Toe Bow I",
+    "sanskrit": "pādāṅguṣṭha dhanurāsana a",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_bowbigtoei",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BowBigToeI"
+  },
+  {
+    "id": "BowBigToeII",
+    "name": "Big Toe Bow II",
+    "sanskrit": "pādāṅguṣṭha dhanurāsana b",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_bowbigtoeii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BowBigToeII"
+  },
+  {
+    "id": "ChairTwistBindUp",
+    "name": "Bird of Paradise",
+    "sanskrit": "svarga dvijāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_chairtwistbindup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairTwistBindUp"
+  },
+  {
+    "id": "BoatFull",
+    "name": "Boat",
+    "sanskrit": "nāvāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatfull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatFull"
+  },
+  {
+    "id": "BoatBindOutsideEdgeHalf",
+    "name": "Boat (Grabbing the Feet)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatbindoutsideedgehalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatBindOutsideEdgeHalf"
+  },
+  {
+    "id": "BoatBindOutsideEdge",
+    "name": "Boat with Thighs to Chest",
+    "sanskrit": "ūrdhva mukha paścimottānāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatbindoutsideedge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatBindOutsideEdge"
+  },
+  {
+    "id": "BoatBind",
+    "name": "Boat with Toe Hold",
+    "sanskrit": "ubhaya pādāṅguṣṭhāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatBind"
+  },
+  {
+    "id": "BoundAngle",
+    "name": "Bound Angle",
+    "sanskrit": "baddha koṇāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_boundangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoundAngle"
+  },
+  {
+    "id": "BoundAngleForward",
+    "name": "Bound Angle I",
+    "sanskrit": "baddha koṇāsana a",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boundangleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoundAngleForward"
+  },
+  {
+    "id": "BoundAngleII",
+    "name": "Bound Angle II",
+    "sanskrit": "baddha koṇāsana b",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boundangleii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoundAngleII"
+  },
+  {
+    "id": "HalfMoonBoundHands",
+    "name": "Bound Half Moon",
+    "sanskrit": "baddha ardha candrāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_halfmoonboundhands",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoonBoundHands"
+  },
+  {
+    "id": "LizardBound",
+    "name": "Bound Lizard",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_lizardbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LizardBound"
+  },
+  {
+    "id": "LotusBound",
+    "name": "Bound Lotus",
+    "sanskrit": "baddha padmāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_lotusbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusBound"
+  },
+  {
+    "id": "ChairTwistBind",
+    "name": "Bound Revolved Chair",
+    "sanskrit": "parivṛtta baddha utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_chairtwistbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairTwistBind"
+  },
+  {
+    "id": "LungeTwistExtendedBound",
+    "name": "Bound Revolved Crescent Lunge",
+    "sanskrit": "parivṛtta baddha añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungetwistextendedbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeTwistExtendedBound"
+  },
+  {
+    "id": "LungeKneelingTwistExtendedBound",
+    "name": "Bound Revolved Crescent Lunge on the Knee",
+    "sanskrit": "parivṛtta baddha añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungekneelingtwistextendedbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingTwistExtendedBound"
+  },
+  {
+    "id": "HalfMoonRevolvedBound",
+    "name": "Bound Revolved Half Moon",
+    "sanskrit": "parivṛtta baddha ardha candrāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_halfmoonrevolvedbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoonRevolvedBound"
+  },
+  {
+    "id": "WarriorTwistExtendedBound",
+    "name": "Bound Revolved Side Angle",
+    "sanskrit": "parivṛtta baddha pārśvakoṇāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_warriortwistextendedbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorTwistExtendedBound"
+  },
+  {
+    "id": "LungeBind",
+    "name": "Bound Side Angle",
+    "sanskrit": "baddha pārśvakoṇāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_lungebind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeBind"
+  },
+  {
+    "id": "SideLungeExtendedBound",
+    "name": "Bound Side Lunge",
+    "sanskrit": "skandāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sidelungeextendedbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SideLungeExtendedBound"
+  },
+  {
+    "id": "TriangleBound",
+    "name": "Bound Triangle",
+    "sanskrit": "baddha trikoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_trianglebound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TriangleBound"
+  },
+  {
+    "id": "Bow",
+    "name": "Bow",
+    "sanskrit": "dhanurāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Bow"
+  },
+  {
+    "id": "BowPreparation",
+    "name": "Bow (Preparation)",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_bowpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BowPreparation"
+  },
+  {
+    "id": "BoxNeutral",
+    "name": "Box",
+    "sanskrit": "cakravākāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_boxneutral",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoxNeutral"
+  },
+  {
+    "id": "BoxTwist",
+    "name": "Box with Arm Extension",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_boxtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoxTwist"
+  },
+  {
+    "id": "Bridge",
+    "name": "Bridge",
+    "sanskrit": "setu bandha sarvāṅgāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bridge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Bridge"
+  },
+  {
+    "id": "BridgePreparation",
+    "name": "Bridge (Preparation)",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_bridgepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BridgePreparation"
+  },
+  {
+    "id": "Butterfly",
+    "name": "Butterfly",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_butterfly",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Butterfly"
+  },
+  {
+    "id": "ButterflyPreparation",
+    "name": "Butterfly (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_butterflypreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ButterflyPreparation"
+  },
+  {
+    "id": "Camel",
+    "name": "Camel",
+    "sanskrit": "uṣṭrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_camel",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Camel"
+  },
+  {
+    "id": "Cat",
+    "name": "Cat",
+    "sanskrit": "mārjārīāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_cat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Cat"
+  },
+  {
+    "id": "Caterpillar",
+    "name": "Caterpillar",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_caterpillar",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Caterpillar"
+  },
+  {
+    "id": "Chair",
+    "name": "Chair",
+    "sanskrit": "utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_chair",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Chair"
+  },
+  {
+    "id": "ChairLookingUp",
+    "name": "Chair with Gaze Up",
+    "sanskrit": "utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_chairlookingup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairLookingUp"
+  },
+  {
+    "id": "ChairSideTwist",
+    "name": "Chair with Open Arm Twist",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_chairsidetwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairSideTwist"
+  },
+  {
+    "id": "ChairPrayer",
+    "name": "Chair with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_chairprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairPrayer"
+  },
+  {
+    "id": "ChildTraditional",
+    "name": "Child's",
+    "sanskrit": "bālāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_childtraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChildTraditional"
+  },
+  {
+    "id": "ChinStand",
+    "name": "Chin Stand",
+    "sanskrit": "gaṇḍa bheruṇḍāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_chinstand",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChinStand"
+  },
+  {
+    "id": "CobraFull",
+    "name": "Cobra",
+    "sanskrit": "bhujaṅgāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_cobrafull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CobraFull"
+  },
+  {
+    "id": "CorpseConstructive",
+    "name": "Constructive Rest",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpseconstructive",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseConstructive"
+  },
+  {
+    "id": "Corpse",
+    "name": "Corpse",
+    "sanskrit": "śavāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Corpse"
+  },
+  {
+    "id": "CorpseNeckStretch",
+    "name": "Corpse with Neck Stretch",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpseneckstretch",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseNeckStretch"
+  },
+  {
+    "id": "Dog",
+    "name": "Cow",
+    "sanskrit": "bitilāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_dog",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Dog"
+  },
+  {
+    "id": "KneePileBind",
+    "name": "Cow Face",
+    "sanskrit": "gomukhāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_kneepilebind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileBind"
+  },
+  {
+    "id": "KneePileBindForward",
+    "name": "Cow Face Forward Bend",
+    "sanskrit": "gomukhāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_kneepilebindforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileBindForward"
+  },
+  {
+    "id": "Crane",
+    "name": "Crane",
+    "sanskrit": "bakāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crane",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Crane"
+  },
+  {
+    "id": "LungeCrescent",
+    "name": "Crescent Lunge",
+    "sanskrit": "aṣṭa candrāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescent",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescent"
+  },
+  {
+    "id": "LungeCrescentForwardBend",
+    "name": "Crescent Lunge Halfway Fold",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentForwardBend"
+  },
+  {
+    "id": "LungeCrescentKneelingForwardBend",
+    "name": "Crescent Lunge Halfway Fold on the Knee",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingForwardBend"
+  },
+  {
+    "id": "LungeCrescentKneelingForwardArmsSide",
+    "name": "Crescent Lunge Halfway Fold on the Knee with Airplane Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelingforwardarmsside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingForwardArmsSide"
+  },
+  {
+    "id": "LungeCrescentKneelingEagleForward",
+    "name": "Crescent Lunge Halfway Fold on the Knee with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingeagleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingEagleForward"
+  },
+  {
+    "id": "LungeCrescentKneelingHandsOnHipsForwardBend",
+    "name": "Crescent Lunge Halfway Fold on the Knee with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelinghandsonhipsforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingHandsOnHipsForwardBend"
+  },
+  {
+    "id": "LungeCrescentForwardArmsSide",
+    "name": "Crescent Lunge Halfway Fold with Airplane Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentforwardarmsside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentForwardArmsSide"
+  },
+  {
+    "id": "LungeCrescentEagleForward",
+    "name": "Crescent Lunge Halfway Fold with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenteagleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentEagleForward"
+  },
+  {
+    "id": "LungeCrescentHandsOnHipsForwardBend",
+    "name": "Crescent Lunge Halfway Fold with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenthandsonhipsforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentHandsOnHipsForwardBend"
+  },
+  {
+    "id": "WarriorIKneeling",
+    "name": "Crescent Lunge on the Knee",
+    "sanskrit": "añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorikneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIKneeling"
+  },
+  {
+    "id": "LungeCrescentKneelingCactusArms",
+    "name": "Crescent Lunge on the Knee with Cactus Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingcactusarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingCactusArms"
+  },
+  {
+    "id": "LungeCrescentKneelingEagleBackbend",
+    "name": "Crescent Lunge on the Knee with Eagle Arm Backbend",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingeaglebackbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingEagleBackbend"
+  },
+  {
+    "id": "LungeCrescentKneelingEagle",
+    "name": "Crescent Lunge on the Knee with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingEagle"
+  },
+  {
+    "id": "LungeCrescentKneelingLookingUp",
+    "name": "Crescent Lunge on the Knee with Gaze Up",
+    "sanskrit": "añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelinglookingup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingLookingUp"
+  },
+  {
+    "id": "LungeCrescentKneelingHandsInterlaced",
+    "name": "Crescent Lunge on the Knee with Hands Interlaced",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelinghandsinterlaced",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingHandsInterlaced"
+  },
+  {
+    "id": "LungeCrescentKneelingHandsOnHips",
+    "name": "Crescent Lunge on the Knee with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelinghandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingHandsOnHips"
+  },
+  {
+    "id": "LungeCrescentKneelingBind",
+    "name": "Crescent Lunge on the Knee with King Pigeon",
+    "sanskrit": "eka pāda rāja kapotāsana b",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_lungecrescentkneelingbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingBind"
+  },
+  {
+    "id": "LungeKneelingPrayer",
+    "name": "Crescent Lunge on the Knee with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneelingprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingPrayer"
+  },
+  {
+    "id": "LungeCrescentKneelingTriceps",
+    "name": "Crescent Lunge on the Knee with Triceps Stretch",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingtriceps",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingTriceps"
+  },
+  {
+    "id": "LungeCrescentTwist",
+    "name": "Crescent Lunge Twist",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenttwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentTwist"
+  },
+  {
+    "id": "LungeCrescentKneelingTwist",
+    "name": "Crescent Lunge Twist on the Knee",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungecrescentkneelingtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingTwist"
+  },
+  {
+    "id": "LungeCrescentCactusArms",
+    "name": "Crescent Lunge with Cactus Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentcactusarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentCactusArms"
+  },
+  {
+    "id": "LungeCrescentEagleBackbend",
+    "name": "Crescent Lunge with Eagle Arm Backbend",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenteaglebackbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentEagleBackbend"
+  },
+  {
+    "id": "LungeCrescentEagle",
+    "name": "Crescent Lunge with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenteagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentEagle"
+  },
+  {
+    "id": "LungeCrescentHandsOnHips",
+    "name": "Crescent Lunge with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenthandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentHandsOnHips"
+  },
+  {
+    "id": "LungePrayer",
+    "name": "Crescent Lunge with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungeprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungePrayer"
+  },
+  {
+    "id": "LungeCrescentTriceps",
+    "name": "Crescent Lunge with Triceps Stretch",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenttriceps",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentTriceps"
+  },
+  {
+    "id": "CrescentMoon",
+    "name": "Crescent Moon",
+    "sanskrit": "indudalāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crescentmoon",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrescentMoon"
+  },
+  {
+    "id": "CrookedMonkey",
+    "name": "Crooked Monkey",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crookedmonkey",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrookedMonkey"
+  },
+  {
+    "id": "CrookedMonkeyForearm",
+    "name": "Crooked Monkey on the Forearm",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crookedmonkeyforearm",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrookedMonkeyForearm"
+  },
+  {
+    "id": "Crow",
+    "name": "Crow",
+    "sanskrit": "kākāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Crow"
+  },
+  {
+    "id": "SeatedOnHeelsHandsOnMatOpenedKnees",
+    "name": "Crow (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedonheelshandsonmatopenedknees",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsHandsOnMatOpenedKnees"
+  },
+  {
+    "id": "DeafMan",
+    "name": "Deaf Man's",
+    "sanskrit": "karṇa pīḍāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_deafman",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DeafMan"
+  },
+  {
+    "id": "Dolphin",
+    "name": "Dolphin",
+    "sanskrit": "śiśumārāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_dolphin",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Dolphin"
+  },
+  {
+    "id": "DolphinHamstring",
+    "name": "Dolphin with Hamstring Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_dolphinhamstring",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DolphinHamstring"
+  },
+  {
+    "id": "DolphinOnToes",
+    "name": "Dolphin with Heel Raises",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_dolphinontoes",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DolphinOnToes"
+  },
+  {
+    "id": "DownwardDog",
+    "name": "Downward-Facing Dog",
+    "sanskrit": "adho mukha śvānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddog",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDog"
+  },
+  {
+    "id": "DownwardDogBentKnees",
+    "name": "Downward-Facing Dog with Bent Knees",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddogbentknees",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogBentKnees"
+  },
+  {
+    "id": "DownwardDogHamstring",
+    "name": "Downward-Facing Dog with Hamstring Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddoghamstring",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogHamstring"
+  },
+  {
+    "id": "DownwardDogOnToes",
+    "name": "Downward-Facing Dog with Heel Raises",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddogontoes",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogOnToes"
+  },
+  {
+    "id": "DownwardDogKneeToForehead",
+    "name": "Downward-Facing Dog with Knee to Forehead",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwarddogkneetoforehead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogKneeToForehead"
+  },
+  {
+    "id": "DownwardFish",
+    "name": "Downward-Facing Fish",
+    "sanskrit": "adho mukha matsyāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwardfish",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardFish"
+  },
+  {
+    "id": "Eagle",
+    "name": "Eagle",
+    "sanskrit": "garuḍāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_eagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Eagle"
+  },
+  {
+    "id": "Easy",
+    "name": "Easy",
+    "sanskrit": "sukhāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_easy",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Easy"
+  },
+  {
+    "id": "EasyForward",
+    "name": "Easy Forward Bend",
+    "sanskrit": "sukhāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_easyforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EasyForward"
+  },
+  {
+    "id": "EasyTwist",
+    "name": "Easy Twist",
+    "sanskrit": "parivṛtta sukhāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_easytwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EasyTwist"
+  },
+  {
+    "id": "EightAngle",
+    "name": "Eight Angle",
+    "sanskrit": "aṣṭāvakrāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_eightangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EightAngle"
+  },
+  {
+    "id": "EightPoint",
+    "name": "Eight Point",
+    "sanskrit": "aṣṭāṅgāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_eightpoint",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EightPoint"
+  },
+  {
+    "id": "RelaxedStance",
+    "name": "Elbow Balance",
+    "sanskrit": "śayanāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_relaxedstance",
+    "sourceUrl": "https://www.pocketyoga.com/pose/RelaxedStance"
+  },
+  {
+    "id": "ElephantTrunk",
+    "name": "Elephant Trunk",
+    "sanskrit": "eka hasta bhujāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_elephanttrunk",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ElephantTrunk"
+  },
+  {
+    "id": "Embryo",
+    "name": "Embryo",
+    "sanskrit": "piṇḍāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_embryo",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Embryo"
+  },
+  {
+    "id": "EmbryoWomb",
+    "name": "Embryo in Womb",
+    "sanskrit": "garbha piṇḍāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_embryowomb",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EmbryoWomb"
+  },
+  {
+    "id": "EmbryoWombHandsOnCrownBack",
+    "name": "Embryo in Womb - Roll Back",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_embryowombhandsoncrownback",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EmbryoWombHandsOnCrownBack"
+  },
+  {
+    "id": "EmbryoWombHandsOnCrown",
+    "name": "Embryo in Womb - Roll Forward",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_embryowombhandsoncrown",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EmbryoWombHandsOnCrown"
+  },
+  {
+    "id": "Equestrian",
+    "name": "Equestrian",
+    "sanskrit": "aśva sañcalanāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_equestrian",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Equestrian"
+  },
+  {
+    "id": "LungeCrescentTwistReverse",
+    "name": "Exalted Crescent Lunge",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescenttwistreverse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentTwistReverse"
+  },
+  {
+    "id": "LungeCrescentKneelingTwistReverse",
+    "name": "Exalted Crescent Lunge Twist on the Knee",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungecrescentkneelingtwistreverse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeCrescentKneelingTwistReverse"
+  },
+  {
+    "id": "LotusBoundForward",
+    "name": "Extended Bound Lotus",
+    "sanskrit": "yoga mudrāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_lotusboundforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusBoundForward"
+  },
+  {
+    "id": "Setu",
+    "name": "Extended Bridge",
+    "sanskrit": "setu bandhāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_setu",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Setu"
+  },
+  {
+    "id": "SetuPreparation",
+    "name": "Extended Bridge (Preparation)",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_setupreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SetuPreparation"
+  },
+  {
+    "id": "Child",
+    "name": "Extended Child's",
+    "sanskrit": "utthita bālāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_child",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Child"
+  },
+  {
+    "id": "CorpseExtended",
+    "name": "Extended Corpse",
+    "sanskrit": "supta utthita tāḍāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpseextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseExtended"
+  },
+  {
+    "id": "DownwardDogLegUpKneeling",
+    "name": "Extended One Legged Plank on the Knees",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddoglegupkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogLegUpKneeling"
+  },
+  {
+    "id": "PuppyExtended",
+    "name": "Extended Puppy",
+    "sanskrit": "uttāna śiśosana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_puppyextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PuppyExtended"
+  },
+  {
+    "id": "PuppyExtendedStraightLegs",
+    "name": "Extended Puppy with Straight Legs",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_puppyextendedstraightlegs",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PuppyExtendedStraightLegs"
+  },
+  {
+    "id": "WarriorIIForwardArmForward",
+    "name": "Extended Side Angle",
+    "sanskrit": "utthita pārśvakoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriiforwardarmforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIForwardArmForward"
+  },
+  {
+    "id": "PlankSideExtended",
+    "name": "Extended Side Plank",
+    "sanskrit": "utthita vasiṣṭhāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_planksideextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideExtended"
+  },
+  {
+    "id": "StandingHandToToeExtended",
+    "name": "Extended Standing Hand to Big Toe",
+    "sanskrit": "utthita hasta pādāṅguṣṭhāsana b",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standinghandtotoeextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHandToToeExtended"
+  },
+  {
+    "id": "SupineBoundAngleExtended",
+    "name": "Extended Supine Bound Angle",
+    "sanskrit": "utthita supta baddha koṇāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_supineboundangleextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineBoundAngleExtended"
+  },
+  {
+    "id": "SupineHandToToeExtended",
+    "name": "Extended Supine Hand to Big Toe",
+    "sanskrit": "supta pādāṅguṣṭhāsana b",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinehandtotoeextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineHandToToeExtended"
+  },
+  {
+    "id": "HeroRecliningExtended",
+    "name": "Extended Supine Hero",
+    "sanskrit": "utthita supta vīrāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_herorecliningextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeroRecliningExtended"
+  },
+  {
+    "id": "FallenTriangle",
+    "name": "Fallen Triangle",
+    "sanskrit": "patita tārāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_fallentriangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FallenTriangle"
+  },
+  {
+    "id": "FigureFour",
+    "name": "Figure Four",
+    "sanskrit": "eka pāda utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_figurefour",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FigureFour"
+  },
+  {
+    "id": "FireLog",
+    "name": "Fire Log",
+    "sanskrit": "agnistambhāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_firelog",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FireLog"
+  },
+  {
+    "id": "FireLogForward",
+    "name": "Fire Log Forward Bend",
+    "sanskrit": "agnistambhāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_firelogforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FireLogForward"
+  },
+  {
+    "id": "Tortoise",
+    "name": "Firefly (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_tortoise",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Tortoise"
+  },
+  {
+    "id": "Firefly",
+    "name": "Firefly I",
+    "sanskrit": "tittibhāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_firefly",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Firefly"
+  },
+  {
+    "id": "TortoiseBind",
+    "name": "Firefly II",
+    "sanskrit": "tittibhāsana b",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_tortoisebind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TortoiseBind"
+  },
+  {
+    "id": "TortoiseBindII",
+    "name": "Firefly III",
+    "sanskrit": "tittibhāsana c",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_tortoisebindii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TortoiseBindII"
+  },
+  {
+    "id": "FishPreparation",
+    "name": "Fish",
+    "sanskrit": "matsyāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_fishpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FishPreparation"
+  },
+  {
+    "id": "FishLotus",
+    "name": "Fish with Lotus Legs",
+    "sanskrit": "matsyāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_fishlotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FishLotus"
+  },
+  {
+    "id": "FloatingStick",
+    "name": "Floating Stick",
+    "sanskrit": "brahmacaryāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_floatingstick",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FloatingStick"
+  },
+  {
+    "id": "Fish",
+    "name": "Flying Fish",
+    "sanskrit": "uttāna pādāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_fish",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Fish"
+  },
+  {
+    "id": "FlyingLizard",
+    "name": "Flying Lizard",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_flyinglizard",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FlyingLizard"
+  },
+  {
+    "id": "LungeHandsOnMatFlying",
+    "name": "Flying Man",
+    "sanskrit": "eka pāda kouṇḍinyāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_lungehandsonmatflying",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeHandsOnMatFlying"
+  },
+  {
+    "id": "PigeonFlying",
+    "name": "Flying Pigeon",
+    "sanskrit": "eka pāda gālavāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_pigeonflying",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonFlying"
+  },
+  {
+    "id": "FeatheredPeacock",
+    "name": "Forearm Balance",
+    "sanskrit": "pīñca mayūrāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_featheredpeacock",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FeatheredPeacock"
+  },
+  {
+    "id": "FeatheredPeacockEagle",
+    "name": "Forearm Balance with Eagle Legs",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_featheredpeacockeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FeatheredPeacockEagle"
+  },
+  {
+    "id": "FeatheredPeacockLotus",
+    "name": "Forearm Balance with Lotus Legs",
+    "sanskrit": "padma pīñca mayūrāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_featheredpeacocklotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FeatheredPeacockLotus"
+  },
+  {
+    "id": "PlankDolphin",
+    "name": "Forearm Plank",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankdolphin",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankDolphin"
+  },
+  {
+    "id": "PlankDolphinKneeling",
+    "name": "Forearm Plank on the Knees",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_plankdolphinkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankDolphinKneeling"
+  },
+  {
+    "id": "PlankDolphinKneeToElbow",
+    "name": "Forearm Plank with Knee to Tricep",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankdolphinkneetoelbow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankDolphinKneeToElbow"
+  },
+  {
+    "id": "HeadstandTripodStraightArms",
+    "name": "Free Hands Headstand II",
+    "sanskrit": "mukta hasta śīrṣāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripodstraightarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArms"
+  },
+  {
+    "id": "HeadstandTripodStraightArmsPreparation",
+    "name": "Free Hands Headstand II (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodstraightarmspreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArmsPreparation"
+  },
+  {
+    "id": "HeadstandTripodStraightArmsPreparationHipsOverHead",
+    "name": "Free Hands Headstand II with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodstraightarmspreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArmsPreparationHipsOverHead"
+  },
+  {
+    "id": "HeadstandTripodStraightArmsII",
+    "name": "Free Hands Headstand III",
+    "sanskrit": "mukta hasta śīrṣāsana c",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripodstraightarmsii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArmsII"
+  },
+  {
+    "id": "HeadstandTripodStraightArmsIIPreparation",
+    "name": "Free Hands Headstand III (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodstraightarmsiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArmsIIPreparation"
+  },
+  {
+    "id": "HeadstandTripodStraightArmsIIPreparationHipsOverHead",
+    "name": "Free Hands Headstand III with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodstraightarmsiipreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodStraightArmsIIPreparationHipsOverHead"
+  },
+  {
+    "id": "Frog",
+    "name": "Frog",
+    "sanskrit": "bhekāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_frog",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Frog"
+  },
+  {
+    "id": "FrogTraditional",
+    "name": "Frog",
+    "sanskrit": "bhekāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_frogtraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FrogTraditional"
+  },
+  {
+    "id": "FrogTraditionalPreparation",
+    "name": "Frog (Preparation)",
+    "sanskrit": "bhekāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_frogtraditionalpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FrogTraditionalPreparation"
+  },
+  {
+    "id": "SplitsFront",
+    "name": "Front Splits",
+    "sanskrit": "hanumānāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_splitsfront",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsFront"
+  },
+  {
+    "id": "SplitsFrontForward",
+    "name": "Front Splits Forward Bend",
+    "sanskrit": "hanumānāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_splitsfrontforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsFrontForward"
+  },
+  {
+    "id": "SplitsFrontArmsUp",
+    "name": "Front Splits with Arms Up",
+    "sanskrit": "hanumānāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_splitsfrontarmsup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsFrontArmsUp"
+  },
+  {
+    "id": "SplitsFrontBind",
+    "name": "Front Splits with Bind",
+    "sanskrit": "hanumānāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_splitsfrontbind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsFrontBind"
+  },
+  {
+    "id": "Garland",
+    "name": "Garland",
+    "sanskrit": "mālāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_garland",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Garland"
+  },
+  {
+    "id": "GarlandSideways",
+    "name": "Garland",
+    "sanskrit": "mālāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_garlandsideways",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GarlandSideways"
+  },
+  {
+    "id": "Gate",
+    "name": "Gate",
+    "sanskrit": "parighāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_gate",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Gate"
+  },
+  {
+    "id": "GatePreparation",
+    "name": "Gate (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_gatepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GatePreparation"
+  },
+  {
+    "id": "Goddess",
+    "name": "Goddess",
+    "sanskrit": "utkaṭa koṇāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_goddess",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Goddess"
+  },
+  {
+    "id": "GoddessBothHeelsRaise",
+    "name": "Goddess on Toes",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_goddessbothheelsraise",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GoddessBothHeelsRaise"
+  },
+  {
+    "id": "GoddessArmsUp",
+    "name": "Goddess with Arms Up",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_goddessarmsup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GoddessArmsUp"
+  },
+  {
+    "id": "GoddessCactusArms",
+    "name": "Goddess with Cactus Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_goddesscactusarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GoddessCactusArms"
+  },
+  {
+    "id": "GoddessOneHeelRaise",
+    "name": "Goddess with Heel Lift",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_goddessoneheelraise",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GoddessOneHeelRaise"
+  },
+  {
+    "id": "Gorilla",
+    "name": "Gorilla",
+    "sanskrit": "pāda hastāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_gorilla",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Gorilla"
+  },
+  {
+    "id": "GorillaPreparation",
+    "name": "Gorilla (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_gorillapreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GorillaPreparation"
+  },
+  {
+    "id": "Grasshopper",
+    "name": "Grasshopper",
+    "sanskrit": "makṣikanāgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_grasshopper",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Grasshopper"
+  },
+  {
+    "id": "BoatHalf",
+    "name": "Half Boat",
+    "sanskrit": "ardha nāvāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_boathalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatHalf"
+  },
+  {
+    "id": "ProneBowHalf",
+    "name": "Half Bow",
+    "sanskrit": "ardha dhanurāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pronebowhalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ProneBowHalf"
+  },
+  {
+    "id": "ProneBowHalfPreparation",
+    "name": "Half Bow (Preparation)",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pronebowhalfpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ProneBowHalfPreparation"
+  },
+  {
+    "id": "HalfFrogTraditional",
+    "name": "Half Frog",
+    "sanskrit": "ardha bhekāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_halffrogtraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfFrogTraditional"
+  },
+  {
+    "id": "HeroHalf",
+    "name": "Half Hero",
+    "sanskrit": "ardha vīrāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_herohalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeroHalf"
+  },
+  {
+    "id": "LocustHalf",
+    "name": "Half Locust",
+    "sanskrit": "ardha śalabhāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_locusthalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustHalf"
+  },
+  {
+    "id": "LocustHalfArmForward",
+    "name": "Half Locust with Opposite Arm Extended",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_locusthalfarmforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustHalfArmForward"
+  },
+  {
+    "id": "LordOfTheFishesHalf",
+    "name": "Half Lord of the Fishes",
+    "sanskrit": "ardha matsyendrāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_lordofthefisheshalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheFishesHalf"
+  },
+  {
+    "id": "LotusHalf",
+    "name": "Half Lotus",
+    "sanskrit": "ardha padmāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_lotushalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusHalf"
+  },
+  {
+    "id": "HalfMoon",
+    "name": "Half Moon",
+    "sanskrit": "ardha candrāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_halfmoon",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoon"
+  },
+  {
+    "id": "PigeonHalf",
+    "name": "Half Pigeon",
+    "sanskrit": "ardha kapotāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_pigeonhalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonHalf"
+  },
+  {
+    "id": "PyramidKneeling",
+    "name": "Half Splits",
+    "sanskrit": "ardha hanumānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pyramidkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PyramidKneeling"
+  },
+  {
+    "id": "ShoulderstandSupportedHalf",
+    "name": "Half Supported Shoulder Stand",
+    "sanskrit": "ardha sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_shoulderstandsupportedhalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedHalf"
+  },
+  {
+    "id": "WheelHeadDown",
+    "name": "Half Wheel",
+    "sanskrit": "ardha ūrdhva dhanurāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wheelheaddown",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WheelHeadDown"
+  },
+  {
+    "id": "ForwardBendHalfWay",
+    "name": "Halfway Lift",
+    "sanskrit": "ardha uttānāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_forwardbendhalfway",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendHalfWay"
+  },
+  {
+    "id": "Handstand",
+    "name": "Handstand",
+    "sanskrit": "adho mukha vṛkṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstand",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Handstand"
+  },
+  {
+    "id": "HandstandTuck",
+    "name": "Handstand Tuck",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandtuck",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandTuck"
+  },
+  {
+    "id": "HandstandEagle",
+    "name": "Handstand with Eagle Legs",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandEagle"
+  },
+  {
+    "id": "HandstandLotus",
+    "name": "Handstand with Lotus Legs",
+    "sanskrit": "padma adho mukha vṛkṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandlotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandLotus"
+  },
+  {
+    "id": "HandstandSplits",
+    "name": "Handstand with Splits",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandsplits",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandSplits"
+  },
+  {
+    "id": "BlissfulBaby",
+    "name": "Happy Baby",
+    "sanskrit": "ānanda bālāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_blissfulbaby",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BlissfulBaby"
+  },
+  {
+    "id": "HeadToKnee",
+    "name": "Head to Knee I",
+    "sanskrit": "jānu śīrṣāsana a",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_headtoknee",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKnee"
+  },
+  {
+    "id": "HeadToKneePreparation",
+    "name": "Head to Knee I (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_headtokneepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneePreparation"
+  },
+  {
+    "id": "HeadToKneeII",
+    "name": "Head to Knee II",
+    "sanskrit": "jānu śīrṣāsana b",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headtokneeii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneeII"
+  },
+  {
+    "id": "HeadToKneeIIPreparation",
+    "name": "Head to Knee II (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headtokneeiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneeIIPreparation"
+  },
+  {
+    "id": "HeadToKneeIII",
+    "name": "Head to Knee III",
+    "sanskrit": "jānu śīrṣāsana c",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headtokneeiii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneeIII"
+  },
+  {
+    "id": "HeadToKneeIIIPreparation",
+    "name": "Head to Knee III (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headtokneeiiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneeIIIPreparation"
+  },
+  {
+    "id": "Hero",
+    "name": "Hero",
+    "sanskrit": "vīrāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_hero",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Hero"
+  },
+  {
+    "id": "HeroTwist",
+    "name": "Hero Twist",
+    "sanskrit": "parivṛtta vīrāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_herotwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeroTwist"
+  },
+  {
+    "id": "Heron",
+    "name": "Heron",
+    "sanskrit": "krauñcāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_heron",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Heron"
+  },
+  {
+    "id": "HeronPreparation",
+    "name": "Heron (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_heronpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeronPreparation"
+  },
+  {
+    "id": "Duck",
+    "name": "Himalayan Duck",
+    "sanskrit": "karāndāvāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_duck",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Duck"
+  },
+  {
+    "id": "HorizonLunge",
+    "name": "Horizon Lunge",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_horizonlunge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HorizonLunge"
+  },
+  {
+    "id": "Horse",
+    "name": "Horse",
+    "sanskrit": "vātāyanāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_horse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Horse"
+  },
+  {
+    "id": "FlamingoHumble",
+    "name": "Humble Flamingo",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_flamingohumble",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FlamingoHumble"
+  },
+  {
+    "id": "WarriorHumble",
+    "name": "Humble Warrior",
+    "sanskrit": "baddha vīrabhadrāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriorhumble",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorHumble"
+  },
+  {
+    "id": "LocustFull",
+    "name": "Inverted Locust",
+    "sanskrit": "viparīta śalabhāsana",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_locustfull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustFull"
+  },
+  {
+    "id": "StaffInverted",
+    "name": "Inverted Staff",
+    "sanskrit": "dvi pāda viparīta daṇḍāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_staffinverted",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StaffInverted"
+  },
+  {
+    "id": "StaffInvertedPreparation",
+    "name": "Inverted Staff (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_staffinvertedpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StaffInvertedPreparation"
+  },
+  {
+    "id": "CobraKing",
+    "name": "King Cobra",
+    "sanskrit": "rāja bhujaṅgāsana",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_cobraking",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CobraKing"
+  },
+  {
+    "id": "PigeonKingFull",
+    "name": "King Pigeon",
+    "sanskrit": "rāja kapotāsana",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_pigeonkingfull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonKingFull"
+  },
+  {
+    "id": "BowHalf",
+    "name": "Kneeling Bow",
+    "sanskrit": "vyāghrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bowhalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BowHalf"
+  },
+  {
+    "id": "CatBalanceElbowToKnee",
+    "name": "Kneeling Elbow to Knee Crunch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_catbalanceelbowtoknee",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CatBalanceElbowToKnee"
+  },
+  {
+    "id": "CamelPreparationHandsOnHips",
+    "name": "Kneeling with Hands on Hips",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_camelpreparationhandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CamelPreparationHandsOnHips"
+  },
+  {
+    "id": "CamelPreparation",
+    "name": "Kneeling with Prayer Hands",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_camelpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CamelPreparation"
+  },
+  {
+    "id": "LotusLevitating",
+    "name": "Levitating Lotus",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_lotuslevitating",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusLevitating"
+  },
+  {
+    "id": "LiftUp",
+    "name": "Lift Up",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_liftup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LiftUp"
+  },
+  {
+    "id": "LittleThunderbolt",
+    "name": "Little Thunderbolt",
+    "sanskrit": "laghu vajrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_littlethunderbolt",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LittleThunderbolt"
+  },
+  {
+    "id": "Lizard",
+    "name": "Lizard",
+    "sanskrit": "uttāna pristhāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lizard",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Lizard"
+  },
+  {
+    "id": "LizardKneeling",
+    "name": "Lizard on the Knee",
+    "sanskrit": "uttāna pristhāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lizardkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LizardKneeling"
+  },
+  {
+    "id": "LungeKneelingHandsOnMatBack",
+    "name": "Lizard on the Knee with Hamstring Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneelinghandsonmatback",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingHandsOnMatBack"
+  },
+  {
+    "id": "LungeKneelingHandsOnMat",
+    "name": "Lizard on the Knee with Straight Arms",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneelinghandsonmat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingHandsOnMat"
+  },
+  {
+    "id": "LungeHandsOnMatBack",
+    "name": "Lizard with Hamstring Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungehandsonmatback",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeHandsOnMatBack"
+  },
+  {
+    "id": "LungeHandsOnMat",
+    "name": "Lizard with Straight Arms",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungehandsonmat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeHandsOnMat"
+  },
+  {
+    "id": "LocustPreparation",
+    "name": "Locust (Preparation)",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_locustpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustPreparation"
+  },
+  {
+    "id": "Locust",
+    "name": "Locust I",
+    "sanskrit": "śalabhāsana a",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_locust",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Locust"
+  },
+  {
+    "id": "LocustII",
+    "name": "Locust II",
+    "sanskrit": "śalabhāsana b",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_locustii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustII"
+  },
+  {
+    "id": "LocustIII",
+    "name": "Locust III",
+    "sanskrit": "śalabhāsana c",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_locustiii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LocustIII"
+  },
+  {
+    "id": "LordOfTheDanceFull",
+    "name": "Lord of the Dance",
+    "sanskrit": "naṭarājāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_lordofthedancefull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheDanceFull"
+  },
+  {
+    "id": "LordOfTheFishes",
+    "name": "Lord of the Fishes",
+    "sanskrit": "paripūrṇa matsyendrāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_lordofthefishes",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheFishes"
+  },
+  {
+    "id": "LotusFull",
+    "name": "Lotus",
+    "sanskrit": "padmāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lotusfull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusFull"
+  },
+  {
+    "id": "PeacockLotus",
+    "name": "Lotus Peacock",
+    "sanskrit": "padma mayūrāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_peacocklotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PeacockLotus"
+  },
+  {
+    "id": "BoatLow",
+    "name": "Low Boat",
+    "sanskrit": "ardha nāvāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_boatlow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatLow"
+  },
+  {
+    "id": "Cobra",
+    "name": "Low Cobra",
+    "sanskrit": "ardha bhujaṅgāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_cobra",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Cobra"
+  },
+  {
+    "id": "FourLimbedStaff",
+    "name": "Low Push-up",
+    "sanskrit": "caturaṅga daṇḍāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_fourlimbedstaff",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FourLimbedStaff"
+  },
+  {
+    "id": "Lunge",
+    "name": "Lunge",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lunge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Lunge"
+  },
+  {
+    "id": "LungeKneeling",
+    "name": "Lunge on the Knee",
+    "sanskrit": "aśva sañcalanāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneeling"
+  },
+  {
+    "id": "LungeKneelingArmForward",
+    "name": "Lunge on the Knee with Arm Extended Forward",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneelingarmforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingArmForward"
+  },
+  {
+    "id": "LungeKneelingArmUp",
+    "name": "Lunge on the Knee with Arm Extended Up",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungekneelingarmup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingArmUp"
+  },
+  {
+    "id": "LungeArmForward",
+    "name": "Lunge with Arm Extended Forward",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_lungearmforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeArmForward"
+  },
+  {
+    "id": "LungeArmUp",
+    "name": "Lunge with Arm Extended Up",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungearmup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeArmUp"
+  },
+  {
+    "id": "LungeBack",
+    "name": "Lunge with Hamstring Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungeback",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeBack"
+  },
+  {
+    "id": "LungeShoulderUnderKnee",
+    "name": "Lunge with Shoulder Under Knee",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungeshoulderunderknee",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeShoulderUnderKnee"
+  },
+  {
+    "id": "PigeonFull",
+    "name": "Mermaid",
+    "sanskrit": "eka pāda rāja kapotāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pigeonfull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonFull"
+  },
+  {
+    "id": "FootBehindHeadElevated",
+    "name": "Moon Bird",
+    "sanskrit": "eka pāda śīrṣāsana c",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_footbehindheadelevated",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FootBehindHeadElevated"
+  },
+  {
+    "id": "MountainArmsSide",
+    "name": "Mountain",
+    "sanskrit": "tāḍāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainarmsside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainArmsSide"
+  },
+  {
+    "id": "MountainExtended",
+    "name": "Mountain with Arms Up",
+    "sanskrit": "ūrdhva vṛkṣāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainExtended"
+  },
+  {
+    "id": "MountainArmsUp",
+    "name": "Mountain with Arms Up and Backbend",
+    "sanskrit": "ardha candrāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainarmsup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainArmsUp"
+  },
+  {
+    "id": "MountainCactusArms",
+    "name": "Mountain with Cactus Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountaincactusarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainCactusArms"
+  },
+  {
+    "id": "MountainFeetApart",
+    "name": "Mountain with Feet Apart",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainfeetapart",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainFeetApart"
+  },
+  {
+    "id": "MountainSideTwist",
+    "name": "Mountain with Open Arm Twist",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainsidetwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainSideTwist"
+  },
+  {
+    "id": "Mountain",
+    "name": "Mountain with Prayer Hands",
+    "sanskrit": "tāḍāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountain",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Mountain"
+  },
+  {
+    "id": "MountainBackbend",
+    "name": "Mountain with Supported Backbend",
+    "sanskrit": "utthita bhujaṅgāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainbackbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainBackbend"
+  },
+  {
+    "id": "SeatedOnHeelsTwistBound",
+    "name": "Noose",
+    "sanskrit": "pāśāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_seatedonheelstwistbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsTwistBound"
+  },
+  {
+    "id": "SeatedOnHeelsHandsOnMat",
+    "name": "Noose (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedonheelshandsonmat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsHandsOnMat"
+  },
+  {
+    "id": "FootBehindHead",
+    "name": "One Leg Behind the Head I",
+    "sanskrit": "eka pāda śīrṣāsana a",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_footbehindhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FootBehindHead"
+  },
+  {
+    "id": "FootBehindHeadForward",
+    "name": "One Leg Behind the Head II",
+    "sanskrit": "eka pāda śīrṣāsana b",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_footbehindheadforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FootBehindHeadForward"
+  },
+  {
+    "id": "BridgeLegUp",
+    "name": "One Legged Bridge",
+    "sanskrit": "eka pāda setu bandha sarvāṅgāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bridgelegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BridgeLegUp"
+  },
+  {
+    "id": "ChinStandSingleLeg",
+    "name": "One Legged Chin Stand",
+    "sanskrit": "eka pāda gaṇḍa bheruṇḍāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_chinstandsingleleg",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChinStandSingleLeg"
+  },
+  {
+    "id": "CrowFlying",
+    "name": "One Legged Crane I",
+    "sanskrit": "eka pāda bakāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_crowflying",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrowFlying"
+  },
+  {
+    "id": "CraneOneLegged",
+    "name": "One Legged Crane II",
+    "sanskrit": "eka pāda bakāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_craneonelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CraneOneLegged"
+  },
+  {
+    "id": "DolphinLegUp",
+    "name": "One Legged Dolphin",
+    "sanskrit": "eka pāda śiśumārāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_dolphinlegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DolphinLegUp"
+  },
+  {
+    "id": "StaffInvertedLegUp",
+    "name": "One Legged Inverted Staff",
+    "sanskrit": "eka pāda viparīta daṇḍāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_staffinvertedlegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StaffInvertedLegUp"
+  },
+  {
+    "id": "PigeonKing",
+    "name": "One Legged King Pigeon",
+    "sanskrit": "eka pāda rāja kapotāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_pigeonking",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonKing"
+  },
+  {
+    "id": "StandingHandToToeHandsOnHips",
+    "name": "One Legged Mountain",
+    "sanskrit": "utthita hasta pādāṅguṣṭhāsana c",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standinghandtotoehandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHandToToeHandsOnHips"
+  },
+  {
+    "id": "PlankLegUp",
+    "name": "One Legged Plank",
+    "sanskrit": "eka pāda phalakāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_planklegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankLegUp"
+  },
+  {
+    "id": "PlankLegUpKneeling",
+    "name": "One Legged Plank on the Knees",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_planklegupkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankLegUpKneeling"
+  },
+  {
+    "id": "ScorpionOneLegged",
+    "name": "One Legged Scorpion",
+    "sanskrit": "eka pāda vṛścikāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_scorpiononelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ScorpionOneLegged"
+  },
+  {
+    "id": "HandstandScorpionOneLegged",
+    "name": "One Legged Scorpion Handstand",
+    "sanskrit": "eka pāda vṛścikāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandscorpiononelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandScorpionOneLegged"
+  },
+  {
+    "id": "ShoulderstandSupportedOneLegged",
+    "name": "One Legged Shoulder Stand",
+    "sanskrit": "eka pāda sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandsupportedonelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedOneLegged"
+  },
+  {
+    "id": "ShoulderstandSupportedBridgeOneLegged",
+    "name": "One Legged Supported Bridge",
+    "sanskrit": "eka pāda setu bandha sarvāṅgāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandsupportedbridgeonelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedBridgeOneLegged"
+  },
+  {
+    "id": "HeadstandSupportedOneLegged",
+    "name": "One Legged Supported Headstand",
+    "sanskrit": "eka pāda śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedonelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedOneLegged"
+  },
+  {
+    "id": "TableLegUp",
+    "name": "One Legged Table",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_tablelegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TableLegUp"
+  },
+  {
+    "id": "PlankUpwardLegUp",
+    "name": "One Legged Upward Plank",
+    "sanskrit": "eka pāda pūrvottānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankupwardlegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankUpwardLegUp"
+  },
+  {
+    "id": "WheelLegUp",
+    "name": "One Legged Wheel",
+    "sanskrit": "eka pāda ūrdhva dhanurāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_wheellegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WheelLegUp"
+  },
+  {
+    "id": "WindRemovingHalf",
+    "name": "One Legged Wind Removing",
+    "sanskrit": "eka pāda pavanamuktāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_windremovinghalf",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WindRemovingHalf"
+  },
+  {
+    "id": "WindRemovingHalfHeadTucked",
+    "name": "One Legged Wind Removing with Knee to Forehead",
+    "sanskrit": "eka pāda pavanamuktāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_windremovinghalfheadtucked",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WindRemovingHalfHeadTucked"
+  },
+  {
+    "id": "Partridge",
+    "name": "Partridge",
+    "sanskrit": "kapiñjalāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_partridge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Partridge"
+  },
+  {
+    "id": "Peacock",
+    "name": "Peacock",
+    "sanskrit": "mayūrāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_peacock",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Peacock"
+  },
+  {
+    "id": "PeacockPreparation",
+    "name": "Peacock (Preparation)",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_peacockpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PeacockPreparation"
+  },
+  {
+    "id": "Pendant",
+    "name": "Pendant",
+    "sanskrit": "lolāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pendant",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Pendant"
+  },
+  {
+    "id": "Pigeon",
+    "name": "Pigeon",
+    "sanskrit": "kapotāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_pigeon",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Pigeon"
+  },
+  {
+    "id": "HandstandHalfWay",
+    "name": "Pike Handstand",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandhalfway",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandHalfWay"
+  },
+  {
+    "id": "Plank",
+    "name": "Plank",
+    "sanskrit": "phalakāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plank",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Plank"
+  },
+  {
+    "id": "PlankKneeling",
+    "name": "Plank on the Knees",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_plankkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankKneeling"
+  },
+  {
+    "id": "DownwardDogKneeToForeheadKneeling",
+    "name": "Plank on the Knees with Knee to Forehead",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_downwarddogkneetoforeheadkneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogKneeToForeheadKneeling"
+  },
+  {
+    "id": "PlankKneeToOppositeElbow",
+    "name": "Plank with Knee to Opposite Tricep",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankkneetooppositeelbow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankKneeToOppositeElbow"
+  },
+  {
+    "id": "PlankKneeToElbow",
+    "name": "Plank with Knee to Tricep",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankkneetoelbow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankKneeToElbow"
+  },
+  {
+    "id": "Plow",
+    "name": "Plow",
+    "sanskrit": "halāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Plow"
+  },
+  {
+    "id": "BoatBindOutsideEdgePreparation",
+    "name": "Plow (Grabbing the Feet)",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatbindoutsideedgepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatBindOutsideEdgePreparation"
+  },
+  {
+    "id": "BoatBindPreparation",
+    "name": "Plow with Toe Hold",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_boatbindpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoatBindPreparation"
+  },
+  {
+    "id": "PyramidPrayer",
+    "name": "Pyramid",
+    "sanskrit": "pārśvottānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pyramidprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PyramidPrayer"
+  },
+  {
+    "id": "PyramidPreparation",
+    "name": "Pyramid (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pyramidpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PyramidPreparation"
+  },
+  {
+    "id": "Pyramid",
+    "name": "Pyramid with Arms Extended",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pyramid",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Pyramid"
+  },
+  {
+    "id": "PyramidArmsUpPreparation",
+    "name": "Pyramid with Arms Up",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pyramidarmsuppreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PyramidArmsUpPreparation"
+  },
+  {
+    "id": "Rabbit",
+    "name": "Rabbit",
+    "sanskrit": "śaśankāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_rabbit",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Rabbit"
+  },
+  {
+    "id": "RagDoll",
+    "name": "Rag Doll",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_ragdoll",
+    "sourceUrl": "https://www.pocketyoga.com/pose/RagDoll"
+  },
+  {
+    "id": "CorpseFrontArmsForward",
+    "name": "Reverse Corpse",
+    "sanskrit": "advāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsefrontarmsforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseFrontArmsForward"
+  },
+  {
+    "id": "CorpseFront",
+    "name": "Reverse Corpse with Arms On Sides",
+    "sanskrit": "advāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsefront",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseFront"
+  },
+  {
+    "id": "CorpseFrontHandsUnderShoulders",
+    "name": "Reverse Corpse with Hands Under Shoulders",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsefronthandsundershoulders",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseFrontHandsUnderShoulders"
+  },
+  {
+    "id": "CorpseFrontNeckStretch",
+    "name": "Reverse Corpse with Neck Stretch",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsefrontneckstretch",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseFrontNeckStretch"
+  },
+  {
+    "id": "CorpseFrontPrayer",
+    "name": "Reverse Corpse with Prayer Hands",
+    "sanskrit": "praṇāma",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsefrontprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseFrontPrayer"
+  },
+  {
+    "id": "GateReverse",
+    "name": "Reverse Gate",
+    "sanskrit": "viparīta parighāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_gatereverse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GateReverse"
+  },
+  {
+    "id": "Table",
+    "name": "Reverse Table",
+    "sanskrit": "ardha pūrvottānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_table",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Table"
+  },
+  {
+    "id": "TablePreparation",
+    "name": "Reverse Table (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_tablepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TablePreparation"
+  },
+  {
+    "id": "TriangleReverse",
+    "name": "Reverse Triangle",
+    "sanskrit": "viparīta trikoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_trianglereverse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TriangleReverse"
+  },
+  {
+    "id": "WarriorIIReverse",
+    "name": "Reverse Warrior",
+    "sanskrit": "viparīta vīrabhadrāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriireverse",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIReverse"
+  },
+  {
+    "id": "BirdOfParadiseRevolved",
+    "name": "Revolved Bird of Paradise",
+    "sanskrit": "parivṛtta svarga dvijāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_birdofparadiserevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BirdOfParadiseRevolved"
+  },
+  {
+    "id": "BirdOfParadiseRevolvedPreparation",
+    "name": "Revolved Bird of Paradise (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_birdofparadiserevolvedpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BirdOfParadiseRevolvedPreparation"
+  },
+  {
+    "id": "ChairTwist",
+    "name": "Revolved Chair",
+    "sanskrit": "parivṛtta utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_chairtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairTwist"
+  },
+  {
+    "id": "ChairTwistExtended",
+    "name": "Revolved Chair with Arms Extended",
+    "sanskrit": "utthita parivṛtta utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_chairtwistextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChairTwistExtended"
+  },
+  {
+    "id": "BoxHandToAnkle",
+    "name": "Revolved Child's",
+    "sanskrit": "pārśva bālāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_boxhandtoankle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BoxHandToAnkle"
+  },
+  {
+    "id": "LungeTwist",
+    "name": "Revolved Crescent Lunge",
+    "sanskrit": "parivṛtta añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungetwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeTwist"
+  },
+  {
+    "id": "LungeKneelingTwist",
+    "name": "Revolved Crescent Lunge on the Knee",
+    "sanskrit": "parivṛtta añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungekneelingtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingTwist"
+  },
+  {
+    "id": "LungeKneelingTwistExtended",
+    "name": "Revolved Crescent Lunge on the Knee with Arms Extended",
+    "sanskrit": "utthita parivṛtta añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungekneelingtwistextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeKneelingTwistExtended"
+  },
+  {
+    "id": "LungeTwistExtended",
+    "name": "Revolved Crescent Lunge with Arms Extended",
+    "sanskrit": "utthita parivṛtta añjaneyāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lungetwistextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LungeTwistExtended"
+  },
+  {
+    "id": "DownwardDogHandToAnkle",
+    "name": "Revolved Downward-Facing Dog",
+    "sanskrit": "parivṛtta adho mukha śvānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwarddoghandtoankle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogHandToAnkle"
+  },
+  {
+    "id": "FigureFourTwist",
+    "name": "Revolved Figure Four",
+    "sanskrit": "parivṛtta eka pāda utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_figurefourtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FigureFourTwist"
+  },
+  {
+    "id": "FigureFourTwistExtended",
+    "name": "Revolved Figure Four with Arms Extended",
+    "sanskrit": "utthita parivṛtta eka pāda utkaṭāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_figurefourtwistextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FigureFourTwistExtended"
+  },
+  {
+    "id": "FlyingManRevolved",
+    "name": "Revolved Flying Man",
+    "sanskrit": "parivṛtta eka pāda kouṇḍinyāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_flyingmanrevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FlyingManRevolved"
+  },
+  {
+    "id": "HalfMoonRevolved",
+    "name": "Revolved Half Moon",
+    "sanskrit": "parivṛtta ardha candrāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_halfmoonrevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoonRevolved"
+  },
+  {
+    "id": "HalfMoonRevolvedBow",
+    "name": "Revolved Half Moon Bow",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_halfmoonrevolvedbow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoonRevolvedBow"
+  },
+  {
+    "id": "HeadToKneeRevolved",
+    "name": "Revolved Head to Knee",
+    "sanskrit": "parivṛtta jānu śīrṣāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headtokneerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadToKneeRevolved"
+  },
+  {
+    "id": "LordOfTheDanceRevolved",
+    "name": "Revolved Lord of the Dance",
+    "sanskrit": "parivṛtta naṭarājāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lordofthedancerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheDanceRevolved"
+  },
+  {
+    "id": "MarichiI",
+    "name": "Revolved Sage Marichi's I",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_marichii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiI"
+  },
+  {
+    "id": "SeatedForwardBendRevolved",
+    "name": "Revolved Seated Forward Bend",
+    "sanskrit": "parivṛtta paścimottānāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendrevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendRevolved"
+  },
+  {
+    "id": "SeatedForwardBendRevolvedPreparation",
+    "name": "Revolved Seated Forward Bend (Preparation)",
+    "sanskrit": "parivṛtta paścimottānāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendrevolvedpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendRevolvedPreparation"
+  },
+  {
+    "id": "SeatedHandToToeRevolved",
+    "name": "Revolved Seated Hand to Big Toe",
+    "sanskrit": "upaviṣṭa parivṛtta hasta pādāṅguṣṭhāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedhandtotoerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedHandToToeRevolved"
+  },
+  {
+    "id": "SideAngleExtended",
+    "name": "Revolved Side Angle",
+    "sanskrit": "parivṛtta pārśvakoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sideangleextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SideAngleExtended"
+  },
+  {
+    "id": "HeadstandSupportedRevolvedSplitLegged",
+    "name": "Revolved Split Legged Supported Headstand",
+    "sanskrit": "parivṛtta eka pāda śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedrevolvedsplitlegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedRevolvedSplitLegged"
+  },
+  {
+    "id": "SeatedOnHeelsPrayerTwist",
+    "name": "Revolved Squatting Toe Balance",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedonheelsprayertwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsPrayerTwist"
+  },
+  {
+    "id": "StandingHandToToeRevolved",
+    "name": "Revolved Standing Hand to Big Toe",
+    "sanskrit": "parivṛtta hasta pādāṅguṣṭhāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standinghandtotoerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHandToToeRevolved"
+  },
+  {
+    "id": "SupineHandToToeRevolved",
+    "name": "Revolved Supine Hand to Big Toe",
+    "sanskrit": "parivṛtta supta pādāṅguṣṭhāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinehandtotoerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineHandToToeRevolved"
+  },
+  {
+    "id": "TriangleRevolved",
+    "name": "Revolved Triangle",
+    "sanskrit": "parivṛtta trikoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_trianglerevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TriangleRevolved"
+  },
+  {
+    "id": "WarriorTwist",
+    "name": "Revolved Warrior",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriortwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorTwist"
+  },
+  {
+    "id": "WarriorTwistExtended",
+    "name": "Revolved Warrior with Arms Extended",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriortwistextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorTwistExtended"
+  },
+  {
+    "id": "WideLeggedForwardBendRevolved",
+    "name": "Revolved Wide Legged Forward Bend",
+    "sanskrit": "parivṛtta prasārita pādottānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendrevolved",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendRevolved"
+  },
+  {
+    "id": "Cradle",
+    "name": "Rock the Baby",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_cradle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Cradle"
+  },
+  {
+    "id": "Rooster",
+    "name": "Rooster",
+    "sanskrit": "kukkuṭāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_rooster",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Rooster"
+  },
+  {
+    "id": "Bharadvaja",
+    "name": "Sage Bharadvaja's Twist",
+    "sanskrit": "bharadvājāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bharadvaja",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Bharadvaja"
+  },
+  {
+    "id": "GherandaI",
+    "name": "Sage Gheranda's",
+    "sanskrit": "gheraṇḍāsana",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_gherandai",
+    "sourceUrl": "https://www.pocketyoga.com/pose/GherandaI"
+  },
+  {
+    "id": "MarichiITraditional",
+    "name": "Sage Marichi's I",
+    "sanskrit": "marīcyāsana a",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_marichiitraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiITraditional"
+  },
+  {
+    "id": "MarichiITraditionalPreparation",
+    "name": "Sage Marichi's I (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_marichiitraditionalpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiITraditionalPreparation"
+  },
+  {
+    "id": "MarichiIITraditional",
+    "name": "Sage Marichi's II",
+    "sanskrit": "marīcyāsana b",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_marichiiitraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiIITraditional"
+  },
+  {
+    "id": "MarichiIITraditionalPreparation",
+    "name": "Sage Marichi's II (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_marichiiitraditionalpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiIITraditionalPreparation"
+  },
+  {
+    "id": "MarichiIIITraditional",
+    "name": "Sage Marichi's III",
+    "sanskrit": "marīcyāsana c",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_marichiiiitraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiIIITraditional"
+  },
+  {
+    "id": "MarichiIVTraditional",
+    "name": "Sage Marichi's IV",
+    "sanskrit": "marīcyāsana d",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_marichiivtraditional",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiIVTraditional"
+  },
+  {
+    "id": "VisvamitraFull",
+    "name": "Sage Visvamitra's",
+    "sanskrit": "viśvāmitrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_visvamitrafull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/VisvamitraFull"
+  },
+  {
+    "id": "VisvamitraKneeling",
+    "name": "Sage Visvamitra's on the Knee",
+    "sanskrit": "ardha viśvāmitrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_visvamitrakneeling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/VisvamitraKneeling"
+  },
+  {
+    "id": "LotusElevated",
+    "name": "Scale",
+    "sanskrit": "tolāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lotuselevated",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LotusElevated"
+  },
+  {
+    "id": "Scorpion",
+    "name": "Scorpion",
+    "sanskrit": "vṛścikāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_scorpion",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Scorpion"
+  },
+  {
+    "id": "ChinStandScorpion",
+    "name": "Scorpion Chin Stand",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_chinstandscorpion",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChinStandScorpion"
+  },
+  {
+    "id": "HandstandScorpion",
+    "name": "Scorpion Handstand",
+    "sanskrit": "vṛścikāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_handstandscorpion",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HandstandScorpion"
+  },
+  {
+    "id": "Seated",
+    "name": "Seated",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seated",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Seated"
+  },
+  {
+    "id": "SeatedCat",
+    "name": "Seated Cat",
+    "sanskrit": "upaviṣṭa mārjārīāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedcat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedCat"
+  },
+  {
+    "id": "SeatedVisvamitra",
+    "name": "Seated Compass",
+    "sanskrit": "parivṛtta sūrya yantrāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedvisvamitra",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedVisvamitra"
+  },
+  {
+    "id": "SeatedCow",
+    "name": "Seated Cow",
+    "sanskrit": "upaviṣṭa bitilāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedcow",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedCow"
+  },
+  {
+    "id": "SeatedForwardBend",
+    "name": "Seated Forward Bend I",
+    "sanskrit": "paścimottānāsana a",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBend"
+  },
+  {
+    "id": "SeatedForwardBendPreparation",
+    "name": "Seated Forward Bend I (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbendpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendPreparation"
+  },
+  {
+    "id": "SeatedForwardBendII",
+    "name": "Seated Forward Bend II",
+    "sanskrit": "paścimottānāsana b",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbendii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendII"
+  },
+  {
+    "id": "SeatedForwardBendIIPreparation",
+    "name": "Seated Forward Bend II (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendIIPreparation"
+  },
+  {
+    "id": "SeatedForwardBendIII",
+    "name": "Seated Forward Bend III",
+    "sanskrit": "paścimottānāsana c",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbendiii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendIII"
+  },
+  {
+    "id": "SeatedForwardBendIIIPreparation",
+    "name": "Seated Forward Bend III (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendiiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendIIIPreparation"
+  },
+  {
+    "id": "SeatedForwardBendIV",
+    "name": "Seated Forward Bend IV",
+    "sanskrit": "paścimottānāsana d",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbendiv",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendIV"
+  },
+  {
+    "id": "SeatedForwardBendIVPreparation",
+    "name": "Seated Forward Bend IV (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedforwardbendivpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendIVPreparation"
+  },
+  {
+    "id": "SeatedGate",
+    "name": "Seated Gate",
+    "sanskrit": "parighāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedgate",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedGate"
+  },
+  {
+    "id": "SeatedGatePreparation",
+    "name": "Seated Gate (Preparation)",
+    "sanskrit": "parighāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedgatepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedGatePreparation"
+  },
+  {
+    "id": "SeatedForwardBendHalfLotus",
+    "name": "Seated Half Bound Lotus Forward Bend",
+    "sanskrit": "ardha baddha padma paścimottānāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendhalflotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendHalfLotus"
+  },
+  {
+    "id": "SeatedForwardBendHalfLotusPreparation",
+    "name": "Seated Half Bound Lotus Forward Bend (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendhalflotuspreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendHalfLotusPreparation"
+  },
+  {
+    "id": "ElephantTrunkPreparation",
+    "name": "Seated Hip Opener",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_elephanttrunkpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ElephantTrunkPreparation"
+  },
+  {
+    "id": "MarichiIII",
+    "name": "Seated Spinal Twist",
+    "sanskrit": "vakrasana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_marichiiii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MarichiIII"
+  },
+  {
+    "id": "SeatedForwardBendThreeLimbs",
+    "name": "Seated Three Limbed Forward Bend",
+    "sanskrit": "triaṅgā mukha eka pāda paścimottānāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendthreelimbs",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendThreeLimbs"
+  },
+  {
+    "id": "SeatedForwardBendThreeLimbsPreparation",
+    "name": "Seated Three Limbed Forward Bend (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_seatedforwardbendthreelimbspreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendThreeLimbsPreparation"
+  },
+  {
+    "id": "SeatedForwardBendWideAngle",
+    "name": "Seated Wide Angle Forward Bend I",
+    "sanskrit": "upaviṣṭa koṇāsana a",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_seatedforwardbendwideangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendWideAngle"
+  },
+  {
+    "id": "SeatedForwardBendWideAnglePreparation",
+    "name": "Seated Wide Angle Forward Bend I (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_seatedforwardbendwideanglepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendWideAnglePreparation"
+  },
+  {
+    "id": "SeatedForwardBendWideAngleII",
+    "name": "Seated Wide Angle Forward Bend II",
+    "sanskrit": "upaviṣṭa koṇāsana b",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_seatedforwardbendwideangleii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedForwardBendWideAngleII"
+  },
+  {
+    "id": "LiftUpPreparation",
+    "name": "Seated with Legs Crossed",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_liftuppreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LiftUpPreparation"
+  },
+  {
+    "id": "ShivaSquat",
+    "name": "Shiva Squat",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_shivasquat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShivaSquat"
+  },
+  {
+    "id": "ShivaSquatPrayer",
+    "name": "Shiva Squat with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_shivasquatprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShivaSquatPrayer"
+  },
+  {
+    "id": "KneePile",
+    "name": "Shoelace",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_kneepile",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePile"
+  },
+  {
+    "id": "KneePileForward",
+    "name": "Shoelace Forward Bend",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_kneepileforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileForward"
+  },
+  {
+    "id": "KneePileEagleForward",
+    "name": "Shoelace Forward Bend with Eagle Arms",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_kneepileeagleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileEagleForward"
+  },
+  {
+    "id": "KneePileTwist",
+    "name": "Shoelace Twist",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_kneepiletwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileTwist"
+  },
+  {
+    "id": "KneePileEagle",
+    "name": "Shoelace with Eagle Arms",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_kneepileeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/KneePileEagle"
+  },
+  {
+    "id": "ScaleForward",
+    "name": "Shoulder Pressing",
+    "sanskrit": "bhuja pīḍāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_scaleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ScaleForward"
+  },
+  {
+    "id": "Scale",
+    "name": "Shoulder Pressing (Preparation)",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_scale",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Scale"
+  },
+  {
+    "id": "ShoulderstandLotus",
+    "name": "Shoulder Stand with Lotus Legs",
+    "sanskrit": "ūrdhva padmāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandlotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandLotus"
+  },
+  {
+    "id": "WarriorIIForward",
+    "name": "Side Angle",
+    "sanskrit": "pārśvakoṇāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriiforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIForward"
+  },
+  {
+    "id": "BowSide",
+    "name": "Side Bow",
+    "sanskrit": "pārśva dhanurāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_bowside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/BowSide"
+  },
+  {
+    "id": "CrowSide",
+    "name": "Side Crow",
+    "sanskrit": "pārśva bakāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_crowside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrowSide"
+  },
+  {
+    "id": "CrowSidePreparation",
+    "name": "Side Crow (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_crowsidepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrowSidePreparation"
+  },
+  {
+    "id": "SideEmbryo",
+    "name": "Side Embryo",
+    "sanskrit": "pārśva piṇḍāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_sideembryo",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SideEmbryo"
+  },
+  {
+    "id": "PlankDolphinSide",
+    "name": "Side Forearm Plank",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankdolphinside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankDolphinSide"
+  },
+  {
+    "id": "SideLunge",
+    "name": "Side Lunge",
+    "sanskrit": "skandāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sidelunge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SideLunge"
+  },
+  {
+    "id": "SideLungeExtended",
+    "name": "Side Lunge with Arms Extended",
+    "sanskrit": "skandāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sidelungeextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SideLungeExtended"
+  },
+  {
+    "id": "ShoulderstandSupportedOneLeggedSide",
+    "name": "Side One Legged Shoulder Stand",
+    "sanskrit": "pārśva eka pāda sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandsupportedoneleggedside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedOneLeggedSide"
+  },
+  {
+    "id": "HeadstandSupportedOneLeggedSide",
+    "name": "Side One Legged Supported Headstand",
+    "sanskrit": "pārśva eka pāda śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedoneleggedside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedOneLeggedSide"
+  },
+  {
+    "id": "PlankSide",
+    "name": "Side Plank",
+    "sanskrit": "vasiṣṭhāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_plankside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSide"
+  },
+  {
+    "id": "PlankSideFallenTriangle",
+    "name": "Side Plank Kick",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_planksidefallentriangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideFallenTriangle"
+  },
+  {
+    "id": "PlankKneelingSide",
+    "name": "Side Plank on the Knee",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_plankkneelingside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankKneelingSide"
+  },
+  {
+    "id": "PlankSideStar",
+    "name": "Side Plank Star",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_planksidestar",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideStar"
+  },
+  {
+    "id": "PlankSideTree",
+    "name": "Side Plank Tree",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_planksidetree",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideTree"
+  },
+  {
+    "id": "PlankSideHalfLotus",
+    "name": "Side Plank with Bound Half Lotus",
+    "sanskrit": "kaśyapāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_planksidehalflotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideHalfLotus"
+  },
+  {
+    "id": "PlankSideShiva",
+    "name": "Side Plank with Leg Behind the Head",
+    "sanskrit": "kāla bhairavāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_planksideshiva",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankSideShiva"
+  },
+  {
+    "id": "ShoulderstandSupportedSide",
+    "name": "Side Shoulder Stand",
+    "sanskrit": "pārśva sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandsupportedside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedSide"
+  },
+  {
+    "id": "HeadstandSupportedSide",
+    "name": "Side Supported Headstand",
+    "sanskrit": "pārśva śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedSide"
+  },
+  {
+    "id": "HeadstandSupportedLotusSide",
+    "name": "Side Supported Headstand with Lotus Legs",
+    "sanskrit": "pārśva padma śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedlotusside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedLotusSide"
+  },
+  {
+    "id": "WideLeggedForwardBendSide",
+    "name": "Side Wide Legged Forward Bend",
+    "sanskrit": "pārśva prasārita pādottānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendside",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendSide"
+  },
+  {
+    "id": "PigeonForwardBend",
+    "name": "Sleeping Swan",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_pigeonforwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PigeonForwardBend"
+  },
+  {
+    "id": "SupineTortoiseBind",
+    "name": "Sleeping Tortoise",
+    "sanskrit": "supta kūrmāsana",
+    "category": "Prone",
+    "difficulty": "Expert",
+    "image": "program_pose_supinetortoisebind",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineTortoiseBind"
+  },
+  {
+    "id": "SleepingVishnu",
+    "name": "Sleeping Vishnu",
+    "sanskrit": "anantāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sleepingvishnu",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SleepingVishnu"
+  },
+  {
+    "id": "SleepingVishnuPreparation",
+    "name": "Sleeping Vishnu (Preparation)",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_sleepingvishnupreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SleepingVishnuPreparation"
+  },
+  {
+    "id": "YogicSleep",
+    "name": "Sleeping Yogi",
+    "sanskrit": "yoga nidrāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_yogicsleep",
+    "sourceUrl": "https://www.pocketyoga.com/pose/YogicSleep"
+  },
+  {
+    "id": "Snake",
+    "name": "Snake",
+    "sanskrit": "sarpāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_snake",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Snake"
+  },
+  {
+    "id": "Sphinx",
+    "name": "Sphinx",
+    "sanskrit": "sālamba bhujaṅgāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_sphinx",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Sphinx"
+  },
+  {
+    "id": "SphinxNeckStretch",
+    "name": "Sphinx with Neck Stretch",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_sphinxneckstretch",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SphinxNeckStretch"
+  },
+  {
+    "id": "SeatedOnHeelsPrayer",
+    "name": "Squatting Toe Balance",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedonheelsprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsPrayer"
+  },
+  {
+    "id": "SeatedOnHeelsPrayerOpenedKnees",
+    "name": "Squatting Toe Balance with Opened Knees",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_seatedonheelsprayeropenedknees",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SeatedOnHeelsPrayerOpenedKnees"
+  },
+  {
+    "id": "Staff",
+    "name": "Staff",
+    "sanskrit": "daṇḍāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_staff",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Staff"
+  },
+  {
+    "id": "LordOfTheDance",
+    "name": "Standing Bow",
+    "sanskrit": "daṇḍayamana dhanurāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lordofthedance",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheDance"
+  },
+  {
+    "id": "LordOfTheDancePreparation",
+    "name": "Standing Bow (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_lordofthedancepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/LordOfTheDancePreparation"
+  },
+  {
+    "id": "EagleForward",
+    "name": "Standing Eagle Crunch",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_eagleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/EagleForward"
+  },
+  {
+    "id": "TrivikramaI",
+    "name": "Standing Foot to Head",
+    "sanskrit": "trivikramāsana a",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_trivikramai",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TrivikramaI"
+  },
+  {
+    "id": "ForwardBend",
+    "name": "Standing Forward Bend",
+    "sanskrit": "uttānāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_forwardbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBend"
+  },
+  {
+    "id": "ForwardBendPreparation",
+    "name": "Standing Forward Bend (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_forwardbendpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendPreparation"
+  },
+  {
+    "id": "ForwardBendTwist",
+    "name": "Standing Forward Bend Twist",
+    "sanskrit": "parivṛtta uttānāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_forwardbendtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendTwist"
+  },
+  {
+    "id": "ForwardBendDeep",
+    "name": "Standing Forward Bend with Shoulder Opener",
+    "sanskrit": "uttānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_forwardbenddeep",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ForwardBendDeep"
+  },
+  {
+    "id": "StandingHalfLotusBound",
+    "name": "Standing Half Bound Lotus",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standinghalflotusbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHalfLotusBound"
+  },
+  {
+    "id": "StandingForwardBendHalfLotus",
+    "name": "Standing Half Bound Lotus Forward Bend",
+    "sanskrit": "ardha baddha padmottānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standingforwardbendhalflotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingForwardBendHalfLotus"
+  },
+  {
+    "id": "StandingForwardBendHalfLotusPreparation",
+    "name": "Standing Half Bound Lotus Forward Bend (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standingforwardbendhalflotuspreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingForwardBendHalfLotusPreparation"
+  },
+  {
+    "id": "StandingHalfLotus",
+    "name": "Standing Half Lotus",
+    "sanskrit": "ardha padmāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standinghalflotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHalfLotus"
+  },
+  {
+    "id": "StandingHandToToeFull",
+    "name": "Standing Hand to Big Toe",
+    "sanskrit": "utthita hasta pādāṅguṣṭhāsana a",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standinghandtotoefull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHandToToeFull"
+  },
+  {
+    "id": "StandingHandToToe",
+    "name": "Standing Hand to Big Toe (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standinghandtotoe",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHandToToe"
+  },
+  {
+    "id": "StandingHeadToKnee",
+    "name": "Standing Head to Knee",
+    "sanskrit": "daṇḍayamana jānu śīrṣāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standingheadtoknee",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHeadToKnee"
+  },
+  {
+    "id": "StandingHeadToKneePreparation",
+    "name": "Standing Head to Knee (Foot Hold)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standingheadtokneepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHeadToKneePreparation"
+  },
+  {
+    "id": "StandingHeadToKneePreparationStraightBack",
+    "name": "Standing Head to Knee (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standingheadtokneepreparationstraightback",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingHeadToKneePreparationStraightBack"
+  },
+  {
+    "id": "StandingKneeToChest",
+    "name": "Standing Knee to Chest",
+    "sanskrit": "utthita pavanamuktāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_standingkneetochest",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingKneeToChest"
+  },
+  {
+    "id": "StandingFootBehindHead",
+    "name": "Standing Leg Behind the Head",
+    "sanskrit": "dūrvāsāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standingfootbehindhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingFootBehindHead"
+  },
+  {
+    "id": "StandingForwardBendFootBehindHead",
+    "name": "Standing Leg Behind the Head Forward Bend",
+    "sanskrit": "ṛcīkāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standingforwardbendfootbehindhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingForwardBendFootBehindHead"
+  },
+  {
+    "id": "StandingMarichi",
+    "name": "Standing Sage Marichi's",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_standingmarichi",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StandingMarichi"
+  },
+  {
+    "id": "SplitsStanding",
+    "name": "Standing Splits",
+    "sanskrit": "ūrdhva prasārita eka pādāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_splitsstanding",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsStanding"
+  },
+  {
+    "id": "SplitsStandingBentKnee",
+    "name": "Standing Splits with Bent Knee",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_splitsstandingbentknee",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsStandingBentKnee"
+  },
+  {
+    "id": "Star",
+    "name": "Star",
+    "sanskrit": "utthita tāḍāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_star",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Star"
+  },
+  {
+    "id": "StarArmsUp",
+    "name": "Star with Arms Up",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_stararmsup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarArmsUp"
+  },
+  {
+    "id": "StarHandsInterlaced",
+    "name": "Star with Hands Interlaced",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_starhandsinterlaced",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarHandsInterlaced"
+  },
+  {
+    "id": "StarHandsOnHips",
+    "name": "Star with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_starhandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarHandsOnHips"
+  },
+  {
+    "id": "StarReversePrayer",
+    "name": "Star with Reverse Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_starreverseprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarReversePrayer"
+  },
+  {
+    "id": "HalfMoonBound",
+    "name": "Sugarcane",
+    "sanskrit": "ardha candra cāpāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_halfmoonbound",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HalfMoonBound"
+  },
+  {
+    "id": "SuperSoldier",
+    "name": "Super Soldier",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_supersoldier",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SuperSoldier"
+  },
+  {
+    "id": "SupineAngle",
+    "name": "Supine Angle",
+    "sanskrit": "supta koṇāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supineangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineAngle"
+  },
+  {
+    "id": "SupineBellyTwist",
+    "name": "Supine Belly Twist",
+    "sanskrit": "jaṭhara parivartānāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_supinebellytwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineBellyTwist"
+  },
+  {
+    "id": "SupineBoundAngle",
+    "name": "Supine Bound Angle",
+    "sanskrit": "supta baddha koṇāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_supineboundangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineBoundAngle"
+  },
+  {
+    "id": "SupineTrivikrama",
+    "name": "Supine Foot to Head",
+    "sanskrit": "supta trivikramāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_supinetrivikrama",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineTrivikrama"
+  },
+  {
+    "id": "HeroHalfReclining",
+    "name": "Supine Half Hero",
+    "sanskrit": "supta ardha vīrāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_herohalfreclining",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeroHalfReclining"
+  },
+  {
+    "id": "SupineHandToToeFull",
+    "name": "Supine Hand to Big Toe",
+    "sanskrit": "supta pādāṅguṣṭhāsana a",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinehandtotoefull",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineHandToToeFull"
+  },
+  {
+    "id": "SupineHandToToe",
+    "name": "Supine Hand to Big Toe (Preparation)",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinehandtotoe",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineHandToToe"
+  },
+  {
+    "id": "HeroReclining",
+    "name": "Supine Hero",
+    "sanskrit": "supta vīrāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_heroreclining",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeroReclining"
+  },
+  {
+    "id": "SupineFootBehindHead",
+    "name": "Supine Leg Behind the Head",
+    "sanskrit": "kapilāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_supinefootbehindhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineFootBehindHead"
+  },
+  {
+    "id": "SupinePigeon",
+    "name": "Supine Pigeon",
+    "sanskrit": "supta kapotāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinepigeon",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupinePigeon"
+  },
+  {
+    "id": "SupineSpinalTwist",
+    "name": "Supine Spinal Twist",
+    "sanskrit": "supta matsyendrāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_supinespinaltwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineSpinalTwist"
+  },
+  {
+    "id": "SupineStraddle",
+    "name": "Supine Straddle",
+    "sanskrit": "supta samakoṇāsana",
+    "category": "Supine",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinestraddle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineStraddle"
+  },
+  {
+    "id": "SupineBellyTwistPreparation",
+    "name": "Supine Tabletop",
+    "sanskrit": "",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_supinebellytwistpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineBellyTwistPreparation"
+  },
+  {
+    "id": "SupineThunderbolt",
+    "name": "Supine Thunderbolt",
+    "sanskrit": "supta vajrāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_supinethunderbolt",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineThunderbolt"
+  },
+  {
+    "id": "ShoulderstandSupportedBridge",
+    "name": "Supported Bridge",
+    "sanskrit": "setu bandha sarvāṅgāsana",
+    "category": "Supine",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandsupportedbridge",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedBridge"
+  },
+  {
+    "id": "CamelEasy",
+    "name": "Supported Camel",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_cameleasy",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CamelEasy"
+  },
+  {
+    "id": "HeadstandSupported",
+    "name": "Supported Headstand",
+    "sanskrit": "sālamba śīrṣāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupported",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupported"
+  },
+  {
+    "id": "HeadstandSupportedPreparation",
+    "name": "Supported Headstand (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportedpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedPreparation"
+  },
+  {
+    "id": "HeadstandSupportedEmbryo",
+    "name": "Supported Headstand Embryo",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedembryo",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedEmbryo"
+  },
+  {
+    "id": "HeadstandSupportedII",
+    "name": "Supported Headstand II",
+    "sanskrit": "sālamba śīrṣāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedII"
+  },
+  {
+    "id": "HeadstandSupportedIIPreparation",
+    "name": "Supported Headstand II (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportediipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIIPreparation"
+  },
+  {
+    "id": "HeadstandSupportedIIPreparationHipsOverHead",
+    "name": "Supported Headstand II with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportediipreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIIPreparationHipsOverHead"
+  },
+  {
+    "id": "HeadstandSupportedIII",
+    "name": "Supported Headstand III",
+    "sanskrit": "sālamba śīrṣāsana c",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportediii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIII"
+  },
+  {
+    "id": "HeadstandSupportedIIIPreparation",
+    "name": "Supported Headstand III (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportediiipreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIIIPreparation"
+  },
+  {
+    "id": "HeadstandSupportedIIIPreparationHipsOverHead",
+    "name": "Supported Headstand III with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportediiipreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIIIPreparationHipsOverHead"
+  },
+  {
+    "id": "HeadstandSupportedIV",
+    "name": "Supported Headstand IV",
+    "sanskrit": "sālamba śīrṣāsana d",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportediv",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIV"
+  },
+  {
+    "id": "HeadstandSupportedIVPreparation",
+    "name": "Supported Headstand IV (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportedivpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIVPreparation"
+  },
+  {
+    "id": "HeadstandSupportedIVPreparationHipsOverHead",
+    "name": "Supported Headstand IV with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportedivpreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedIVPreparationHipsOverHead"
+  },
+  {
+    "id": "HeadstandSupportedLift",
+    "name": "Supported Headstand Lift",
+    "sanskrit": "ūrdhva śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedlift",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedLift"
+  },
+  {
+    "id": "HeadstandSupportedHalfWay",
+    "name": "Supported Headstand Pike",
+    "sanskrit": "ūrdhva daṇḍāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedhalfway",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedHalfWay"
+  },
+  {
+    "id": "HeadstandSupportedTuck",
+    "name": "Supported Headstand Tuck",
+    "sanskrit": "ākuñcanāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headstandsupportedtuck",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedTuck"
+  },
+  {
+    "id": "HeadstandSupportedBoundAngle",
+    "name": "Supported Headstand with Bound Angle Legs",
+    "sanskrit": "baddha koṇa śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedboundangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedBoundAngle"
+  },
+  {
+    "id": "HeadstandSupportedEagle",
+    "name": "Supported Headstand with Eagle Legs",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedEagle"
+  },
+  {
+    "id": "HeadstandSupportedLotus",
+    "name": "Supported Headstand with Lotus Legs",
+    "sanskrit": "padma śīrṣāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedlotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedLotus"
+  },
+  {
+    "id": "HeadstandSupportedRevolvedSplitLeggedPreparation",
+    "name": "Supported Headstand with Splits",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandsupportedrevolvedsplitleggedpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedRevolvedSplitLeggedPreparation"
+  },
+  {
+    "id": "HeadstandSupportedPreparationHipsOverHead",
+    "name": "Supported Headstand with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandsupportedpreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandSupportedPreparationHipsOverHead"
+  },
+  {
+    "id": "Visvamitra",
+    "name": "Supported Sage Visvamitra's",
+    "sanskrit": "viśvāmitrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_visvamitra",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Visvamitra"
+  },
+  {
+    "id": "ShoulderstandSupported",
+    "name": "Supported Shoulder Stand",
+    "sanskrit": "sālamba sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_shoulderstandsupported",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupported"
+  },
+  {
+    "id": "ShoulderstandSupportedBoundAngle",
+    "name": "Supported Shoulder Stand with Bound Angle Legs",
+    "sanskrit": "baddha koṇa sālamba sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_shoulderstandsupportedboundangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedBoundAngle"
+  },
+  {
+    "id": "ShoulderstandSupportedEagle",
+    "name": "Supported Shoulder Stand with Eagle Legs",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_shoulderstandsupportedeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandSupportedEagle"
+  },
+  {
+    "id": "ToeStandSupported",
+    "name": "Supported Toe Stand",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_toestandsupported",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ToeStandSupported"
+  },
+  {
+    "id": "TableKneeToForehead",
+    "name": "Table with Knee to Forehead",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_tablekneetoforehead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TableKneeToForehead"
+  },
+  {
+    "id": "DownwardDogLegUp",
+    "name": "Three Legged Downward-Facing Dog",
+    "sanskrit": "eka pāda adho mukha śvānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwarddoglegup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogLegUp"
+  },
+  {
+    "id": "DownwardDogLegUpStackHips",
+    "name": "Three Legged Downward-Facing Dog with Hip Opener",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_downwarddoglegupstackhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/DownwardDogLegUpStackHips"
+  },
+  {
+    "id": "Thunderbolt",
+    "name": "Thunderbolt",
+    "sanskrit": "vajrāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_thunderbolt",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Thunderbolt"
+  },
+  {
+    "id": "ThunderboltTwist",
+    "name": "Thunderbolt Twist",
+    "sanskrit": "parivṛtta vajrāsana",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_thunderbolttwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ThunderboltTwist"
+  },
+  {
+    "id": "Tiger",
+    "name": "Tiger",
+    "sanskrit": "vyāghrāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_tiger",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Tiger"
+  },
+  {
+    "id": "ToeSquat",
+    "name": "Toe Squat",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_toesquat",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ToeSquat"
+  },
+  {
+    "id": "ToeStand",
+    "name": "Toe Stand",
+    "sanskrit": "pādāṅguṣṭhāsana",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_toestand",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ToeStand"
+  },
+  {
+    "id": "ToeStandPreparation",
+    "name": "Toe Stand (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Intermediate",
+    "image": "program_pose_toestandpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ToeStandPreparation"
+  },
+  {
+    "id": "TreeToppling",
+    "name": "Toppling Tree",
+    "sanskrit": "patan vṛkṣāsana",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_treetoppling",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TreeToppling"
+  },
+  {
+    "id": "SupineTortoise",
+    "name": "Tortoise",
+    "sanskrit": "kūrmāsana",
+    "category": "Prone",
+    "difficulty": "Intermediate",
+    "image": "program_pose_supinetortoise",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SupineTortoise"
+  },
+  {
+    "id": "TreePrayer",
+    "name": "Tree",
+    "sanskrit": "vṛkṣāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_treeprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TreePrayer"
+  },
+  {
+    "id": "Tree",
+    "name": "Tree with Arms Up",
+    "sanskrit": "vṛkṣāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_tree",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Tree"
+  },
+  {
+    "id": "TreeSideBend",
+    "name": "Tree with Side Bend",
+    "sanskrit": "vṛkṣāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_treesidebend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TreeSideBend"
+  },
+  {
+    "id": "TriangleForward",
+    "name": "Triangle",
+    "sanskrit": "trikoṇāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_triangleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TriangleForward"
+  },
+  {
+    "id": "Triangle",
+    "name": "Triangle (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_triangle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Triangle"
+  },
+  {
+    "id": "HeadstandTripod",
+    "name": "Tripod Headstand",
+    "sanskrit": "mukta hasta śīrṣāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripod",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripod"
+  },
+  {
+    "id": "HeadstandTripodPreparation",
+    "name": "Tripod Headstand (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodPreparation"
+  },
+  {
+    "id": "HeadstandTripodPreparationWideLegged",
+    "name": "Tripod Headstand (Preparation)",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodpreparationwidelegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodPreparationWideLegged"
+  },
+  {
+    "id": "HeadstandTripodSpiralLegs",
+    "name": "Tripod Headstand - Spiral the Legs",
+    "sanskrit": "parivṛtta eka pāda śīrṣāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripodspirallegs",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodSpiralLegs"
+  },
+  {
+    "id": "HeadstandTripodEagle",
+    "name": "Tripod Headstand with Eagle Legs",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripodeagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodEagle"
+  },
+  {
+    "id": "HeadstandTripodKneesOnElbows",
+    "name": "Tripod Headstand with Knees on Elbows",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Intermediate",
+    "image": "program_pose_headstandtripodkneesonelbows",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodKneesOnElbows"
+  },
+  {
+    "id": "HeadstandTripodLotus",
+    "name": "Tripod Headstand with Lotus Legs",
+    "sanskrit": "padma mukta hasta śīrṣāsana a",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_headstandtripodlotus",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodLotus"
+  },
+  {
+    "id": "HeadstandTripodPreparationHipsOverHead",
+    "name": "Tripod Headstand with Toes on the Ground",
+    "sanskrit": "",
+    "category": "Balances & inversions",
+    "difficulty": "Beginner",
+    "image": "program_pose_headstandtripodpreparationhipsoverhead",
+    "sourceUrl": "https://www.pocketyoga.com/pose/HeadstandTripodPreparationHipsOverHead"
+  },
+  {
+    "id": "CrowSideExtended",
+    "name": "Two Legged Sage Koundinya's",
+    "sanskrit": "dvi pāda kouṇḍinyāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_crowsideextended",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CrowSideExtended"
+  },
+  {
+    "id": "FootBehindHeadTwoLegged",
+    "name": "Two Legs Behind the Head I",
+    "sanskrit": "dvi pāda śīrṣāsana a",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_footbehindheadtwolegged",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FootBehindHeadTwoLegged"
+  },
+  {
+    "id": "FootBehindHeadTwoLeggedElevated",
+    "name": "Two Legs Behind the Head II",
+    "sanskrit": "dvi pāda śīrṣāsana b",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_footbehindheadtwoleggedelevated",
+    "sourceUrl": "https://www.pocketyoga.com/pose/FootBehindHeadTwoLeggedElevated"
+  },
+  {
+    "id": "ShoulderstandUnsupported",
+    "name": "Unsupported Shoulder Stand",
+    "sanskrit": "nirālamba sarvāṅgāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_shoulderstandunsupported",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ShoulderstandUnsupported"
+  },
+  {
+    "id": "PlankUpward",
+    "name": "Upward Plank",
+    "sanskrit": "pūrvottānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_plankupward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankUpward"
+  },
+  {
+    "id": "PlankUpwardPreparation",
+    "name": "Upward Plank (Preparation)",
+    "sanskrit": "",
+    "category": "Seated",
+    "difficulty": "Beginner",
+    "image": "program_pose_plankupwardpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/PlankUpwardPreparation"
+  },
+  {
+    "id": "RoosterUpward",
+    "name": "Upward Rooster",
+    "sanskrit": "ūrdhva kukkuṭāsana",
+    "category": "Balances & inversions",
+    "difficulty": "Expert",
+    "image": "program_pose_roosterupward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/RoosterUpward"
+  },
+  {
+    "id": "MountainSalute",
+    "name": "Upward Salute",
+    "sanskrit": "ūrdhva hastāsana",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_mountainsalute",
+    "sourceUrl": "https://www.pocketyoga.com/pose/MountainSalute"
+  },
+  {
+    "id": "UpwardDog",
+    "name": "Upward-Facing Dog",
+    "sanskrit": "ūrdhva mukha śvānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_upwarddog",
+    "sourceUrl": "https://www.pocketyoga.com/pose/UpwardDog"
+  },
+  {
+    "id": "UpwardDogLookingUp",
+    "name": "Upward-Facing Dog with Gaze Up",
+    "sanskrit": "ūrdhva mukha śvānāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_upwarddoglookingup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/UpwardDogLookingUp"
+  },
+  {
+    "id": "UpwardDogNeckStretch",
+    "name": "Upward-Facing Dog with Neck Stretch",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_upwarddogneckstretch",
+    "sourceUrl": "https://www.pocketyoga.com/pose/UpwardDogNeckStretch"
+  },
+  {
+    "id": "WarriorI",
+    "name": "Warrior I",
+    "sanskrit": "vīrabhadrāsana a",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriori",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorI"
+  },
+  {
+    "id": "WarriorIForward",
+    "name": "Warrior I Halfway Fold",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIForward"
+  },
+  {
+    "id": "WarriorIEagleForward",
+    "name": "Warrior I Halfway Fold with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriorieagleforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIEagleForward"
+  },
+  {
+    "id": "WarriorIHandsOnHipsForward",
+    "name": "Warrior I Halfway Fold with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorihandsonhipsforward",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIHandsOnHipsForward"
+  },
+  {
+    "id": "WarriorICactusArms",
+    "name": "Warrior I with Cactus Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioricactusarms",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorICactusArms"
+  },
+  {
+    "id": "WarriorIEagleBackbend",
+    "name": "Warrior I with Eagle Arm Backbend",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriorieaglebackbend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIEagleBackbend"
+  },
+  {
+    "id": "WarriorIEagle",
+    "name": "Warrior I with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriorieagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIEagle"
+  },
+  {
+    "id": "WarriorILookingUp",
+    "name": "Warrior I with Gaze Up",
+    "sanskrit": "vīrabhadrāsana a",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorilookingup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorILookingUp"
+  },
+  {
+    "id": "WarriorHumblePreparation",
+    "name": "Warrior I with Hands Interlaced",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warriorhumblepreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorHumblePreparation"
+  },
+  {
+    "id": "WarriorIHandsOnHips",
+    "name": "Warrior I with Hands on Hips",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorihandsonhips",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIHandsOnHips"
+  },
+  {
+    "id": "WarriorPrayer",
+    "name": "Warrior I with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorPrayer"
+  },
+  {
+    "id": "WarriorII",
+    "name": "Warrior II",
+    "sanskrit": "vīrabhadrāsana b",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_warriorii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorII"
+  },
+  {
+    "id": "WarriorIII",
+    "name": "Warrior III",
+    "sanskrit": "vīrabhadrāsana c",
+    "category": "Standing",
+    "difficulty": "Expert",
+    "image": "program_pose_warrioriii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIII"
+  },
+  {
+    "id": "WarriorIIIAirplane",
+    "name": "Warrior III with Airplane Arms",
+    "sanskrit": "vīrabhadrāsana c",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriiiairplane",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIIAirplane"
+  },
+  {
+    "id": "WarriorIIIEagle",
+    "name": "Warrior III with Eagle Arms",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriiieagle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIIEagle"
+  },
+  {
+    "id": "WarriorIIIPrayer",
+    "name": "Warrior III with Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_warrioriiiprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WarriorIIIPrayer"
+  },
+  {
+    "id": "CorpseDoubleLegRaise",
+    "name": "Waterfall",
+    "sanskrit": "supta daṇḍāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_corpsedoublelegraise",
+    "sourceUrl": "https://www.pocketyoga.com/pose/CorpseDoubleLegRaise"
+  },
+  {
+    "id": "Wheel",
+    "name": "Wheel",
+    "sanskrit": "ūrdhva dhanurāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Expert",
+    "image": "program_pose_wheel",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Wheel"
+  },
+  {
+    "id": "WheelPreparation",
+    "name": "Wheel (Preparation)",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Beginner",
+    "image": "program_pose_wheelpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WheelPreparation"
+  },
+  {
+    "id": "ChildWide",
+    "name": "Wide Child's",
+    "sanskrit": "prasārita bālāsana",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_childwide",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChildWide"
+  },
+  {
+    "id": "ChildWideSideLean",
+    "name": "Wide Child's with Neck Stretch",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_childwidesidelean",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChildWideSideLean"
+  },
+  {
+    "id": "ChildWideSideBend",
+    "name": "Wide Child's with Side Stretch",
+    "sanskrit": "",
+    "category": "Prone",
+    "difficulty": "Beginner",
+    "image": "program_pose_childwidesidebend",
+    "sourceUrl": "https://www.pocketyoga.com/pose/ChildWideSideBend"
+  },
+  {
+    "id": "WideLeggedForwardBendI",
+    "name": "Wide Legged Forward Bend I",
+    "sanskrit": "prasārita pādottānāsana a",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendi",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendI"
+  },
+  {
+    "id": "WideLeggedForwardBendHalfWay",
+    "name": "Wide Legged Forward Bend I (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendhalfway",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendHalfWay"
+  },
+  {
+    "id": "WideLeggedForwardBendII",
+    "name": "Wide Legged Forward Bend II",
+    "sanskrit": "prasārita pādottānāsana b",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendII"
+  },
+  {
+    "id": "WideLeggedForwardBendIII",
+    "name": "Wide Legged Forward Bend III",
+    "sanskrit": "prasārita pādottānāsana c",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendiii",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendIII"
+  },
+  {
+    "id": "WideLeggedForwardBendIV",
+    "name": "Wide Legged Forward Bend IV",
+    "sanskrit": "prasārita pādottānāsana d",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendiv",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendIV"
+  },
+  {
+    "id": "WideLeggedForwardBendIVPreparation",
+    "name": "Wide Legged Forward Bend IV (Preparation)",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendivpreparation",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendIVPreparation"
+  },
+  {
+    "id": "WideLeggedForwardBendTwist",
+    "name": "Wide Legged Forward Bend Twist",
+    "sanskrit": "parivṛtta prasārita pādottānāsana",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendtwist",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendTwist"
+  },
+  {
+    "id": "WideLeggedForwardBendReversePrayer",
+    "name": "Wide Legged Forward Bend with Reverse Prayer Hands",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wideleggedforwardbendreverseprayer",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WideLeggedForwardBendReversePrayer"
+  },
+  {
+    "id": "SplitsWide",
+    "name": "Wide Splits",
+    "sanskrit": "samakoṇāsana",
+    "category": "Seated",
+    "difficulty": "Expert",
+    "image": "program_pose_splitswide",
+    "sourceUrl": "https://www.pocketyoga.com/pose/SplitsWide"
+  },
+  {
+    "id": "StarWideStance",
+    "name": "Wide Star",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_starwidestance",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarWideStance"
+  },
+  {
+    "id": "StarWideStanceArmsUp",
+    "name": "Wide Star with Arms Up",
+    "sanskrit": "",
+    "category": "Standing",
+    "difficulty": "Beginner",
+    "image": "program_pose_starwidestancearmsup",
+    "sourceUrl": "https://www.pocketyoga.com/pose/StarWideStanceArmsUp"
+  },
+  {
+    "id": "WildThing",
+    "name": "Wild Thing",
+    "sanskrit": "camatkārāsana",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wildthing",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WildThing"
+  },
+  {
+    "id": "WildThingForearm",
+    "name": "Wild Thing on the Forearm",
+    "sanskrit": "",
+    "category": "Arm & leg support",
+    "difficulty": "Intermediate",
+    "image": "program_pose_wildthingforearm",
+    "sourceUrl": "https://www.pocketyoga.com/pose/WildThingForearm"
+  },
+  {
+    "id": "Turtle",
+    "name": "Wind Removing",
+    "sanskrit": "pavanamuktāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_turtle",
+    "sourceUrl": "https://www.pocketyoga.com/pose/Turtle"
+  },
+  {
+    "id": "TurtleHeadTucked",
+    "name": "Wind Removing with Head Tucked",
+    "sanskrit": "pavanamuktāsana",
+    "category": "Supine",
+    "difficulty": "Beginner",
+    "image": "program_pose_turtleheadtucked",
+    "sourceUrl": "https://www.pocketyoga.com/pose/TurtleHeadTucked"
+  }
+]

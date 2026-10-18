@@ -81,12 +81,16 @@ import com.google.ai.edge.gallery.ui.benchmark.BenchmarkScreen
 import com.google.ai.edge.gallery.ui.common.ErrorDialog
 import com.google.ai.edge.gallery.ui.common.ModelPageAppBar
 import com.google.ai.edge.gallery.ui.common.chat.ModelDownloadStatusInfoPanel
+import com.google.ai.edge.gallery.ui.breathing.BreathingScreen
+import com.google.ai.edge.gallery.ui.llmchat.SukhamAiScreen
 import com.google.ai.edge.gallery.ui.home.HomeScreen
 import com.google.ai.edge.gallery.ui.home.PromoScreenGm4
 import com.google.ai.edge.gallery.ui.modelmanager.GlobalModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelInitializationStatusType
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManager
 import com.google.ai.edge.gallery.ui.modelmanager.ModelManagerViewModel
+import com.google.ai.edge.gallery.ui.progress.ProgressScreen
+import com.google.ai.edge.gallery.ui.programs.ProgramsScreen
 import com.google.ai.edge.gallery.ui.profile.ProfileScreen
 import com.google.ai.edge.gallery.ui.yoga.YogaPoseScreen
 import kotlinx.coroutines.Dispatchers
@@ -101,6 +105,9 @@ private const val ROUTE_BENCHMARK = "benchmark"
 private const val ROUTE_MODEL_MANAGER = "model_manager"
 private const val ROUTE_YOGA = "yoga_coach"
 private const val ROUTE_PROFILE = "profile"
+private const val ROUTE_PROGRAMS = "programs"
+private const val ROUTE_PROGRESS = "progress"
+private const val ROUTE_BREATHING = "breathing"
 private const val ENTER_ANIMATION_DURATION_MS = 500
 private val ENTER_ANIMATION_EASING = EaseOutExpo
 private const val ENTER_ANIMATION_DELAY_MS = 100
@@ -208,10 +215,54 @@ fun GalleryNavHost(
       HomeScreen(
         tosViewModel = hiltViewModel(),
         onLiveClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
+        onAiClicked = { navigateToTab("sukham_ai") },
         onVideoClicked = { navController.navigate("$ROUTE_YOGA?mode=video") },
         onPhotoClicked = { navController.navigate("$ROUTE_YOGA?mode=photo") },
         onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onProgressClicked = { navigateToTab(ROUTE_PROGRESS) },
+        onBreathingClicked = { navController.navigate(ROUTE_BREATHING) },
       )
+    }
+
+    composable(
+      route = ROUTE_PROGRAMS,
+      enterTransition = { slideEnter() },
+      exitTransition = { slideExit() },
+    ) {
+      ProgramsScreen(
+        onNavigateUp = { navController.navigateUp() },
+        onProgressClicked = { navigateToTab(ROUTE_PROGRESS) },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onLiveClicked = { navigateToTab("sukham_ai") },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
+      )
+    }
+
+    composable(route = "sukham_ai") {
+      SukhamAiScreen(
+        modelManagerViewModel = modelManagerViewModel,
+        onNavigateUp = { navController.navigateUp() },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onProgressClicked = { navigateToTab(ROUTE_PROGRESS) },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
+      )
+    }
+
+    composable(route = ROUTE_PROGRESS) {
+      ProgressScreen(
+        onNavigateUp = { navController.navigateUp() },
+        onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onLiveClicked = { navigateToTab("sukham_ai") },
+        onProfileClicked = { navigateToTab(ROUTE_PROFILE) },
+        onBreathingClicked = { navController.navigate(ROUTE_BREATHING) },
+      )
+    }
+
+    composable(route = ROUTE_BREATHING, enterTransition = { slideEnter() }, exitTransition = { slideExit() }) {
+      BreathingScreen(onNavigateUp = { navController.navigateUp() })
     }
 
     // Yoga pose coach screen.
@@ -245,7 +296,9 @@ fun GalleryNavHost(
       ProfileScreen(
         onNavigateUp = { navController.navigateUp() },
         onHomeClicked = { navigateToTab(ROUTE_HOMESCREEN) },
-        onLiveClicked = { navController.navigate("$ROUTE_YOGA?mode=live") },
+        onLiveClicked = { navigateToTab("sukham_ai") },
+        onProgramsClicked = { navigateToTab(ROUTE_PROGRAMS) },
+        onProgressClicked = { navigateToTab(ROUTE_PROGRESS) },
         modelManagerViewModel = modelManagerViewModel,
       )
     }
