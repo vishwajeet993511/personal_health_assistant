@@ -16,4 +16,5 @@ for pose in poses:
 lines.append(')')
 (main/'java/com/google/ai/edge/gallery/ui/programs/ProgramPoseImages.kt').write_text('\n'.join(lines)+'\n')
 (root/'docs/pose-redesign/progress.json').write_text(json.dumps(progress,indent=2)+'\n')
+(root/'docs/pose-redesign/remaining.json').write_text(json.dumps([pose for pose in progress if pose['status'] == 'pending'], indent=2)+'\n')
 print(f'{sum(p["status"] == "complete" for p in progress)} / {len(progress)} premium illustrations wired.')

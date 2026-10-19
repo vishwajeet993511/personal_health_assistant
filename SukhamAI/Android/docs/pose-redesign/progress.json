@@ -2343,91 +2343,91 @@
     "id": "ScaleForward",
     "name": "Shoulder Pressing",
     "resource": "program_pose_scaleforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Scale",
     "name": "Shoulder Pressing (Preparation)",
     "resource": "program_pose_scale",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandLotus",
     "name": "Shoulder Stand with Lotus Legs",
     "resource": "program_pose_shoulderstandlotus",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIIForward",
     "name": "Side Angle",
     "resource": "program_pose_warrioriiforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "BowSide",
     "name": "Side Bow",
     "resource": "program_pose_bowside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "CrowSide",
     "name": "Side Crow",
     "resource": "program_pose_crowside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "CrowSidePreparation",
     "name": "Side Crow (Preparation)",
     "resource": "program_pose_crowsidepreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SideEmbryo",
     "name": "Side Embryo",
     "resource": "program_pose_sideembryo",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankDolphinSide",
     "name": "Side Forearm Plank",
     "resource": "program_pose_plankdolphinside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SideLunge",
     "name": "Side Lunge",
     "resource": "program_pose_sidelunge",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SideLungeExtended",
     "name": "Side Lunge with Arms Extended",
     "resource": "program_pose_sidelungeextended",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandSupportedOneLeggedSide",
     "name": "Side One Legged Shoulder Stand",
     "resource": "program_pose_shoulderstandsupportedoneleggedside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedOneLeggedSide",
     "name": "Side One Legged Supported Headstand",
     "resource": "program_pose_headstandsupportedoneleggedside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankSide",
     "name": "Side Plank",
     "resource": "program_pose_plankside",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankSideFallenTriangle",
     "name": "Side Plank Kick",
     "resource": "program_pose_planksidefallentriangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankKneelingSide",
@@ -2703,708 +2703,708 @@
     "id": "StarHandsInterlaced",
     "name": "Star with Hands Interlaced",
     "resource": "program_pose_starhandsinterlaced",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "StarHandsOnHips",
     "name": "Star with Hands on Hips",
     "resource": "program_pose_starhandsonhips",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "StarReversePrayer",
     "name": "Star with Reverse Prayer Hands",
     "resource": "program_pose_starreverseprayer",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HalfMoonBound",
     "name": "Sugarcane",
     "resource": "program_pose_halfmoonbound",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SuperSoldier",
     "name": "Super Soldier",
     "resource": "program_pose_supersoldier",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineAngle",
     "name": "Supine Angle",
     "resource": "program_pose_supineangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineBellyTwist",
     "name": "Supine Belly Twist",
     "resource": "program_pose_supinebellytwist",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineBoundAngle",
     "name": "Supine Bound Angle",
     "resource": "program_pose_supineboundangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineTrivikrama",
     "name": "Supine Foot to Head",
     "resource": "program_pose_supinetrivikrama",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeroHalfReclining",
     "name": "Supine Half Hero",
     "resource": "program_pose_herohalfreclining",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineHandToToeFull",
     "name": "Supine Hand to Big Toe",
     "resource": "program_pose_supinehandtotoefull",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineHandToToe",
     "name": "Supine Hand to Big Toe (Preparation)",
     "resource": "program_pose_supinehandtotoe",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeroReclining",
     "name": "Supine Hero",
     "resource": "program_pose_heroreclining",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineFootBehindHead",
     "name": "Supine Leg Behind the Head",
     "resource": "program_pose_supinefootbehindhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupinePigeon",
     "name": "Supine Pigeon",
     "resource": "program_pose_supinepigeon",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineSpinalTwist",
     "name": "Supine Spinal Twist",
     "resource": "program_pose_supinespinaltwist",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineStraddle",
     "name": "Supine Straddle",
     "resource": "program_pose_supinestraddle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineBellyTwistPreparation",
     "name": "Supine Tabletop",
     "resource": "program_pose_supinebellytwistpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineThunderbolt",
     "name": "Supine Thunderbolt",
     "resource": "program_pose_supinethunderbolt",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandSupportedBridge",
     "name": "Supported Bridge",
     "resource": "program_pose_shoulderstandsupportedbridge",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "CamelEasy",
     "name": "Supported Camel",
     "resource": "program_pose_cameleasy",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupported",
     "name": "Supported Headstand",
     "resource": "program_pose_headstandsupported",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedPreparation",
     "name": "Supported Headstand (Preparation)",
     "resource": "program_pose_headstandsupportedpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedEmbryo",
     "name": "Supported Headstand Embryo",
     "resource": "program_pose_headstandsupportedembryo",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedII",
     "name": "Supported Headstand II",
     "resource": "program_pose_headstandsupportedii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIIPreparation",
     "name": "Supported Headstand II (Preparation)",
     "resource": "program_pose_headstandsupportediipreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIIPreparationHipsOverHead",
     "name": "Supported Headstand II with Toes on the Ground",
     "resource": "program_pose_headstandsupportediipreparationhipsoverhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIII",
     "name": "Supported Headstand III",
     "resource": "program_pose_headstandsupportediii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIIIPreparation",
     "name": "Supported Headstand III (Preparation)",
     "resource": "program_pose_headstandsupportediiipreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIIIPreparationHipsOverHead",
     "name": "Supported Headstand III with Toes on the Ground",
     "resource": "program_pose_headstandsupportediiipreparationhipsoverhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIV",
     "name": "Supported Headstand IV",
     "resource": "program_pose_headstandsupportediv",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIVPreparation",
     "name": "Supported Headstand IV (Preparation)",
     "resource": "program_pose_headstandsupportedivpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedIVPreparationHipsOverHead",
     "name": "Supported Headstand IV with Toes on the Ground",
     "resource": "program_pose_headstandsupportedivpreparationhipsoverhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedLift",
     "name": "Supported Headstand Lift",
     "resource": "program_pose_headstandsupportedlift",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedHalfWay",
     "name": "Supported Headstand Pike",
     "resource": "program_pose_headstandsupportedhalfway",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedTuck",
     "name": "Supported Headstand Tuck",
     "resource": "program_pose_headstandsupportedtuck",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedBoundAngle",
     "name": "Supported Headstand with Bound Angle Legs",
     "resource": "program_pose_headstandsupportedboundangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedEagle",
     "name": "Supported Headstand with Eagle Legs",
     "resource": "program_pose_headstandsupportedeagle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedLotus",
     "name": "Supported Headstand with Lotus Legs",
     "resource": "program_pose_headstandsupportedlotus",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedRevolvedSplitLeggedPreparation",
     "name": "Supported Headstand with Splits",
     "resource": "program_pose_headstandsupportedrevolvedsplitleggedpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandSupportedPreparationHipsOverHead",
     "name": "Supported Headstand with Toes on the Ground",
     "resource": "program_pose_headstandsupportedpreparationhipsoverhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Visvamitra",
     "name": "Supported Sage Visvamitra's",
     "resource": "program_pose_visvamitra",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandSupported",
     "name": "Supported Shoulder Stand",
     "resource": "program_pose_shoulderstandsupported",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandSupportedBoundAngle",
     "name": "Supported Shoulder Stand with Bound Angle Legs",
     "resource": "program_pose_shoulderstandsupportedboundangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandSupportedEagle",
     "name": "Supported Shoulder Stand with Eagle Legs",
     "resource": "program_pose_shoulderstandsupportedeagle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ToeStandSupported",
     "name": "Supported Toe Stand",
     "resource": "program_pose_toestandsupported",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TableKneeToForehead",
     "name": "Table with Knee to Forehead",
     "resource": "program_pose_tablekneetoforehead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "DownwardDogLegUp",
     "name": "Three Legged Downward-Facing Dog",
     "resource": "program_pose_downwarddoglegup",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "DownwardDogLegUpStackHips",
     "name": "Three Legged Downward-Facing Dog with Hip Opener",
     "resource": "program_pose_downwarddoglegupstackhips",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Thunderbolt",
     "name": "Thunderbolt",
     "resource": "program_pose_thunderbolt",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ThunderboltTwist",
     "name": "Thunderbolt Twist",
     "resource": "program_pose_thunderbolttwist",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Tiger",
     "name": "Tiger",
     "resource": "program_pose_tiger",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ToeSquat",
     "name": "Toe Squat",
     "resource": "program_pose_toesquat",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ToeStand",
     "name": "Toe Stand",
     "resource": "program_pose_toestand",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ToeStandPreparation",
     "name": "Toe Stand (Preparation)",
     "resource": "program_pose_toestandpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TreeToppling",
     "name": "Toppling Tree",
     "resource": "program_pose_treetoppling",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SupineTortoise",
     "name": "Tortoise",
     "resource": "program_pose_supinetortoise",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TreePrayer",
     "name": "Tree",
     "resource": "program_pose_treeprayer",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Tree",
     "name": "Tree with Arms Up",
     "resource": "program_pose_tree",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TreeSideBend",
     "name": "Tree with Side Bend",
     "resource": "program_pose_treesidebend",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TriangleForward",
     "name": "Triangle",
     "resource": "program_pose_triangleforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Triangle",
     "name": "Triangle (Preparation)",
     "resource": "program_pose_triangle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripod",
     "name": "Tripod Headstand",
     "resource": "program_pose_headstandtripod",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodPreparation",
     "name": "Tripod Headstand (Preparation)",
     "resource": "program_pose_headstandtripodpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodPreparationWideLegged",
     "name": "Tripod Headstand (Preparation)",
     "resource": "program_pose_headstandtripodpreparationwidelegged",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodSpiralLegs",
     "name": "Tripod Headstand - Spiral the Legs",
     "resource": "program_pose_headstandtripodspirallegs",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodEagle",
     "name": "Tripod Headstand with Eagle Legs",
     "resource": "program_pose_headstandtripodeagle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodKneesOnElbows",
     "name": "Tripod Headstand with Knees on Elbows",
     "resource": "program_pose_headstandtripodkneesonelbows",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodLotus",
     "name": "Tripod Headstand with Lotus Legs",
     "resource": "program_pose_headstandtripodlotus",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "HeadstandTripodPreparationHipsOverHead",
     "name": "Tripod Headstand with Toes on the Ground",
     "resource": "program_pose_headstandtripodpreparationhipsoverhead",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "CrowSideExtended",
     "name": "Two Legged Sage Koundinya's",
     "resource": "program_pose_crowsideextended",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "FootBehindHeadTwoLegged",
     "name": "Two Legs Behind the Head I",
     "resource": "program_pose_footbehindheadtwolegged",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "FootBehindHeadTwoLeggedElevated",
     "name": "Two Legs Behind the Head II",
     "resource": "program_pose_footbehindheadtwoleggedelevated",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ShoulderstandUnsupported",
     "name": "Unsupported Shoulder Stand",
     "resource": "program_pose_shoulderstandunsupported",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankUpward",
     "name": "Upward Plank",
     "resource": "program_pose_plankupward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "PlankUpwardPreparation",
     "name": "Upward Plank (Preparation)",
     "resource": "program_pose_plankupwardpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "RoosterUpward",
     "name": "Upward Rooster",
     "resource": "program_pose_roosterupward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "MountainSalute",
     "name": "Upward Salute",
     "resource": "program_pose_mountainsalute",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "UpwardDog",
     "name": "Upward-Facing Dog",
     "resource": "program_pose_upwarddog",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "UpwardDogLookingUp",
     "name": "Upward-Facing Dog with Gaze Up",
     "resource": "program_pose_upwarddoglookingup",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "UpwardDogNeckStretch",
     "name": "Upward-Facing Dog with Neck Stretch",
     "resource": "program_pose_upwarddogneckstretch",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorI",
     "name": "Warrior I",
     "resource": "program_pose_warriori",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIForward",
     "name": "Warrior I Halfway Fold",
     "resource": "program_pose_warrioriforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIEagleForward",
     "name": "Warrior I Halfway Fold with Eagle Arms",
     "resource": "program_pose_warriorieagleforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIHandsOnHipsForward",
     "name": "Warrior I Halfway Fold with Hands on Hips",
     "resource": "program_pose_warriorihandsonhipsforward",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorICactusArms",
     "name": "Warrior I with Cactus Arms",
     "resource": "program_pose_warrioricactusarms",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIEagleBackbend",
     "name": "Warrior I with Eagle Arm Backbend",
     "resource": "program_pose_warriorieaglebackbend",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIEagle",
     "name": "Warrior I with Eagle Arms",
     "resource": "program_pose_warriorieagle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorILookingUp",
     "name": "Warrior I with Gaze Up",
     "resource": "program_pose_warriorilookingup",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorHumblePreparation",
     "name": "Warrior I with Hands Interlaced",
     "resource": "program_pose_warriorhumblepreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIHandsOnHips",
     "name": "Warrior I with Hands on Hips",
     "resource": "program_pose_warriorihandsonhips",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorPrayer",
     "name": "Warrior I with Prayer Hands",
     "resource": "program_pose_warriorprayer",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorII",
     "name": "Warrior II",
     "resource": "program_pose_warriorii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIII",
     "name": "Warrior III",
     "resource": "program_pose_warrioriii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIIIAirplane",
     "name": "Warrior III with Airplane Arms",
     "resource": "program_pose_warrioriiiairplane",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIIIEagle",
     "name": "Warrior III with Eagle Arms",
     "resource": "program_pose_warrioriiieagle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WarriorIIIPrayer",
     "name": "Warrior III with Prayer Hands",
     "resource": "program_pose_warrioriiiprayer",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "CorpseDoubleLegRaise",
     "name": "Waterfall",
     "resource": "program_pose_corpsedoublelegraise",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Wheel",
     "name": "Wheel",
     "resource": "program_pose_wheel",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WheelPreparation",
     "name": "Wheel (Preparation)",
     "resource": "program_pose_wheelpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ChildWide",
     "name": "Wide Child's",
     "resource": "program_pose_childwide",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ChildWideSideLean",
     "name": "Wide Child's with Neck Stretch",
     "resource": "program_pose_childwidesidelean",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "ChildWideSideBend",
     "name": "Wide Child's with Side Stretch",
     "resource": "program_pose_childwidesidebend",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendI",
     "name": "Wide Legged Forward Bend I",
     "resource": "program_pose_wideleggedforwardbendi",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendHalfWay",
     "name": "Wide Legged Forward Bend I (Preparation)",
     "resource": "program_pose_wideleggedforwardbendhalfway",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendII",
     "name": "Wide Legged Forward Bend II",
     "resource": "program_pose_wideleggedforwardbendii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendIII",
     "name": "Wide Legged Forward Bend III",
     "resource": "program_pose_wideleggedforwardbendiii",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendIV",
     "name": "Wide Legged Forward Bend IV",
     "resource": "program_pose_wideleggedforwardbendiv",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendIVPreparation",
     "name": "Wide Legged Forward Bend IV (Preparation)",
     "resource": "program_pose_wideleggedforwardbendivpreparation",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendTwist",
     "name": "Wide Legged Forward Bend Twist",
     "resource": "program_pose_wideleggedforwardbendtwist",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WideLeggedForwardBendReversePrayer",
     "name": "Wide Legged Forward Bend with Reverse Prayer Hands",
     "resource": "program_pose_wideleggedforwardbendreverseprayer",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "SplitsWide",
     "name": "Wide Splits",
     "resource": "program_pose_splitswide",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "StarWideStance",
     "name": "Wide Star",
     "resource": "program_pose_starwidestance",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "StarWideStanceArmsUp",
     "name": "Wide Star with Arms Up",
     "resource": "program_pose_starwidestancearmsup",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WildThing",
     "name": "Wild Thing",
     "resource": "program_pose_wildthing",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "WildThingForearm",
     "name": "Wild Thing on the Forearm",
     "resource": "program_pose_wildthingforearm",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "Turtle",
     "name": "Wind Removing",
     "resource": "program_pose_turtle",
-    "status": "pending"
+    "status": "complete"
   },
   {
     "id": "TurtleHeadTucked",
     "name": "Wind Removing with Head Tucked",
     "resource": "program_pose_turtleheadtucked",
-    "status": "pending"
+    "status": "complete"
   }
 ]

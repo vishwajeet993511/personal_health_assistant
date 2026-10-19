@@ -1,13 +1,7 @@
 # Replacement pass status
 
-435 of 568 images are generated, visually reviewed, optimized, and wired into the Android Programs cards. 133 remain pending because the built-in image generation service returned usage_limit_reached (HTTP 429). Service-reported reset: October 18, 2026 at approximately 23:39 Asia/Kolkata.
+Completed October 19, 2026. All remaining 133 poses were generated with the same built-in image model and approved Ankle Stretch style, then reviewed and integrated. All 568 catalog entries now use unique premium assets; no original-image fallbacks remain. Original references and full-resolution generated PNGs are preserved.
 
-No image-generation workers remain running. All originals are preserved. Pending images continue to render their original illustration. See progress.json and remaining.json for exact per-pose coverage.
+The premium assets total 14.92 MiB. Each asset decodes successfully, each catalog entry maps to exactly one premium resource, and all 568 file hashes are unique. The remaining and resume queues are empty. See validation.json for the recorded checks and completion-preview.jpg for a sample of the final style.
 
-Continue only pending entries with the built-in image tool after availability returns, or use the skill CLI fallback only if the user explicitly chooses it and has a locally configured OPENAI_API_KEY. Never silently switch workflows. Refer to art-direction.md for the approved prompt and reference conventions. Original PNGs and the approved Ankle Stretch style reference remain under src/app/src/main/res/drawable-nodpi.
-
-Run scripts/optimize_premium_pose_images.py using the bundled Python (Pillow), then scripts/refresh_premium_pose_images.py after generation. Source and output contact sheets can be built with scripts/pose_review_sheet.py.
-
-Archer and inverted Embryo received geometry corrections and are reviewed. Firefly preparation and Cow succeeded after neutral exercise-focused retries. There are no remaining moderation-related gaps; pending entries are due to the generation quota.
-
-Validation: :app:compileDebugKotlin passed with Android Studio Java 21. All 568 mappings resolve, premium resource stems are unique, and git diff --check passes. The 435 premium card assets total approximately 11.9 MB. See premium-preview.jpg for a six-pose sample.
+Validation: visual review passed; git diff --check passed; :app:compileDebugKotlin --offline passed using Android Studio Java 21. Existing compiler warnings remain unrelated to these asset replacements.

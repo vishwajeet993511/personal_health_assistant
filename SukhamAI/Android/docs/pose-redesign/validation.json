@@ -1,0 +1,13 @@
+{
+  "total_poses": 568,
+  "premium_replacements": 568,
+  "original_fallbacks": 0,
+  "unique_images": 568,
+  "all_images_decoded": true,
+  "asset_size_mb": 14.92,
+  "new_replacements_this_pass": 133,
+  "visual_review": "passed",
+  "compile_debug_kotlin": "passed",
+  "git_diff_check": "passed",
+  "completed_on": "2026-10-19"
+}

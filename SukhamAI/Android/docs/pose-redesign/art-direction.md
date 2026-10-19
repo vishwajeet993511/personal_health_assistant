@@ -15,5 +15,5 @@ Complex poses receive additional geometry notes or a correction pass when needed
 - Full-resolution generated PNGs remain in the image generation output directory.
 - Android asset encoding: maximum 840 pixels, WebP quality 92, retaining the pose and composition.
 - `scripts/pose_review_sheet.py` creates labeled inspection sheets without changing source images.
-- `scripts/refresh_premium_pose_images.py` updates explicit Android resource references and `progress.json`.
-- `progress.json` records replacement coverage. Remaining entries continue to show the original illustration until replaced.
+- `scripts/refresh_premium_pose_images.py` updates explicit Android resource references, `progress.json`, and `remaining.json`.
+- `progress.json` records replacement coverage. All 568 entries are complete as of October 19, 2026; no original-image fallbacks remain.
